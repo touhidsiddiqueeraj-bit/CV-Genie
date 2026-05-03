@@ -16,25 +16,14 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
-<link rel="stylesheet" href="src/css/styles.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/lz-string/1.5.0/lz-string.min.js"></script>
 <script>
 (function(){if(localStorage.getItem('cvGenieDarkMode')==='true'){document.documentElement.classList.add('dark');}})();
-if('serviceWorker' in navigator){window.addEventListener('load',function(){var swCode='const CACHE="cvgenie-v1";self.addEventListener("install",e=>{e.waitUntil(caches.open(CACHE).then(c=>c.addAll(["/"])).then(()=>self.skipWaiting()));});self.addEventListener("fetch",e=>{e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request)));});';var blob=new Blob([swCode],{type:'application/javascript'});navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(function(){});});
+if('serviceWorker' in navigator){window.addEventListener('load',function(){var swCode='const CACHE="cvgenie-v1";self.addEventListener("install",e=>{e.waitUntil(caches.open(CACHE).then(c=>c.addAll(["/"])).then(()=>self.skipWaiting()));});self.addEventListener("fetch",e=>{e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request)));});';var blob=new Blob([swCode],{type:'application/javascript'});navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(function(){});});}
 </script>
-<script src="src/js/data.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/lz-string/1.5.0/lz-string.min.js"></script>
-<script src="src/js/data.js"></script>
-<script src="src/js/main.js"></script>
-<script src="src/js/extras.js"></script>
+<style>
+:root{--bg:#f0f2f5;--surface:#ffffff;--primary:#2563eb;--primary-light:#eff6ff;--text:#1e293b;--text-secondary:#64748b;--border:#e2e8f0;--shadow:0 4px 24px rgba(0,0,0,0.08);--success:#10b981;--warning:#f59e0b;--danger:#ef4444;--header-height:48px;--mobile-nav-height:56px;--page-width:210mm;--page-height:297mm;--cv-font-heading:'Georgia',serif;--cv-font-body:'Georgia',serif;}
 html.dark{--bg:#0f172a;--surface:#1e293b;--primary:#60a5fa;--primary-light:#1e3a5f;--text:#e2e8f0;--text-secondary:#94a3b8;--border:#334155;--shadow:0 4px 24px rgba(0,0,0,0.4);}
 html.dark .app-header,html.dark .form-panel,html.dark .modal{background:var(--surface);border-color:var(--border);}
 html.dark .preview-panel{background:#0a0f1a;}
