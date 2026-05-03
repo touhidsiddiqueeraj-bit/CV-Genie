@@ -2,7 +2,7 @@
 
 **A free, private, browser-based CV builder. No sign-up. No server. No data ever leaves your device.**
 
-🔗 **[Live Demo](https://touhidsiddiqueeraj-bit.github.io/CV-Genie/CV_Genie.html)**
+🔗 **[Live Demo](https://touhidsiddiqueeraj-bit.github.io/CV-Genie/)**
 
 ---
 
