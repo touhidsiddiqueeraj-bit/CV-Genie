@@ -29,7 +29,7 @@
 | Area | Change |
 |---|---|
 | **UI** | Complete minimalist redesign — neutral palette, hairline borders, stroke icons, clean type scale, calmer animations. The app chrome gets out of the way of your content. |
-| **Europass CV** | New official-style Europass template with the CEFR self-assessment grid (Listening / Reading / Spoken interaction / Spoken production / Writing), mother-tongue handling, dated work & education tables and the classic "Job applied for" header. |
+| **Europass CV** | New official-style Europass template — a faithful reproduction of the European Commission's official DOCX (logo header, right-aligned label gutter, blue heading rules, CEFR self-assessment grid, © European Union footer). |
 | **4 more templates** | **Nordic** (Scandinavian minimalism), **Swiss** (International Typographic Style), **Academic** (conservative serif) and **Compact** (dense one-pager) — 18 templates in total. |
 | **Profile photos** | Photo shape (circle / rounded / square), photo size (S / M / L), one-tap remove, and a cleaner crop-and-rotate editor. Photos now render in *every* template. |
 | **Languages** | New Languages section with Native / A1–C2 levels. Feeds the Europass CEFR grid and renders as a styled list in other templates. Also picked up from LinkedIn imports. |
@@ -50,7 +50,7 @@ Every keystroke updates the A4 preview (debounced 200 ms). Sections are collapsi
 
 ### Profile photos
 
-Upload a picture, crop and rotate it in-browser (Cropper.js), then choose its **shape** — circle, rounded or square — and its **size** (S / M / L). The photo flows into all 18 templates: square with a hairline border on Europass, a framed circle on Modern, a colour-backed circle on Sidebar Bold. Shape and size controls update every template instantly, and the settings travel with saves, share links and version history.
+Upload a picture, crop and rotate it in-browser (Cropper.js), then choose its **shape** — circle, rounded or square — and its **size** (S / M / L). The photo flows into all 18 templates: an ID-style photo in the label gutter on Europass, a framed circle on Modern, a colour-backed circle on Sidebar Bold. Shape and size controls update every template instantly, and the settings travel with saves, share links and version history.
 
 ### ATS analyser
 
@@ -115,16 +115,19 @@ All 18 templates rendered with the same sample data:
 
 ### About the Europass template
 
-The [Europass CV](https://europa.eu/europass/en) is the European Union's standard CV format. CV Genie's implementation:
+The [Europass CV](https://europa.eu/europass/en) is the European Union's standard CV format. CV Genie's Europass template is a faithful reproduction of the [official European Commission template](https://www.eeas.europa.eu/sites/default/files/standard_cv.docx) — structure, colours and typography were extracted directly from the official DOCX:
 
-- Header with photo, name and **Job applied for** (uses your job title field).
-- Personal information grid (email, telephone, address, LinkedIn).
-- **Work experience** and **Education and training** as dated tables, matching the official layout.
-- **Language skills** with mother tongue(s) and the CEFR self-assessment grid:
+- **Header**: the official Europass logo, "Curriculum Vitae" and the candidate name in light blue, exactly like the original first-page header.
+- **Personal information**: the name in the content column with contact lines (address, telephone, e-mail, website) and small blue pictograms; the profile photo sits in the label gutter, as in the official layout.
+- **Job applied for; position; preferred job; studies applied for; personal statement** — the official stacked label block, filled with your job title and professional summary.
+- **Work experience / Education and training** entries with dates right-aligned in the label gutter, position and qualification headings in navy, employers/institutions and square-bulleted activities in the content column.
+- **Personal skills** with *Mother tongue(s)*, the official CEFR self-assessment grid (Understanding → Listening / Reading, Speaking → Spoken interaction / Spoken production, Writing) and its levels legend, plus *Job-related skills*.
+- Official styling tokens: Arial, navy `#0E4194` caps headings with the `#2E90CB` rules, `#1593CB` field labels, `#C0C0C0` grid borders, and the "© European Union" footer.
 
-| Language | Listening | Reading | Spoken interaction | Spoken production | Writing |
-|---|---|---|---|---|---|
-| French | B2 | B2 | B2 | B2 | B2 |
+| Understanding | | Speaking | | Writing |
+|---|---|---|---|---|
+| Listening | Reading | Spoken interaction | Spoken production | |
+| B2 | B2 | B2 | B2 | B2 |
 
 Add languages in the **Languages** section of the Edit tab, choosing *Native* for your mother tongue(s) or a CEFR level (A1–C2) for others. The grid fills each skill column with the chosen level — edit the source if you need per-skill levels.
 

@@ -328,28 +328,57 @@ html.dark .cv-preview{box-shadow:0 1px 3px rgba(0,0,0,0.4),0 8px 32px rgba(0,0,0
 .cv-preview.cv-corporate .cv-section h2{background:#1a3a5c;color:#fff;padding:1mm 2mm;font-size:8.5pt;}
 /* ── Template: creative ─────────────────────────────────── */
 .cv-preview.cv-creative .cv-name{font-family:var(--cv-font-heading);font-size:22pt;font-weight:800;text-align:center;}
-/* ── Template: europass ─────────────────────────────────── */
-.cv-preview.cv-europass{font-family:'Inter','Segoe UI',sans-serif;font-size:9.5pt;color:#111827;padding:12mm 10mm;}
-.cv-europass .ep-head{display:flex;gap:5mm;align-items:flex-start;border-bottom:2.5px solid #0e4da4;padding-bottom:3.5mm;margin-bottom:3.5mm;}
-.cv-europass .ep-head-main{flex:1;min-width:0;}
-.cv-europass .ep-doc-title{font-size:8pt;font-weight:600;text-transform:uppercase;letter-spacing:0.14em;color:#0e4da4;margin-bottom:1mm;}
-.cv-europass .cv-name{font-size:16pt;font-weight:700;letter-spacing:-0.01em;margin-bottom:0.8mm;}
-.cv-europass .ep-job{font-size:9pt;color:#374151;}
-.cv-europass .ep-job strong{color:#111827;}
-.cv-europass .cv-photo{border:1px solid #cbd5e1;}
-.cv-europass .ep-grid{width:100%;border-collapse:collapse;margin-bottom:4mm;font-size:8.5pt;}
-.cv-europass .ep-grid td{padding:1mm 1.5mm;border:1px solid #cbd5e1;vertical-align:top;}
-.cv-europass .ep-grid td:first-child{width:30mm;background:#eff6ff;font-weight:600;color:#0e4da4;}
-.cv-europass .cv-section h2{font-family:'Inter',sans-serif;color:#0e4da4;border-bottom:1.5px solid #0e4da4;font-size:9.5pt;letter-spacing:0.08em;margin-bottom:2mm;}
-.cv-europass .ep-table{width:100%;border-collapse:collapse;font-size:8pt;margin-bottom:1mm;}
-.cv-europass .ep-table th{border:1px solid #cbd5e1;background:#eff6ff;color:#1e3a5f;padding:1.2mm;font-size:6.8pt;font-weight:600;text-transform:uppercase;letter-spacing:0.03em;}
-.cv-europass .ep-table td{border:1px solid #cbd5e1;padding:1.2mm 1.5mm;text-align:center;}
-.cv-europass .ep-table td.ep-lang{text-align:left;font-weight:600;}
-.cv-europass .ep-entry-title{font-weight:700;font-size:9.5pt;}
-.cv-europass .ep-entry-sub{color:#4b5563;font-size:8.5pt;font-style:italic;}
-.cv-europass .ep-entry-body{font-size:8.5pt;margin-top:0.5mm;}
-.cv-europass .ep-dates{white-space:nowrap;color:#4b5563;font-size:8.5pt;}
-.cv-europass .ep-mother{font-size:9pt;margin-bottom:1mm;}
+/* ── Template: europass (faithful reproduction of the official European Commission template) ── */
+.cv-preview.cv-europass{font-family:Arial,Helvetica,sans-serif;font-size:9pt;color:#3f3a38;padding:8mm 12mm 5mm;line-height:1.35;}
+/* page header: logo left · "Curriculum Vitae" centre · candidate name right (ECVHeaderFirstPage #17ACE6) */
+.cv-europass .ep-header{display:flex;align-items:center;gap:4mm;margin-bottom:3.2mm;}
+.cv-europass .ep-logo{height:8mm;width:auto;flex-shrink:0;display:block;}
+.cv-europass .ep-hdr-mid{flex:1;text-align:center;color:#17ace6;font-size:10pt;}
+.cv-europass .ep-hdr-name{color:#17ace6;font-size:10pt;flex-shrink:0;max-width:62mm;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+/* section headings: navy caps, right-aligned in the 50mm label gutter, blue rule with end square (ECVLeftHeading + ECVHeadingLine) */
+.cv-europass .ep-sec{display:flex;align-items:flex-end;margin-top:3.6mm;}
+.cv-europass .ep-sec-first{margin-top:0;}
+.cv-europass .ep-sec-label{width:45mm;text-align:right;padding-right:5mm;color:#0e4194;font-weight:700;font-size:9pt;line-height:1.4;flex-shrink:0;}
+.cv-europass .ep-sec-label .ep-nocaps{text-transform:none;}
+.cv-europass .ep-rule{flex:1;border-bottom:2px solid #2e90cb;position:relative;min-width:8mm;height:1em;}
+.cv-europass .ep-rule::after{content:'';position:absolute;right:0;bottom:2px;width:2mm;height:1.5mm;background:#2e90cb;}
+/* field rows: blue right-aligned label in the gutter (ECVHeadingContactDetails #1593CB) + content */
+.cv-europass .ep-row{display:flex;margin-top:0.7mm;}
+.cv-europass .ep-k{width:45mm;text-align:right;padding-right:5mm;color:#1593cb;flex-shrink:0;}
+.cv-europass .ep-k-navy{color:#0e4194;}
+.cv-europass .ep-v{flex:1;min-width:0;}
+/* entry typography (right column) */
+.cv-europass .ep-occ{color:#0e4194;font-size:11pt;line-height:1.3;}
+.cv-europass .ep-org{margin-top:0.4mm;}
+.cv-europass ul.ep-ul{margin:0.9mm 0 0;padding:0;list-style:none;}
+.cv-europass ul.ep-ul li{position:relative;padding-left:4mm;margin-bottom:0.5mm;}
+.cv-europass ul.ep-ul li::before{content:'';position:absolute;left:0.6mm;top:1mm;width:1.5mm;height:1.5mm;background:#3f3a38;}
+/* personal information: photo in the left gutter under the section label, name + contacts on the right */
+.cv-europass .ep-pi{display:flex;}
+.cv-europass .ep-gutter{width:50mm;flex-shrink:0;display:flex;flex-direction:column;align-items:flex-end;}
+.cv-europass .ep-photo{width:27mm;height:31mm;object-fit:cover;border:0.5pt solid #c0c0c0;margin:1.2mm 5mm 0 0;display:block;}
+.cv-europass .ep-pi-main{flex:1;min-width:0;}
+.cv-europass .ep-name{font-size:13pt;line-height:1.25;}
+.cv-europass .ep-contact{margin-top:1.4mm;display:flex;flex-direction:column;gap:0.7mm;}
+.cv-europass .ep-ct{display:flex;align-items:flex-start;gap:1.6mm;}
+.cv-europass .ep-ct svg{width:3.2mm;height:3.2mm;flex-shrink:0;margin-top:0.4mm;}
+.cv-europass .ep-ct a{color:#1593cb;}
+/* job applied for value block, vertically centred against the label stack as in the official */
+.cv-europass .ep-jaf{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center;min-height:11mm;}
+.cv-europass .ep-ps{margin-top:1mm;}
+/* CEFR self-assessment grid: borderless 50mm language column, bordered level columns, #ECECEC certificate rows */
+.cv-europass table.ep-lang{width:100%;border-collapse:collapse;font-size:8pt;table-layout:fixed;margin-top:0.7mm;}
+.cv-europass table.ep-lang th{border:0.5pt solid #c0c0c0;padding:0.7mm 0.5mm;color:#0e4194;font-weight:700;font-size:7pt;text-transform:uppercase;text-align:center;letter-spacing:0.03em;}
+.cv-europass table.ep-lang .ep-sub{font-size:8pt;text-transform:none;letter-spacing:0;}
+.cv-europass table.ep-lang td{border:0.5pt solid #c0c0c0;padding:0.8mm 0.5mm;text-align:center;font-weight:700;}
+.cv-europass table.ep-lang .ep-col0{border:none;width:50mm;text-align:right;padding-right:5mm;color:#1593cb;font-weight:400;}
+.cv-europass table.ep-lang td.ep-col0{color:#3f3a38;}
+.cv-europass table.ep-lang .ep-mt{border:none;font-weight:400;text-align:left;padding-left:1mm;}
+.cv-europass .ep-legend{font-size:7pt;color:#0e4194;margin-top:0.8mm;}
+.cv-europass .ep-legend a{color:#0e4194;text-decoration:underline;}
+/* official footer attribution */
+.cv-europass .ep-footer{margin-top:4.5mm;font-size:7.5pt;color:#1593cb;}
+.cv-europass .ep-footer a{color:#1593cb;}
 /* ── Template: nordic ───────────────────────────────────── */
 .cv-preview.cv-nordic{padding:16mm 14mm;}
 .cv-nordic .cv-head{display:flex;justify-content:space-between;align-items:flex-end;gap:6mm;border-bottom:1.5px solid var(--cv-color);padding-bottom:4mm;margin-bottom:6mm;}
@@ -878,7 +907,7 @@ const THUMB_WIRES={
   swiss:'<div class="r acc" style="height:4px;margin-bottom:4px"></div><div class="r dark" style="width:85%"></div><div class="r" style="width:40%;margin-bottom:4px"></div><div class="cols"><div class="c"><div class="r" style="width:60%"></div><div class="r"></div><div class="r"></div></div><div class="c"><div class="r"></div><div class="r"></div><div class="r"></div><div class="r"></div></div></div>',
   executive:'<div class="r dark" style="width:65%;margin:0 auto"></div><div class="r" style="width:45%;margin:0 auto 3px;border-bottom:2px solid #a8a29e"></div><div class="r"></div><div class="r"></div><div class="r"></div><div class="r"></div><div class="r"></div>',
   academic:'<div class="r dark" style="width:70%;margin:0 auto"></div><div class="r" style="width:50%;margin:0 auto 3px"></div><div class="r"></div><div class="r"></div><div class="r"></div><div class="r"></div><div class="r"></div><div class="r"></div>',
-  europass:'<div class="cols" style="flex-direction:row;align-items:flex-start"><div class="dot" style="width:12px;height:12px"></div><div class="c" style="flex:1"><div class="r acc" style="width:80%"></div><div class="r" style="width:60%"></div></div></div><div class="r acc" style="margin:3px 0"></div><div class="r"></div><div class="r"></div><div class="cols"><div class="c" style="flex:2"><div class="r"></div></div><div class="c" style="flex:3"><div class="r"></div><div class="r"></div></div></div>',
+  europass:'<div class="cols" style="align-items:center"><div class="r acc" style="width:14px;margin:0"></div><div class="r" style="flex:1;margin:0 0 2px"></div><div class="r acc" style="width:16px;margin:0"></div></div><div class="cols" style="align-items:flex-end"><div class="c" style="flex:2;align-items:flex-end"><div class="r dark" style="width:85%"></div></div><div class="c" style="flex:3"><div class="r acc" style="height:2px"></div></div></div><div class="cols"><div class="c" style="flex:2;align-items:flex-end"><div class="r" style="width:70%"></div></div><div class="c" style="flex:3"><div class="r"></div><div class="r" style="width:85%"></div></div></div><div class="cols" style="align-items:flex-end"><div class="c" style="flex:2;align-items:flex-end"><div class="r dark" style="width:85%"></div></div><div class="c" style="flex:3"><div class="r acc" style="height:2px"></div></div></div><div class="cols"><div class="c" style="flex:2;align-items:flex-end"><div class="r" style="width:65%"></div></div><div class="c" style="flex:3;display:grid;grid-template-columns:repeat(5,1fr);gap:2px"><div style="border:1px solid #c8c8cd;height:9px"></div><div style="border:1px solid #c8c8cd;height:9px"></div><div style="border:1px solid #c8c8cd;height:9px"></div><div style="border:1px solid #c8c8cd;height:9px"></div><div style="border:1px solid #c8c8cd;height:9px"></div></div></div>',
   compact:'<div class="cols" style="align-items:center"><div class="dot" style="width:11px;height:11px"></div><div class="c"><div class="r dark" style="width:80%"></div><div class="r" style="width:50%"></div></div></div><div class="r acc" style="margin:2px 0"></div><div class="r" style="height:2px"></div><div class="r" style="height:2px"></div><div class="r" style="height:2px"></div><div class="r" style="height:2px"></div><div class="r" style="height:2px"></div><div class="r" style="height:2px"></div><div class="r" style="height:2px"></div><div class="r" style="height:2px"></div><div class="r" style="height:2px"></div>',
   'sidebar-bold':'<div class="cols"><div class="c solid"></div><div class="c"><div class="r"></div><div class="r"></div><div class="r"></div><div class="r"></div></div></div>',
   timeline:'<div class="r dark" style="width:60%;margin:0 auto"></div><div class="r" style="width:40%;margin:0 auto 3px"></div><div class="cols"><div class="c" style="flex:0 0 6px;position:relative"><div style="position:absolute;left:2px;top:3px;bottom:3px;width:1px;background:#d4d4d8"></div></div><div class="c"><div class="r"></div><div class="r"></div><div class="r"></div><div class="r"></div><div class="r"></div><div class="r"></div></div></div>',
@@ -1075,16 +1104,38 @@ function _updatePreviewNow(){
         case'academic':html=`${ph?`<div style="text-align:center;margin-bottom:2mm">${ph}</div>`:''}<div class="cv-name">${esc(name)}</div><div class="cv-contact">${esc(title)}${cs?' · '+esc(cs):''}</div>${orderedContent}`;break;
         case'compact':html=`<div class="cv-head">${ph}<div style="min-width:0"><div class="cv-name">${esc(name)}</div>${title?`<div class="cv-title">${esc(title)}</div>`:''}</div>${contactLines?`<div class="cv-head-contact">${contactLines}</div>`:''}</div>${summary.trim()?`<div class="cv-section"><h2>Profile</h2><p>${esc(summary)}</p></div>`:''}<div class="cv-cols"><div class="cv-col-a">${exp.length?`<div class="cv-section"><h2>Experience</h2>${eH}</div>`:''}</div><div class="cv-col-b">${edu.length?`<div class="cv-section"><h2>Education</h2>${dH}</div>`:''}${skillList.length?`<div class="cv-section"><h2>Skills</h2><p style="font-size:8pt">${esc(skills)}</p></div>`:''}${langLines?`<div class="cv-section"><h2>Languages</h2>${langLines}</div>`:''}</div></div>`;break;
         case'europass':{
-            const nativeLangs=langs.filter(l=>(l.level||'').toLowerCase()==='native');
-            const otherLangs=langs.filter(l=>(l.level||'').toLowerCase()!=='native');
+            /* Faithful reproduction of the official Europass CV issued by the European
+               Commission (structure & styling extracted from the official DOCX template):
+               Arial · logo header · right-aligned labels in a 50mm gutter · navy #0E4194 caps
+               headings with #2E90CB rules · #1593CB field labels · CEFR self-assessment grid ·
+               "© European Union" footer. Section order follows the official document. */
             const epLvl=l=>{const v=(l.level||'').trim();return v?v.toUpperCase():'—';};
-            html=`<div class="ep-head">${ph}<div class="ep-head-main"><div class="ep-doc-title">Curriculum Vitae</div><div class="cv-name">${esc(name)}</div>${title?`<div class="ep-job">Job applied for: <strong>${esc(title)}</strong></div>`:''}</div></div>
-            ${email||phone||location||linkedin?`<table class="ep-grid"><tbody>${email?`<tr><td>Email</td><td>${esc(email)}</td></tr>`:''}${phone?`<tr><td>Telephone</td><td>${esc(phone)}</td></tr>`:''}${location?`<tr><td>Address</td><td>${esc(location)}</td></tr>`:''}${linkedin?`<tr><td>LinkedIn</td><td>${esc(linkedin)}</td></tr>`:''}</tbody></table>`:''}
-            ${exp.length?`<div class="cv-section"><h2>Work experience</h2><table class="ep-table">${exp.map(e=>`<tr><td class="ep-dates" style="width:26mm">${esc(e.dates)}</td><td style="text-align:left"><div class="ep-entry-title">${esc(e.title)}</div>${e.company?`<div class="ep-entry-sub">${esc(e.company)}</div>`:''}${e.description?`<div class="ep-entry-body">${esc(e.description)}</div>`:''}</td></tr>`).join('')}</table></div>`:''}
-            ${edu.length?`<div class="cv-section"><h2>Education and training</h2><table class="ep-table">${edu.map(e=>`<tr><td class="ep-dates" style="width:26mm">${esc(e.year)}</td><td style="text-align:left"><div class="ep-entry-title">${esc(e.degree)}</div>${e.institution?`<div class="ep-entry-sub">${esc(e.institution)}</div>`:''}</td></tr>`).join('')}</table></div>`:''}
-            ${langs.length?`<div class="cv-section"><h2>Language skills</h2>${nativeLangs.length?`<div class="ep-mother"><strong>Mother tongue(s):</strong> ${nativeLangs.map(l=>esc(l.language)).join(', ')}</div>`:''}${otherLangs.length?`<table class="ep-table"><tr><th>Language</th><th>Listening</th><th>Reading</th><th>Spoken interaction</th><th>Spoken production</th><th>Writing</th></tr>${otherLangs.map(l=>`<tr><td class="ep-lang">${esc(l.language)}</td><td>${epLvl(l)}</td><td>${epLvl(l)}</td><td>${epLvl(l)}</td><td>${epLvl(l)}</td><td>${epLvl(l)}</td></tr>`).join('')}</table>`:''}</div>`:''}
-            ${skills.trim()?`<div class="cv-section"><h2>Job-related skills and competences</h2><p>${esc(skills)}</p></div>`:''}
-            ${summary.trim()?`<div class="cv-section"><h2>Additional information</h2><p>${esc(summary)}</p></div>`:''}`;
+            const isNative=l=>['native','mother tongue','nativ'].includes((l.level||'').toLowerCase().trim());
+            const motherTongues=langs.filter(isNative),otherLangs=langs.filter(l=>!isNative(l));
+            const epIcon={
+                pin:'<svg viewBox="0 0 24 24" fill="none" stroke="#1593cb" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 12-9 12s-9-5-9-12a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>',
+                phone:'<svg viewBox="0 0 24 24" fill="none" stroke="#1593cb" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>',
+                mail:'<svg viewBox="0 0 24 24" fill="none" stroke="#1593cb" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></svg>',
+                web:'<svg viewBox="0 0 24 24" fill="none" stroke="#1593cb" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>'};
+            const contacts=[location?{i:'pin',t:esc(location)}:null,phone?{i:'phone',t:esc(phone)}:null,email?{i:'mail',t:`<a href="mailto:${esc(email)}">${esc(email)}</a>`}:null,linkedin?{i:'web',t:`<a href="${esc(linkedin)}" target="_blank" rel="noopener">${esc(linkedin)}</a>`}:null].filter(Boolean);
+            const epSec=(label,rule)=>`<div class="ep-sec"><div class="ep-sec-label">${label}</div>${rule?'<div class="ep-rule"></div>':''}</div>`;
+            const expEntry=e=>{
+                const acts=(e.description||'').split('\n').map(s=>s.trim()).filter(Boolean);
+                return `<div class="ep-row"><div class="ep-k ep-k-navy">${esc(e.dates)}</div><div class="ep-v"><div class="ep-occ">${esc(e.title)}</div>${e.company?`<div class="ep-org">${esc(e.company)}</div>`:''}</div></div>
+                ${acts.length?`<div class="ep-row"><div class="ep-k"></div><div class="ep-v"><ul class="ep-ul">${acts.map(a=>`<li>${esc(a)}</li>`).join('')}</ul></div></div>`:''}`;
+            };
+            const eduEntry=e=>`<div class="ep-row"><div class="ep-k ep-k-navy">${esc(e.year)}</div><div class="ep-v"><div class="ep-occ">${esc(e.degree)}</div>${e.institution?`<div class="ep-org">${esc(e.institution)}</div>`:''}</div></div>`;
+            html=`<div class="ep-header"><img class="ep-logo" src="data:image/png;base64,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" alt="Europass"><div class="ep-hdr-mid">Curriculum Vitae</div><div class="ep-hdr-name">${esc(name)}</div></div>
+            <div class="ep-sec ep-sec-first"><div class="ep-sec-label">Personal information</div></div>
+            <div class="ep-pi"><div class="ep-gutter">${photoData?`<img class="ep-photo" src="${photoData}" alt="Profile photo">`:''}</div><div class="ep-pi-main"><div class="ep-name">${esc(name)}</div>${contacts.length?`<div class="ep-contact">${contacts.map(c=>`<div class="ep-ct">${epIcon[c.i]}<span>${c.t}</span></div>`).join('')}</div>`:''}</div></div>
+            ${title||summary.trim()?`<div class="ep-sec"><div class="ep-sec-label">Job applied for<br>Position<br>Preferred job<br>Studies applied for<br><span class="ep-nocaps">personal statement</span></div><div class="ep-jaf">${title?`<div>${esc(title)}</div>`:''}${summary.trim()?`<div class="ep-ps">${esc(summary)}</div>`:''}</div></div>`:''}
+            ${exp.length?epSec('Work experience',true)+exp.map(expEntry).join(''):''}
+            ${edu.length?epSec('Education and training',true)+edu.map(eduEntry).join(''):''}
+            ${langs.length||skills.trim()?epSec('Personal skills',true)+
+                (motherTongues.length?`<div class="ep-row"><div class="ep-k">Mother tongue(s)</div><div class="ep-v">${motherTongues.map(l=>esc(l.language)).join(', ')}</div></div>`:'')+
+                (otherLangs.length?`<table class="ep-lang"><tr><th class="ep-col0" rowspan="2">Other language(s)</th><th colspan="2">Understanding</th><th colspan="2">Speaking</th><th rowspan="2">Writing</th></tr><tr><th class="ep-sub">Listening</th><th class="ep-sub">Reading</th><th class="ep-sub">Spoken interaction</th><th class="ep-sub">Spoken production</th></tr>${otherLangs.map(l=>`<tr><td class="ep-col0">${esc(l.language)}</td><td>${epLvl(l)}</td><td>${epLvl(l)}</td><td>${epLvl(l)}</td><td>${epLvl(l)}</td><td>${epLvl(l)}</td></tr>`).join('')}</table><div class="ep-legend">Levels: A1/A2: Basic user - B1/B2: Independent user - C1/C2: Proficient user. <a href="https://europa.eu/europass/en/common-european-framework-reference-languages" target="_blank" rel="noopener">Common European Framework of Reference for Languages</a></div>`:'')+
+                (skills.trim()?`<div class="ep-row"><div class="ep-k">Job-related skills</div><div class="ep-v">${esc(skills)}</div></div>`:''):''}
+            <div class="ep-footer">© European Union, 2002-2015 | <a href="https://europass.cedefop.europa.eu" target="_blank" rel="noopener">europass.cedefop.europa.eu</a></div>`;
             break;}
         default:html=`<div class="cv-name">${esc(name)}</div><p>${esc(title)} | ${esc(cs)}</p>${orderedContent}`;
     }
