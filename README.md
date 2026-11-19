@@ -121,8 +121,8 @@ The [Europass CV](https://europa.eu/europass/en) is the European Union's standar
 - **Personal information**: the name in the content column with contact lines (address, telephone, e-mail, website) and small blue pictograms; the profile photo sits in the label gutter, as in the official layout.
 - **Job applied for; position; preferred job; studies applied for; personal statement** — the official stacked label block, filled with your job title and professional summary.
 - **Work experience / Education and training** entries with dates right-aligned in the label gutter, position and qualification headings in navy, employers/institutions and square-bulleted activities in the content column.
-- **Personal skills** with *Mother tongue(s)*, the official CEFR self-assessment grid (Understanding → Listening / Reading, Speaking → Spoken interaction / Spoken production, Writing) and its levels legend, plus *Job-related skills*.
-- Official styling tokens: Arial, navy `#0E4194` caps headings with the `#2E90CB` rules, `#1593CB` field labels, `#C0C0C0` grid borders, and the "© European Union" footer.
+- **Personal skills** with *Mother tongue(s)*, the official CEFR self-assessment grid (Understanding → Listening / Reading, Speaking → Spoken interaction / Spoken production, Writing) and its levels legend. Your skills are routed automatically into the official sub-labels — *Communication skills*, *Organisational / managerial skills*, *Job-related skills* and *Digital competence* (the section the EU added in its 2015 template revision).
+- Official styling tokens: Arial, navy `#0E4194` caps headings with the `#2E90CB` rules, `#1593CB` field labels, `#C0C0C0` grid borders, and the "© European Union" footer. The footer reads *© European Union, 2002-2015 \| europass.cedefop.europa.eu* — that copyright range is the EU's own notice on the current official template (last revised 2015), so it is verbatim, not an outdated copy.
 
 | Understanding | | Speaking | | Writing |
 |---|---|---|---|---|

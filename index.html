@@ -1104,14 +1104,34 @@ function _updatePreviewNow(){
         case'academic':html=`${ph?`<div style="text-align:center;margin-bottom:2mm">${ph}</div>`:''}<div class="cv-name">${esc(name)}</div><div class="cv-contact">${esc(title)}${cs?' · '+esc(cs):''}</div>${orderedContent}`;break;
         case'compact':html=`<div class="cv-head">${ph}<div style="min-width:0"><div class="cv-name">${esc(name)}</div>${title?`<div class="cv-title">${esc(title)}</div>`:''}</div>${contactLines?`<div class="cv-head-contact">${contactLines}</div>`:''}</div>${summary.trim()?`<div class="cv-section"><h2>Profile</h2><p>${esc(summary)}</p></div>`:''}<div class="cv-cols"><div class="cv-col-a">${exp.length?`<div class="cv-section"><h2>Experience</h2>${eH}</div>`:''}</div><div class="cv-col-b">${edu.length?`<div class="cv-section"><h2>Education</h2>${dH}</div>`:''}${skillList.length?`<div class="cv-section"><h2>Skills</h2><p style="font-size:8pt">${esc(skills)}</p></div>`:''}${langLines?`<div class="cv-section"><h2>Languages</h2>${langLines}</div>`:''}</div></div>`;break;
         case'europass':{
-            /* Faithful reproduction of the official Europass CV issued by the European
-               Commission (structure & styling extracted from the official DOCX template):
-               Arial · logo header · right-aligned labels in a 50mm gutter · navy #0E4194 caps
-               headings with #2E90CB rules · #1593CB field labels · CEFR self-assessment grid ·
-               "© European Union" footer. Section order follows the official document. */
+            /* Faithful reproduction of the official Europass CV (classic DOCX template)
+               issued by the European Commission. Verified 2026-11 against the official
+               template currently distributed by EU institutions (europa.eu / EEAS
+               "standard_cv.docx"): the footer genuinely reads "© European Union, 2002-2015 |
+               europass.cedefop.europa.eu" — that copyright range is the EU's own notice for
+               the CURRENT template revision (last revised 2015, which added the Digital
+               competence self-assessment grid and EQF levels); it is not an outdated copy.
+               Styling from the official DOCX: Arial · logo header · right-aligned labels in
+               a 50mm gutter · navy #0E4194 caps headings with #2E90CB rules · #1593CB field
+               labels · CEFR grid. Section order and the "Personal skills" sub-labels
+               (Communication / Organisational-managerial / Job-related / Digital
+               competence) follow the official document; sections without collected data
+               (Sex-DoB-Nationality, Additional information, Annexes) are omitted per the
+               template's own "Remove any empty headings" rule. */
             const epLvl=l=>{const v=(l.level||'').trim();return v?v.toUpperCase():'—';};
             const isNative=l=>['native','mother tongue','nativ'].includes((l.level||'').toLowerCase().trim());
             const motherTongues=langs.filter(isNative),otherLangs=langs.filter(l=>!isNative(l));
+            /* Route free-text skills into the official "Personal skills" sub-labels
+               (order per official template: Communication → Organisational/managerial →
+               Job-related → Digital competence). Digital-first so e.g. "CMS" or "Content
+               management" never lands under managerial. */
+            const epKw={
+                dig:/\b(microsoft|office|excel|word|powerpoint|outlook|python|java(?:script)?|typescript|sql|nosql|html|css|react|vue|angular|node(?:\.js)?|git|github|gitlab|docker|kubernetes|aws|azure|gcp|linux|macos|windows|matlab|\br\b|photoshop|illustrator|figma|canva|adobe|autocad|autodesk|solidworks|revit|\bcad\b|\bbim\b|tableau|power\s+bi|salesforce|\bsap\b|wordpress|shopify|\bseo\b|\bsem\b|\bcrm\b|\berp\b|\bcms\b|php|laravel|django|flask|c\+\+|c#|\.net|swift|kotlin|android|\bios\b|data\s+analy\w+|pandas|numpy|spark|hadoop|machine\s+learning|deep\s+learning|artificial\s+intelligence|\bai\b|prompt\s+engineering|video\s+editing|photo\s+editing|spreadsheet|database|web\s+development|software\s+development|programming|coding|devops|ci\/cd|jira|confluence|slack|trello|notion|zapier|hubspot|google\s+analytics|\bgis\b|vmware|\bict\b|computer)\b/i,
+                comm:/\b(communicat\w*|presentation\w*|public\s+speaking|negotiat\w*|interpersonal|teamwork|team\s+player|collaborat\w*|stakeholder\w*|storytelling|persuasion|mediation|facilitat\w*|active\s+listening|customer\s+service)\b/i,
+                org:/\b(organiz\w*|organis\w*|leadership|leading|management|managing|planning|coordinat\w*|delegation|mentoring|coaching|strategic\s+thinking|logistics|administration)\b/i};
+            const epB={comm:[],org:[],job:[],dig:[]};
+            skillList.forEach(s=>{const x=s.toLowerCase();if(epKw.dig.test(x))epB.dig.push(s);else if(epKw.comm.test(x))epB.comm.push(s);else if(epKw.org.test(x))epB.org.push(s);else epB.job.push(s);});
+            const epSkillRow=(label,items)=>items.length?`<div class="ep-row"><div class="ep-k">${label}</div><div class="ep-v">${items.map(esc).join('; ')}</div></div>`:'';
             const epIcon={
                 pin:'<svg viewBox="0 0 24 24" fill="none" stroke="#1593cb" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 12-9 12s-9-5-9-12a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>',
                 phone:'<svg viewBox="0 0 24 24" fill="none" stroke="#1593cb" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>',
@@ -1134,7 +1154,10 @@ function _updatePreviewNow(){
             ${langs.length||skills.trim()?epSec('Personal skills',true)+
                 (motherTongues.length?`<div class="ep-row"><div class="ep-k">Mother tongue(s)</div><div class="ep-v">${motherTongues.map(l=>esc(l.language)).join(', ')}</div></div>`:'')+
                 (otherLangs.length?`<table class="ep-lang"><tr><th class="ep-col0" rowspan="2">Other language(s)</th><th colspan="2">Understanding</th><th colspan="2">Speaking</th><th rowspan="2">Writing</th></tr><tr><th class="ep-sub">Listening</th><th class="ep-sub">Reading</th><th class="ep-sub">Spoken interaction</th><th class="ep-sub">Spoken production</th></tr>${otherLangs.map(l=>`<tr><td class="ep-col0">${esc(l.language)}</td><td>${epLvl(l)}</td><td>${epLvl(l)}</td><td>${epLvl(l)}</td><td>${epLvl(l)}</td><td>${epLvl(l)}</td></tr>`).join('')}</table><div class="ep-legend">Levels: A1/A2: Basic user - B1/B2: Independent user - C1/C2: Proficient user. <a href="https://europa.eu/europass/en/common-european-framework-reference-languages" target="_blank" rel="noopener">Common European Framework of Reference for Languages</a></div>`:'')+
-                (skills.trim()?`<div class="ep-row"><div class="ep-k">Job-related skills</div><div class="ep-v">${esc(skills)}</div></div>`:''):''}
+                epSkillRow('Communication skills',epB.comm)+
+                epSkillRow('Organisational / managerial skills',epB.org)+
+                epSkillRow('Job-related skills',epB.job)+
+                epSkillRow('Digital competence',epB.dig):''}
             <div class="ep-footer">© European Union, 2002-2015 | <a href="https://europass.cedefop.europa.eu" target="_blank" rel="noopener">europass.cedefop.europa.eu</a></div>`;
             break;}
         default:html=`<div class="cv-name">${esc(name)}</div><p>${esc(title)} | ${esc(cs)}</p>${orderedContent}`;
