@@ -2,13 +2,13 @@
 
 # CV Genie
 
-**A fast, private, minimalist CV builder — 18 templates including Europass, a matching cover letter builder, live ATS analysis with job-description matching, profile photos, and PDF / DOCX / RTF / Markdown / TXT export.**
+**A fast, private, minimalist CV builder — 18 templates including Europass, a matching cover letter builder, a 7-category ATS engine with job-description matching and an optional Gemini AI coach, profile photos, and PDF / DOCX / RTF / Markdown / TXT export.**
 
 [![CI](https://github.com/touhidsiddiqueeraj-bit/CV-Genie/actions/workflows/ci.yml/badge.svg)](https://github.com/touhidsiddiqueeraj-bit/CV-Genie/actions/workflows/ci.yml)
 [![Deploy](https://github.com/touhidsiddiqueeraj-bit/CV-Genie/actions/workflows/deploy.yml/badge.svg)](https://github.com/touhidsiddiqueeraj-bit/CV-Genie/actions/workflows/deploy.yml)
 [![Release](https://github.com/touhidsiddiqueeraj-bit/CV-Genie/actions/workflows/release.yml/badge.svg)](https://github.com/touhidsiddiqueeraj-bit/CV-Genie/actions/workflows/release.yml)
 
-[Live demo](https://touhidsiddiqueeraj-bit.github.io/CV-Genie/) · [Templates](#-templates) · [What's new](#-whats-new-in-v20) · [Documentation](#-documentation)
+[Live demo](https://touhidsiddiqueeraj-bit.github.io/CV-Genie/) · [Templates](#-templates) · [What's new](#-whats-new-in-v22) · [Documentation](#-documentation)
 
 </div>
 
@@ -21,9 +21,18 @@
 - **Private by default** — everything runs in your browser. No accounts, no tracking, no data leaves your device (unless you explicitly use the optional server-rendered exports).
 - **No paywall at the download button** — every template, every export format, the cover letter, the matcher: free, forever. Most builders let you build for free, then charge $25/month to export.
 - **Zero friction** — no build step, no dependencies to install. One HTML file, open it and go.
-- **ATS-aware** — a built-in analyser scores your CV against role-specific keyword dictionaries and shows exactly what's missing.
+- **ATS-aware** — a 7-category engine with ~25 concrete checks (plus job-description matching and an optional Gemini AI coach) scores your CV on every keystroke and shows exactly what to fix.
 - **Serious output** — high-quality PDF, editable DOCX and RTF, plus bulk export of all 18 templates in one ZIP.
 - **Works everywhere** — responsive down to phone screens, dark mode, offline-capable (PWA service worker).
+
+## ✦ What's new in v2.2
+
+| Area | Change |
+|---|---|
+| **ATS engine v2** | The analyser is now a proper 7-category engine — contact, summary, experience, skills, education, impact & wording, and keywords — built from ~25 individual checks (action verbs, quantified achievements, duty phrasing, buzzwords, bullet length, date consistency, first person, recency…), each with a concrete fix. Weighted scoring, a letter grade, per-category bars and a prioritised *fix-these-first* list replace the old keyword-coverage number. |
+| **AI Coach** | An optional Gemini review layered on top of the local report: verdict, quick wins, a rewritten summary, up to four rewritten bullets and suggested keywords — each with a one-click **Apply** button that edits the form in place. Uses your own free API key (same key as CV import), stored only in your browser. |
+| **Job match integration** | The job-description matcher now feeds the engine — pasting a posting swaps the keyword category for a **Job match** category, and the sidebar widget, checks and score all update together. |
+| **Bug fixes** | The *Add all missing keywords* button produced a broken `onclick` (quotes inside a double-quoted attribute) and never worked — rewritten with a data attribute. The JD *Clear* button also referenced a non-existent `saveState()`. |
 
 ## ✦ What's new in v2.1
 
@@ -64,13 +73,19 @@ Upload a picture, crop and rotate it in-browser (Cropper.js), then choose its **
 
 ### ATS analyser
 
-Type a target role and the analyser matches it against a dictionary of 80+ roles and their keywords, then scores your CV live. Click any missing keyword to inject it straight into your Skills field. The score and checklist stay pinned next to the preview.
+The analyser scores your CV across **seven weighted categories** — contact details, summary, experience, skills, education, impact & wording, and keywords — using ~25 deterministic checks in the spirit of commercial ATS scanners: action-verb openers, quantified achievements, duty phrasing (*"responsible for…"*), buzzwords, bullet length and depth, date presence and consistency, first-person pronouns, recency, summary targeting, education completeness, overall length. Every failed or warned check comes with a one-line fix, the score ring gets a letter grade, and the category bars show exactly where points are lost. Everything runs locally, on every keystroke.
 
 ![ATS analyser](docs/images/ats.png)
 
-**Job description match.** Dictionaries are generic; postings are not. Paste the actual job description and CV Genie extracts its key terms — favouring multi-word phrases like *design systems* or *stakeholder communication* over noise words — then shows which ones your CV already contains and which it doesn't, with a match score. Missing keywords are one click away from your Skills field, and an *add all* button bulk-imports them as custom keywords. Everything runs locally; the posting never leaves your browser.
+**Keywords.** Type a target role and the engine matches it against a dictionary of 80+ roles and their keywords; add your own custom keywords too. Click any missing keyword to inject it straight into your Skills field. The score and per-category checklist stay pinned next to the preview.
+
+**Job description match.** Dictionaries are generic; postings are not. Paste the actual job description and CV Genie extracts its key terms — favouring multi-word phrases like *design systems* or *stakeholder communication* over noise words — then swaps the keyword category for a **Job match** category: a match score, chips for every posting keyword (found and missing), and one-click *add all missing* as custom keywords. Everything runs locally; the posting never leaves your browser.
 
 ![Job description match](docs/images/ats-jd.png)
+
+**AI Coach.** Optional, with your own free Gemini API key (the same one as CV import): Gemini reviews your CV — with the local report and the pasted posting as context — and returns a verdict, quick wins, a rewritten summary, up to four rewritten bullets (with the reasoning) and suggested keywords. Every rewrite has an **Apply** button that edits the form in place; unknown metrics come back as `[X%]` placeholders so nothing gets invented. The key is stored only in your browser; the request goes browser → Google directly, and it reuses the import's model fallback chain (`gemini-flash-latest` → `gemini-flash-lite-latest` → discovered models), so a busy free tier never leaves you stuck.
+
+![AI Coach](docs/images/ats-ai.png)
 
 **What the ATS sees.** One click shows the plain text a parser extracts from your CV, in reading order, with parse checks — email and phone detection, word count range, section detection, date references, photo advisory. It's the same content every template produces, because parsing depends on content, not styling — and it's the honest view no builder shows you.
 
@@ -225,7 +240,7 @@ The application is a single, self-contained HTML file (SPA) — vanilla JavaScri
 | **Edit** | Personal info (photo, contact), Summary, Skills, Experience, Education, Languages — all collapsible and reorderable |
 | **Content** | 20 summary templates · skill cloud (10 categories) |
 | **Design** | Font pairing (6) · accent colour (8 presets) |
-| **ATS** | Score ring, section checklist, target role, custom keywords, keyword cloud |
+| **ATS** | Score ring + letter grade · 7-category breakdown · ~25 checks with fixes · target role & custom keywords · keyword cloud · job-description match · AI Coach (Gemini, own key) |
 | **Tools** | LinkedIn import · JSON backup · share link · version history |
 
 ### State management & undo/redo
@@ -301,7 +316,7 @@ Append `{name, heading, body}` to `FONT_PAIRS` and add the families to the Googl
 
 ### Updating ATS keyword roles
 
-Edit the `ROLE_KW` dictionary inside `runATSAnalysis()`. Target roles are matched longest-first and case-insensitively.
+Edit the module-level `ROLE_KW` dictionary (just above the ATS engine). Target roles are matched longest-first and case-insensitively; these keywords are only used when no job description is pasted — a pasted posting always wins.
 
 ### Testing the CV import parser
 
@@ -313,6 +328,16 @@ NODE_PATH="$(npm root -g)" node scripts/test-cv-import.js
 ```
 
 The Gemini network call itself is intentionally not covered (it needs a real key); its response handling is tested via a canned JSON through `cviMapAi()`.
+
+### Testing the ATS engine
+
+`scripts/test-ats-v2.js` is a second Playwright suite (38 assertions): empty state, weak-vs-strong scoring, category bars and check rendering, role-keyword and job-description modes, chip and bulk keyword adding, and the full AI Coach flow with the Gemini network mocked — including the 503 error path (the button must re-enable and show an error, never spin forever).
+
+```bash
+NODE_PATH="$(npm root -g)" node scripts/test-ats-v2.js
+```
+
+`scripts/shoot-ats.js` regenerates the three ATS screenshots above the same way.
 
 ### Regenerating README screenshots
 

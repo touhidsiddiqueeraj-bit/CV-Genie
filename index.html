@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
-<title>CV Genie — v2.0</title>
-<meta name="description" content="CV Genie — a fast, private, minimalist CV builder. 18 templates including Europass, ATS analysis, profile photos and PDF/DOCX/RTF export.">
+<title>CV Genie — v2.2</title>
+<meta name="description" content="CV Genie — a fast, private, minimalist CV builder. 18 templates including Europass, a 7-category ATS engine with job-description matching and an optional Gemini AI coach, profile photos and PDF/DOCX/RTF export.">
 <meta name="theme-color" content="#18181b">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -629,6 +629,42 @@ html.dark .cv-preview{box-shadow:0 1px 3px rgba(0,0,0,0.4),0 8px 32px rgba(0,0,0
 .jd-score-num{font-size:15px;font-weight:700;min-width:2.6ch;text-align:right;}
 .jd-note{font-size:11.5px;color:var(--text-secondary);margin:0.35rem 0 0.5rem;line-height:1.45;}
 .jd-actions{display:flex;gap:0.4rem;flex-wrap:wrap;margin-bottom:0.5rem;}
+/* ── ATS engine v2: grade, category bars, checks, AI coach ── */
+.ats-grade-row{display:flex;justify-content:center;}
+.ats-grade{display:inline-flex;align-items:center;gap:0.4rem;padding:0.28rem 0.85rem;border-radius:999px;font-size:11.5px;font-weight:700;letter-spacing:0.02em;border:1px solid var(--border);background:var(--surface-2);}
+.ats-cats{display:flex;flex-direction:column;gap:0.35rem;}
+.ats-cat{display:flex;align-items:center;gap:0.5rem;font-size:11.5px;}
+.ats-cat-label{width:98px;flex-shrink:0;color:var(--text-secondary);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.ats-cat-bar{flex:1;height:6px;border-radius:5px;background:var(--surface-3);overflow:hidden;}
+.ats-cat-fill{height:100%;border-radius:5px;transition:width .7s cubic-bezier(.4,0,.2,1),background .5s;}
+.ats-cat-num{min-width:2.4ch;text-align:right;font-weight:700;font-size:11px;}
+.ats-checks-head{font-size:12px;font-weight:500;color:var(--text-secondary);margin:0.2rem 0 0.35rem;}
+.ats-checks{display:flex;flex-direction:column;gap:3px;}
+.ats-check{display:flex;gap:0.5rem;align-items:flex-start;padding:0.4rem 0.5rem;border-radius:8px;background:var(--surface-2);border:1px solid var(--border);}
+.ats-check .st{width:14px;height:14px;border-radius:50%;flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;color:#fff;font-size:9.5px;font-weight:800;margin-top:1px;line-height:1;}
+.ats-check.fail .st{background:var(--danger);}
+.ats-check.warn .st{background:#d97706;}
+.ats-check.pass .st{background:var(--success);}
+.ats-check strong{display:block;font-size:11.5px;font-weight:600;color:var(--text);}
+.ats-check small{display:block;color:var(--text-secondary);font-size:10.5px;line-height:1.5;margin-top:1px;}
+.ats-chk.warn .dot{background:#d97706;}
+/* AI coach */
+.ai-coach-box{border:1px solid var(--border);border-radius:var(--radius);padding:0.75rem;background:var(--surface);}
+.ai-coach-box .hint{display:block;font-size:10.5px;color:var(--text-tertiary);line-height:1.45;margin-top:0.25rem;}
+.ai-coach-head{font-size:12px;color:var(--text-secondary);margin-bottom:0.55rem;line-height:1.5;}
+.ai-card{border:1px solid var(--border);border-radius:10px;padding:0.6rem 0.65rem;margin-top:0.45rem;background:var(--surface-2);}
+.ai-card-t{display:flex;align-items:center;justify-content:space-between;gap:0.5rem;font-size:12px;font-weight:700;color:var(--text);}
+.ai-card-d{font-size:11.5px;color:var(--text-secondary);line-height:1.55;margin-top:0.25rem;}
+.ai-rew{display:flex;flex-direction:column;gap:0.3rem;margin-top:0.4rem;}
+.ai-rew .line{font-size:11.5px;line-height:1.5;padding:0.35rem 0.5rem;border-radius:7px;}
+.ai-rew .old{background:var(--danger-bg);color:var(--text-secondary);}
+.ai-rew .new{background:var(--success-bg);color:var(--text);}
+.btn-ai-apply{border:none;border-radius:7px;background:var(--text);color:var(--surface);font-size:10.5px;font-weight:700;padding:0.25rem 0.65rem;cursor:pointer;white-space:nowrap;flex-shrink:0;}
+.btn-ai-apply:hover{opacity:0.85;}
+.ats-ai-status{display:block;font-size:11px;color:var(--text-secondary);margin-top:0.4rem;line-height:1.45;}
+.ats-ai-status.err{color:var(--danger);}
+.ats-ai-status.ok{color:var(--success);}
+.ats-ai-verdict{font-size:12.5px;font-weight:600;line-height:1.5;margin:0.15rem 0 0.2rem;color:var(--text);}
 /* ── ATS plain-text view ── */
 .atstext-pre{white-space:pre-wrap;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:11.5px;line-height:1.55;background:var(--surface-3);border:1px solid var(--border);border-radius:10px;padding:0.8rem;max-height:46vh;overflow:auto;margin:0.6rem 0;}
 .atstext-checks{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:0.4rem;margin-top:0.4rem;}
@@ -640,7 +676,7 @@ html.dark .cv-preview{box-shadow:0 1px 3px rgba(0,0,0,0.4),0 8px 32px rgba(0,0,0
     <div class="brand">
         <div class="brand-mark"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3l1.9 6.1L20 11l-6.1 1.9L12 19l-1.9-6.1L4 11l6.1-1.9L12 3z" fill="currentColor" style="color:#fff"/></svg></div>
         <span class="brand-name">CV Genie</span>
-        <span class="brand-tag">v2.0</span>
+        <span class="brand-tag">v2.2</span>
     </div>
     <div class="header-actions">
         <button class="btn-icon" onclick="undo()" id="undoBtn" disabled title="Undo (Ctrl+Z)" aria-label="Undo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7v6h6"/><path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"/></svg></button>
@@ -868,7 +904,12 @@ html.dark .cv-preview{box-shadow:0 1px 3px rgba(0,0,0,0.4),0 8px 32px rgba(0,0,0
                     <div class="ats-hero-num" id="atsScoreNum">0</div>
                     <div class="ats-hero-sub" style="bottom:8px;">ATS SCORE</div>
                 </div>
-                <div id="atsBreakdown"></div>
+                <div class="ats-grade-row"><span id="atsGrade" class="ats-grade" style="display:none"></span></div>
+                <div id="atsBreakdown" class="ats-cats"></div>
+                <div id="atsChecksBlock">
+                    <div class="ats-checks-head" id="atsChecksHead"></div>
+                    <div id="atsChecks" class="ats-checks"></div>
+                </div>
                 <div class="form-group" style="margin:0">
                     <label for="targetRole">Target role</label>
                     <input type="text" id="targetRole" oninput="runATSAnalysis()" placeholder="e.g. Software Engineer, Teacher…">
@@ -890,9 +931,22 @@ html.dark .cv-preview{box-shadow:0 1px 3px rgba(0,0,0,0.4),0 8px 32px rgba(0,0,0
                     <textarea id="jdText" rows="5" style="margin-top:0.35rem" placeholder="Paste the full job description here…"></textarea>
                     <div style="display:flex;gap:0.4rem;margin-top:0.45rem;flex-wrap:wrap">
                         <button class="btn btn-primary btn-sm" onclick="runJDMatch()">Match against my CV</button>
-                        <button class="btn btn-sm" onclick="document.getElementById('jdText').value='';document.getElementById('jdResults').innerHTML='';saveState?saveState():null">Clear</button>
+                        <button class="btn btn-sm" onclick="document.getElementById('jdText').value='';runATSAnalysis()">Clear</button>
                     </div>
                     <div id="jdResults" class="jd-results"></div>
+                </div>
+                <div class="ai-coach-box">
+                    <div class="ai-coach-head"><strong>AI Coach</strong> — Gemini reviews your CV against these checks and suggests concrete rewrites. Uses your own free API key, stored only in this browser.</div>
+                    <div class="form-group" style="margin:0 0 0.5rem">
+                        <label for="atsAiKey">Gemini API key</label>
+                        <input type="password" id="atsAiKey" placeholder="AIza…" autocomplete="off" spellcheck="false">
+                        <small class="hint">Same key as CV import — get a free one at <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">aistudio.google.com/apikey</a>. Your CV text and job description go directly from your browser to Google and nowhere else.</small>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap">
+                        <button class="btn btn-primary btn-sm" id="atsAiBtn" onclick="runAtsAiCoach()">Review my CV with Gemini</button>
+                    </div>
+                    <span id="atsAiStatus" class="ats-ai-status"></span>
+                    <div id="atsAiResults"></div>
                 </div>
                 <button class="btn btn-sm" style="border-style:dashed;justify-content:center;display:flex" onclick="openAtsTextView()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;vertical-align:-2px"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>What the ATS sees — plain-text & parse check</button>
             </div>
@@ -1600,24 +1654,7 @@ function extractJDTerms(text){
     for(const s of scored){if(!picked.some(p=>p.term.includes(s.term)||s.term.includes(p.term)))picked.push(s);if(picked.length>=24)break;}
     return picked.map(p=>p.term);
 }
-function runJDMatch(){
-    const box=document.getElementById('jdResults');if(!box)return;
-    const jd=(document.getElementById('jdText')?.value||'').trim();
-    if(jd.length<120){box.innerHTML='<div class="jd-note">Paste a full job description (at least a paragraph or two) for a meaningful match.</div>';return;}
-    const cvText=getAllText();
-    const terms=extractJDTerms(jd);
-    if(!terms.length){box.innerHTML='<div class="jd-note">Couldn\'t extract enough keywords from this text — is it a real job posting?</div>';return;}
-    const results=terms.map(t=>({term:t,present:cvText.includes(t)}));
-    const found=results.filter(r=>r.present).length,score=Math.round((found/terms.length)*100);
-    const col=score>=70?'#16a34a':score>=40?'#d97706':'#dc2626';
-    const missing=results.filter(r=>!r.present);
-    box.innerHTML=`<div class="jd-score-row"><div class="jd-score-bar"><div class="jd-score-fill" style="width:${score}%;background:${col}"></div></div><span class="jd-score-num" style="color:${col}">${score}%</span></div>
-    <div class="jd-note"><strong>${found} of ${terms.length}</strong> keywords from this posting appear in your CV. ${missing.length===0?'Nothing obvious missing — this posting matches you well.':'Only add the ones that are genuinely true for you; ATS filters and human readers both punish padding.'}</div>
-    ${missing.length?`<div class="jd-actions"><button class="btn btn-sm" onclick="addJDMissing(${JSON.stringify(JSON.stringify(missing.map(m=>m.term)))})">Add all missing to keywords</button></div>`:''}
-    <div style="display:flex;flex-wrap:wrap;gap:0.3rem">${results.map(r=>r.present
-        ?`<span class="kw-chip kw-pass">${r.term}</span>`
-        :`<span class="kw-chip kw-miss kw-click" title="Click to add '${r.term}' to your skills" onclick="addKWFromCloud('${r.term.replace(/'/g,"\\'")}')">${r.term} +</span>`).join('')}</div>`;
-}
+function runJDMatch(){runATSAnalysis();} /* the v2 engine renders #jdResults as part of the full analysis */
 function addJDMissing(jsonStr){
     try{const arr=JSON.parse(jsonStr);arr.forEach(k=>{if(!customKWList.includes(k))customKWList.push(k);});renderCustomKWChips();runATSAnalysis();showToast(arr.length+' keywords added');}catch(e){}
 }
@@ -1786,11 +1823,9 @@ function getAllText(){
   return parts.join(' ').toLowerCase();
 }
 
-function runATSAnalysis(){
-  const cvText=getAllText();
-  const hasContent=cvText.trim().length>10;
-  const role=(document.getElementById('targetRole')?.value||'').toLowerCase().trim();
-  const ROLE_KW={
+function runATSAnalysis(){atsRunV2();}
+/* Role keyword dictionary — used by the ATS engine when no job description is pasted */
+const ROLE_KW={
     /* Tech */
     'software engineer':    ['javascript','python','react','node.js','aws','agile','git','api','database','testing','docker','typescript','sql','rest','ci/cd'],
     'frontend developer':   ['javascript','react','css','html','typescript','webpack','responsive design','accessibility','vue','angular','performance'],
@@ -1886,67 +1921,297 @@ function runATSAnalysis(){
     /* Default */
     'default':              ['leadership','communication','teamwork','problem solving','project management','analytical','strategic','collaboration','attention to detail']
   };
-  /* find best matching role — longest key that matches wins to avoid 'engineer' beating 'software engineer' */
-  const matchedRole=Object.keys(ROLE_KW)
-    .filter(k=>k!=='default'&&role.length>=2&&(role.includes(k)||k.includes(role)))
-    .sort((a,b)=>b.length-a.length)[0]||'default';
-  const roleKW=ROLE_KW[matchedRole];
-  const allKW=[...roleKW,...customKWList.filter(k=>!roleKW.includes(k))];
-  const results=allKW.map(kw=>({keyword:kw,present:cvText.includes(kw.toLowerCase()),custom:customKWList.includes(kw)}));
-  const found=results.filter(r=>r.present).length;
-  const total=results.length;
-  const score=total>0?Math.round((found/total)*100):0;
-  const col=score>=70?'#16a34a':score>=40?'#d97706':'#dc2626';
-  const checks=[
-    {label:'Contact',   pass:!!((document.getElementById('email')?.value||'').trim()||(document.getElementById('phone')?.value||'').trim())},
-    {label:'Summary',   pass:(document.getElementById('summary')?.value||'').trim().length>20},
-    {label:'Skills',    pass:(document.getElementById('skills')?.value||'').trim().length>5},
-    {label:'Experience',pass:getExperiences().length>0},
-    {label:'Education', pass:getEducation().length>0},
-    {label:`Keywords ${found}/${total}`,pass:score>=50}
-  ];
-  const C=188.5; /* 2π×30 */
-  const ring=document.getElementById('atsRingFill');
-  const sn=document.getElementById('atsScoreNum');
-  if(!hasContent){
+/* ============ ATS ENGINE v2 ============
+   Deterministic, local-first scoring in the spirit of commercial ATS scanners:
+   7 weighted categories (contact, summary, experience, skills, education,
+   impact & wording, keywords / job match) built from ~25 individual checks,
+   each with a concrete fix. An optional Gemini AI layer (user's own key)
+   adds human-style review, rewrites and keyword suggestions. */
+const ATS_VERBS=new Set('accelerated,achieved,acquired,adapted,addressed,administered,advanced,advised,advocated,analysed,analyzed,architected,assembled,assessed,audited,authored,automated,balanced,built,captured,centralised,chaired,championed,clarified,coached,collaborated,compiled,completed,composed,conceived,condensed,conducted,consolidated,constructed,consulted,converted,convinced,coordinated,created,cultivated,debugged,decreased,defined,delegated,delivered,demonstrated,deployed,designed,developed,devised,diagnosed,directed,documented,doubled,drafted,drove,earned,edited,educated,eliminated,enabled,encouraged,engineered,enhanced,enlisted,established,evaluated,examined,exceeded,executed,expanded,expedited,facilitated,fashioned,finalised,finalized,founded,fulfilled,furnished,gathered,generated,grew,guarded,guided,handled,headed,identified,illustrated,implemented,improved,increased,influenced,initiated,innovated,inspected,installed,instituted,instructed,integrated,introduced,invented,investigated,launched,led,leveraged,maintained,managed,marketed,maximised,maximized,measured,mediated,mentored,merged,minimised,minimized,mobilised,mobilized,moderated,modernised,modernized,monitored,motivated,negotiated,optimised,optimized,organised,organized,overhauled,oversaw,partnered,performed,pioneered,pivoted,planned,prepared,presented,prioritised,prioritized,produced,programmed,promoted,proposed,prototyped,provided,published,purchased,quadrupled,raised,rebuilt,recruited,redesigned,reduced,reengineered,refined,reorganised,reorganized,repaired,replaced,researched,resolved,restructured,revamped,reviewed,revised,revitalised,revitalized,saved,scaled,scheduled,secured,selected,served,shaped,shipped,simplified,solved,sourced,spurred,standardised,standardized,started,streamlined,strengthened,structured,submitted,supervised,supplied,supported,surpassed,surveyed,sustained,synthesised,synthesized,tested,trained,transformed,translated,trimmed,tripled,uncovered,undertook,unified,updated,upgraded,validated,verified,visualised,visualized,won,wrote'.split(','));
+const ATS_WEAK=/\b(?:responsible for|duties included|tasked with|in charge of|helped (?:with|to)|assisted (?:with|in)|worked on|involved in|participated in|familiar with|exposure to)\b/gi;
+const ATS_BUZZ=/\b(?:go-?getter|team player|hard[- ]working|hard worker|thinks? outside the box|thinking outside the box|detail[- ]oriented|results[- ]driven|self[- ]starter|rock ?star|ninja|guru|synergy|hit the ground running|wearing many hats|fast[- ]paced environment)\b/gi;
+const ATS_FIRST_PERSON=/\b(?:i|me|my|mine)\b|\bi['\u2019](?:m|ve|d|ll)\b/i;
+let atsLastReport=null;
+function atsEsc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function atsVal(id){return (document.getElementById(id)?.value||'').trim();}
+function atsWordCount(t){return String(t||'').split(/\s+/).filter(Boolean).length;}
+function atsCollectCv(){return{name:atsVal('fullName'),title:atsVal('title'),email:atsVal('email'),phone:atsVal('phone'),linkedin:atsVal('linkedin'),location:atsVal('location'),summary:atsVal('summary'),skills:atsVal('skills').split(',').map(s=>s.trim()).filter(Boolean),experiences:getExperiences(),education:getEducation(),languages:getLanguages(),targetRole:atsVal('targetRole'),jd:atsVal('jdText'),customKW:[...customKWList]};}
+function atsHasContent(cv){return (cv.name+' '+cv.title+' '+cv.summary+' '+cv.skills.join(' ')+cv.experiences.map(e=>e.title+' '+e.company+' '+e.description).join(' ')).trim().length>10;}
+function atsBullets(cv){const out=[];cv.experiences.forEach((e,ei)=>{String(e.description||'').split('\n').forEach(raw=>{const b=raw.trim();if(b)out.push({ei,text:b});});});return out;}
+function atsStripYears(s){return String(s||'').replace(/\b(19|20)\d{2}\b/g,' ').replace(/\b\d{1,2}[\/.-]\d{1,2}(?:[\/.-]\d{2,4})?\b/g,' ');}
+function atsHasMetric(s){return /(\d+\s*%|\$\s*\d|€\s*\d|£\s*\d|\b\d+\b)/i.test(atsStripYears(s));}
+function atsStartsWithVerb(b){const w=b.toLowerCase().replace(/[^a-z].*$/,'');return ATS_VERBS.has(w);}
+const ATS_CHECKS=[
+  /* — Contact — */
+  {cat:'contact',label:'Name',run:cv=>cv.name?{status:'pass'}:{status:'fail',detail:'No name detected.',fix:'Add your full name at the very top.'}},
+  {cat:'contact',label:'Professional title',run:cv=>cv.title?{status:'pass'}:{status:'warn',detail:'No headline under your name.',fix:'Add one line like \u201cSenior Data Analyst\u201d so recruiters and ATS can categorise you.'}},
+  {cat:'contact',label:'Email address',run:cv=>/^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i.test(cv.email)?{status:'pass'}:{status:'fail',detail:cv.email?'\u201c'+cv.email+'\u201d doesn\u2019t look like a valid email.':'No email found.',fix:'Use a plain-text address like name@example.com.'}},
+  {cat:'contact',label:'Phone number',run:cv=>/\+?[\d\s().-]{7,}\d/.test(cv.phone)?{status:'pass'}:{status:'warn',detail:'No phone number.',fix:'Add one with your country code, e.g. +880 17XX-XXXXXX.'}},
+  {cat:'contact',label:'Location',run:cv=>cv.location?{status:'pass'}:{status:'warn',detail:'No location.',fix:'City + country is enough \u2014 many ATS filter by location.'}},
+  {cat:'contact',label:'LinkedIn or portfolio link',run:cv=>cv.linkedin?{status:'pass'}:{status:'warn',detail:'No link found.',fix:'Add your LinkedIn (or portfolio / GitHub) URL.'}},
+  /* — Summary — */
+  {cat:'summary',label:'Summary present',run:cv=>cv.summary.length>=80?{status:'pass',detail:atsWordCount(cv.summary)+' words.'}:{status:'fail',detail:cv.summary?'Summary is very thin ('+atsWordCount(cv.summary)+' words).':'No professional summary.',fix:'Write 3\u20135 lines: who you are, years of experience, strongest skills, and what you\u2019re targeting.'}},
+  {cat:'summary',label:'Summary length',run:cv=>{if(!cv.summary)return{status:'na'};const w=atsWordCount(cv.summary);return w>=40&&w<=90?{status:'pass',detail:w+' words.'}:w>=25&&w<=130?{status:'warn',detail:w+' words \u2014 the sweet spot is 40\u201390.'}:{status:'warn',detail:w+' words is '+(w<25?'too short':'too long')+'.'};}},
+  {cat:'summary',label:'Summary targets a role',run:cv=>{if(!cv.summary)return{status:'na'};const hay=(cv.summary+' '+cv.title).toLowerCase();const roleHit=cv.targetRole&&cv.targetRole.toLowerCase().split(/\s+/).filter(w=>w.length>3).some(w=>hay.includes(w));const skillHit=cv.skills.slice(0,8).some(s=>s.length>2&&hay.includes(s.toLowerCase()));return roleHit||skillHit?{status:'pass'}:{status:'warn',detail:'Doesn\u2019t mention your target role or top skills.',fix:'Name the role you want and 2\u20133 core skills in the first sentence.'};}},
+  /* — Experience — */
+  {cat:'experience',label:'At least one role',run:cv=>cv.experiences.length?{status:'pass',detail:cv.experiences.length+' role'+(cv.experiences.length>1?'s':'')+' listed.'}:{status:'fail',detail:'No experience entries.',fix:'Add your work history \u2014 most ATS reject CVs without it.'}},
+  {cat:'experience',label:'Dates on every entry',run:cv=>{if(!cv.experiences.length)return{status:'na'};const miss=cv.experiences.filter(e=>!String(e.dates||'').trim()).length;if(miss===0)return{status:'pass'};if(miss===cv.experiences.length)return{status:'fail',detail:'No dates on any entry.',fix:'ATS builds your timeline from dates \u2014 add them, e.g. \u201cMar 2021 \u2013 Present\u201d.'};return{status:'warn',detail:'Missing dates on '+miss+' entr'+(miss>1?'ies':'y')+'.',fix:'Fill in the dates.'};}},
+  {cat:'experience',label:'Bullet depth',run:(cv,ctx)=>{if(!ctx.bullets.length)return{status:'fail',detail:'No achievement bullets.',fix:'Describe each role with 3\u20135 bullets starting with an action verb.'};const per=ctx.bullets.length/cv.experiences.length;return per>=3?{status:'pass',detail:'~'+Math.round(per)+' bullets per role.'}:per>=1.5?{status:'warn',detail:'~'+Math.round(per)+' bullets per role \u2014 aim for 3\u20135.',fix:'Add bullets for your strongest achievements.'}:{status:'fail',detail:'~'+Math.round(per)+' bullets per role.',fix:'Each role needs 3\u20135 bullets; even one strong one beats a bare job title.'};}},
+  {cat:'experience',label:'Action-verb bullets',run:(cv,ctx)=>{if(!ctx.bullets.length)return{status:'na'};const r=ctx.bullets.filter(b=>atsStartsWithVerb(b.text)).length/ctx.bullets.length;return r>=0.6?{status:'pass',detail:Math.round(r*100)+'% start with an action verb.'}:r>=0.3?{status:'warn',detail:'Only '+Math.round(r*100)+'% start with an action verb.',fix:'Start each bullet with a verb: Led, Built, Reduced, Grew\u2026'}:{status:'fail',detail:'Only '+Math.round(r*100)+'% start with an action verb.',fix:'Rewrite \u201cResponsible for X\u201d as \u201cLed X\u2026\u201d.'};}},
+  {cat:'experience',label:'Quantified achievements',run:(cv,ctx)=>{if(!ctx.bullets.length)return{status:'na'};const r=ctx.bullets.filter(b=>atsHasMetric(b.text)).length/ctx.bullets.length;return r>=0.4?{status:'pass',detail:Math.round(r*100)+'% of bullets contain numbers.'}:r>=0.15?{status:'warn',detail:'Only '+Math.round(r*100)+'% of bullets contain numbers.',fix:'Add real metrics: %, amounts, team sizes, users, time saved.'}:{status:'fail',detail:'Almost no numbers in your bullets.',fix:'Recruiters scan for evidence \u2014 quantify at least a third of your bullets.'};}},
+  {cat:'experience',label:'Bullet length',run:(cv,ctx)=>{if(!ctx.bullets.length)return{status:'na'};const avg=ctx.bullets.reduce((a,b)=>a+atsWordCount(b.text),0)/ctx.bullets.length;return avg<=25?{status:'pass',detail:'Average '+Math.round(avg)+' words per bullet.'}:avg<=32?{status:'warn',detail:'Average '+Math.round(avg)+' words per bullet.',fix:'Trim to 1\u20132 lines each.'}:{status:'fail',detail:'Average '+Math.round(avg)+' words per bullet.',fix:'Split long bullets; one idea per line.'};}},
+  {cat:'experience',label:'No first-person pronouns',run:(cv,ctx)=>{const hit=(cv.summary&&ATS_FIRST_PERSON.test(cv.summary))||ctx.bullets.some(b=>ATS_FIRST_PERSON.test(b.text));return hit?{status:'warn',detail:'Found \u201cI / my\u201d in the summary or bullets.',fix:'CVs read stronger in implied first person: \u201cLed a team\u201d, not \u201cI led a team\u201d.'}:{status:'pass'};}},
+  {cat:'experience',label:'Recent experience',run:(cv,ctx)=>{if(!cv.experiences.length)return{status:'na'};const allDates=cv.experiences.map(e=>String(e.dates||'')).join(' ').toLowerCase();const yrs=(allDates.match(/\b(19|20)\d{2}\b/g)||[]).map(Number);const latest=yrs.length?Math.max(...yrs):0;return /present|current|now/.test(allDates)||latest>=ctx.year-2?{status:'pass'}:{status:'warn',detail:'Most recent dated year is '+latest+'.',fix:'Still working there? End the date with \u201cPresent\u201d.'};}},
+  /* — Skills — */
+  {cat:'skills',label:'Skills listed',run:cv=>cv.skills.length>=6?{status:'pass',detail:cv.skills.length+' skills.'}:cv.skills.length>=3?{status:'warn',detail:'Only '+cv.skills.length+' skills.',fix:'List 6\u201312 hard skills you actually have.'}:{status:'fail',detail:'Almost no skills listed.',fix:'ATS keyword searches hit the skills section hardest \u2014 list your tools and hard skills.'}},
+  {cat:'skills',label:'Skills mirror the posting',run:(cv,ctx)=>{if(ctx.mode!=='jd'||!cv.skills.length)return{status:'na'};const skillHay=cv.skills.join(' ').toLowerCase();const top=ctx.jdTerms.slice(0,12);const hit=top.filter(t=>skillHay.includes(t)).length;if(hit>=top.length*0.5)return{status:'pass',detail:hit+' of the posting\u2019s top '+top.length+' keywords appear in your skills list.'};return{status:'warn',detail:'Only '+hit+' of the posting\u2019s top '+top.length+' keywords appear in your skills list.',fix:'Move your strongest matching skills into the skills list \u2014 ATS keyword searches hit it hardest.'};}},
+  /* — Education — */
+  {cat:'education',label:'Education present',run:cv=>cv.education.length?{status:'pass',detail:cv.education.length+' entr'+(cv.education.length>1?'ies':'y')+'.'}:{status:'warn',detail:'No education entry.',fix:'Add your highest qualification \u2014 even in-progress ones.'}},
+  {cat:'education',label:'Education completeness',run:cv=>{if(!cv.education.length)return{status:'na'};const bad=cv.education.filter(e=>!e.degree.trim()||!e.institution.trim()||!String(e.year||'').trim()).length;return bad===0?{status:'pass'}:{status:'warn',detail:bad+' entr'+(bad>1?'ies':'y')+' missing degree, institution or year.',fix:'Complete all three fields \u2014 ATS looks for the degree + dates pattern.'};}},
+  /* — Impact & wording — */
+  {cat:'impact',label:'Overall length',run:(cv,ctx)=>{const w=atsWordCount(ctx.cvText);return w>=350&&w<=900?{status:'pass',detail:w+' words of content.'}:w>=250&&w<=1200?{status:'warn',detail:w+' words.',fix:'Aim for 350\u2013900 words (1\u20132 pages).'}:{status:'fail',detail:w+' words is '+(w<250?'too thin':'too long')+'.',fix:w<250?'Add more substance \u2014 bullets, skills, detail.':'Cut older roles and trim bullets.'};}},
+  {cat:'impact',label:'Duty phrasing',run:(cv,ctx)=>{if(!ctx.bullets.length)return{status:'na'};const n=ctx.bullets.filter(b=>(b.text.match(ATS_WEAK)||[]).length).length;return n===0?{status:'pass'}:n<=2?{status:'warn',detail:'\u201cResponsible for\u2026\u201d style phrasing on '+n+' bullet'+(n>1?'s':'')+'.',fix:'Swap for \u201cLed / Delivered / Reduced \u2026\u201d.'}:{status:'fail',detail:n+' bullets use duty phrasing.',fix:'Rewrite as achievements: verb + what + measurable result.'};}},
+  {cat:'impact',label:'Buzzword-free',run:(cv,ctx)=>{const hay=(cv.summary+' '+ctx.bullets.map(b=>b.text).join(' '));const hits=hay.match(ATS_BUZZ)||[];const uniq=[...new Set(hits.map(h=>h.toLowerCase().trim()))];return uniq.length===0?{status:'pass'}:uniq.length<=2?{status:'warn',detail:'Found: '+uniq.slice(0,3).join(', ')+'.',fix:'Replace clich\u00e9s with concrete evidence.'}:{status:'fail',detail:'Found: '+uniq.slice(0,4).join(', ')+'.',fix:'Cut the clich\u00e9s \u2014 show the achievement instead.'};}},
+  {cat:'impact',label:'Verb variety',run:(cv,ctx)=>{if(!ctx.bullets.length)return{status:'na'};const vs=new Set(ctx.bullets.map(b=>b.text.toLowerCase().replace(/[^a-z].*$/,'')).filter(w=>ATS_VERBS.has(w)));return vs.size>=8?{status:'pass',detail:vs.size+' distinct action verbs.'}:{status:'warn',detail:'Only '+vs.size+' distinct action verb'+(vs.size===1?'':'s')+'.',fix:'Vary your openers \u2014 repeating \u201cManaged\u201d dulls the impact.'};}},
+  {cat:'impact',label:'Consistent date style',run:cv=>{const ds=cv.experiences.map(e=>String(e.dates||'').trim()).filter(Boolean);if(ds.length<2)return{status:'na'};const hasMonth=ds.some(d=>/\b(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)/i.test(d));const yearOnly=ds.some(d=>/^\d{4}\s*[-\u2013\u2014]\s*(\d{4}|present)$/i.test(d));return hasMonth&&yearOnly?{status:'warn',detail:'Mixed date formats (some month-based, some year-only).',fix:'Pick one style and use it everywhere.'}:{status:'pass'};}},
+  /* — Keywords / job match — */
+  {cat:'keywords',label:'Keyword coverage',run:(cv,ctx)=>{if(!ctx.kwResults)return{status:'na',detail:'Paste a job description (or set a target role) to score keywords.'};const found=ctx.kwResults.filter(r=>r.present).length,total=ctx.kwResults.length;const pct=total?found/total:0;const what=ctx.mode==='jd'?'posting keywords':'role keywords';if(pct>=0.7)return{status:'pass',detail:'Found '+found+' of '+total+' '+what+'.'};if(pct>=0.45)return{status:'warn',detail:'Found '+found+' of '+total+' '+what+'.',fix:'Work the missing terms in \u2014 only where genuinely true.'};return{status:'fail',detail:'Found only '+found+' of '+total+' '+what+'.',fix:ctx.mode==='jd'?'Tailor your CV to this posting \u2014 mirror its exact terms.':'Add the missing keywords that are true for you, or refine your target role.'};}},
+  {cat:'keywords',label:'Missing keywords',run:(cv,ctx)=>{if(!ctx.kwResults)return{status:'na'};const miss=ctx.kwResults.filter(r=>!r.present);return miss.length===0?{status:'pass',detail:'Nothing missing.'}:{status:'warn',detail:miss.length+' keyword'+(miss.length>1?'s':'')+' missing: '+miss.slice(0,6).map(m=>m.keyword).join(', ')+(miss.length>6?'\u2026':'.'),fix:'Click the red chips below to add the truthful ones to your skills.'};}}
+];
+const ATS_CAT_DEFS=[
+  {id:'contact',label:'Contact',weight:10},
+  {id:'summary',label:'Summary',weight:10},
+  {id:'experience',label:'Experience',weight:22},
+  {id:'skills',label:'Skills',weight:12},
+  {id:'education',label:'Education',weight:6},
+  {id:'impact',label:'Impact & wording',weight:15},
+  {id:'keywords',label:'Keywords',weight:25}
+];
+function atsAnalyze(cv){
+  const cvText=getAllText();
+  const bullets=atsBullets(cv);
+  const year=new Date().getFullYear();
+  /* keyword context: pasted job description wins, otherwise role dictionary + custom keywords */
+  let kwResults=null,jdTerms=[],mode='none';
+  if(cv.jd.length>=120){
+    jdTerms=extractJDTerms(cv.jd);
+    if(jdTerms.length){mode='jd';kwResults=jdTerms.map(t=>({keyword:t,present:cvText.includes(t),custom:false}));}
+  }
+  if(mode==='none'){
+    const role=cv.targetRole.toLowerCase();
+    const matchedRole=Object.keys(ROLE_KW).filter(k=>k!=='default'&&role.length>=2&&(role.includes(k)||k.includes(role))).sort((a,b)=>b.length-a.length)[0]||'default';
+    const hasTarget=role.length>=2&&matchedRole!=='default';
+    const roleKW=hasTarget?ROLE_KW[matchedRole]:[];
+    const allKW=[...roleKW,...cv.customKW.filter(k=>!roleKW.includes(k))];
+    if(allKW.length){mode='role';kwResults=allKW.map(kw=>({keyword:kw,present:cvText.includes(kw.toLowerCase()),custom:cv.customKW.includes(kw)}));}
+  }
+  const ctx={cvText,bullets,year,kwResults,mode,jdTerms};
+  const checks=ATS_CHECKS.map(c=>{try{const r=c.run(cv,ctx)||{};return{cat:c.cat,label:c.label,status:r.status||'na',detail:r.detail||'',fix:r.fix||''};}catch(e){return{cat:c.cat,label:c.label,status:'na',detail:'',fix:''};}});
+  const cats=ATS_CAT_DEFS.map(def=>{
+    const cs=checks.filter(c=>c.cat===def.id&&c.status!=='na');
+    if(!cs.length)return null;
+    const score=cs.reduce((a,c)=>a+(c.status==='pass'?1:c.status==='warn'?0.55:0),0)/cs.length;
+    return{id:def.id,label:def.id==='keywords'&&mode==='jd'?'Job match':def.label,weight:def.weight,score};
+  }).filter(Boolean);
+  const wsum=cats.reduce((a,c)=>a+c.weight,0);
+  const score=wsum?Math.round(cats.reduce((a,c)=>a+c.weight*c.score,0)/wsum*100):0;
+  const grade=score>=85?{t:'Excellent',c:'#16a34a'}:score>=70?{t:'Good',c:'#16a34a'}:score>=55?{t:'Fair',c:'#d97706'}:{t:'Needs work',c:'#dc2626'};
+  return{score,grade,cats,checks,kwResults,mode,jdTerms};
+}
+function atsCheckRow(c){
+  const ic=c.status==='fail'?'\u00d7':c.status==='warn'?'!':'\u2713';
+  return '<div class="ats-check '+c.status+'"><span class="st">'+ic+'</span><div><strong>'+atsEsc(c.label)+'</strong><small>'+atsEsc(c.detail)+(c.fix?' Fix: '+atsEsc(c.fix):'')+'</small></div></div>';
+}
+function atsRunV2(){
+  const cv=atsCollectCv();
+  /* prefill the AI Coach key input from the stored import key */
+  const keyEl=document.getElementById('atsAiKey');
+  if(keyEl&&!keyEl.value){const k=cviGetKey();if(k)keyEl.value=k;}
+  const C=188.5,C2=150.8;
+  const ring=document.getElementById('atsRingFill'),sn=document.getElementById('atsScoreNum');
+  const pr=document.getElementById('atsPreviewRing'),pn=document.getElementById('atsPreviewNum');
+  if(!atsHasContent(cv)){
+    atsLastReport=null;
     if(ring){ring.style.strokeDasharray=C;ring.style.strokeDashoffset=C;ring.style.stroke='var(--text-tertiary)';}
-    if(sn){sn.textContent='—';sn.style.color='var(--text-tertiary)';}
-    const ab=document.getElementById('atsBreakdown');
-    if(ab){ab.innerHTML='<div style="grid-column:1/-1;text-align:center;color:var(--text-secondary);font-size:12px;padding:0.4rem">Fill in your CV details to see your ATS score.</div>';}
-    const kc=document.getElementById('keywordCloud');
-    if(kc)kc.innerHTML='';
+    if(sn){sn.textContent='\u2014';sn.style.color='var(--text-tertiary)';}
+    if(pr){pr.style.strokeDasharray=C2;pr.style.strokeDashoffset=C2;pr.style.stroke='var(--text-tertiary)';}
+    if(pn){pn.textContent='\u2014';pn.style.color='var(--text-tertiary)';}
+    const g=document.getElementById('atsGrade');if(g)g.style.display='none';
+    const ab=document.getElementById('atsBreakdown');if(ab)ab.innerHTML='<div style="text-align:center;color:var(--text-secondary);font-size:12px;padding:0.4rem">Fill in your CV details to see your ATS score.</div>';
+    const ch=document.getElementById('atsChecks');if(ch)ch.innerHTML='';
+    const hd=document.getElementById('atsChecksHead');if(hd)hd.textContent='';
+    const kc=document.getElementById('keywordCloud');if(kc)kc.innerHTML='';
+    const jr=document.getElementById('jdResults');if(jr)jr.innerHTML='';
+    const pc=document.getElementById('atsPreviewChecks');if(pc)pc.innerHTML='';
     return;
   }
-  if(ring){
-    ring.style.strokeDasharray=C;
-    ring.style.strokeDashoffset=C-(C*score/100);
-    ring.style.stroke=col;
-  }
-  if(sn){sn.textContent=score;sn.style.color=col;}
+  const rep=atsAnalyze(cv);
+  atsLastReport=rep;
+  const col=rep.score>=70?'#16a34a':rep.score>=55?'#d97706':'#dc2626';
+  if(ring){ring.style.strokeDasharray=C;ring.style.strokeDashoffset=C-(C*rep.score/100);ring.style.stroke=col;}
+  if(sn){sn.textContent=rep.score;sn.style.color=col;}
+  if(pr){pr.style.strokeDasharray=C2;pr.style.strokeDashoffset=C2-(C2*rep.score/100);pr.style.stroke=col;}
+  if(pn){pn.textContent=rep.score;pn.style.color=col;}
+  const g=document.getElementById('atsGrade');
+  if(g){g.style.display='';g.style.borderColor=col;g.style.color=col;g.textContent=rep.grade.t+' \u2014 '+rep.score+'/100';}
   const ab=document.getElementById('atsBreakdown');
   if(ab){
-    ab.innerHTML=checks.map(b=>`<div class="ats-chk-tile ${b.pass?'pass':'fail'}"><span>${b.label}</span><span class="dot"></span></div>`).join('');
+    ab.innerHTML=rep.cats.map(cat=>{
+      const pct=Math.round(cat.score*100);
+      const cc=pct>=70?'#16a34a':pct>=40?'#d97706':'#dc2626';
+      return '<div class="ats-cat"><span class="ats-cat-label">'+atsEsc(cat.label)+'</span><div class="ats-cat-bar"><div class="ats-cat-fill" style="width:'+pct+'%;background:'+cc+'"></div></div><span class="ats-cat-num" style="color:'+cc+'">'+pct+'</span></div>';
+    }).join('');
+  }
+  const probs=rep.checks.filter(c=>c.status==='fail'||c.status==='warn');
+  const ch=document.getElementById('atsChecks');
+  const hd=document.getElementById('atsChecksHead');
+  if(ch){
+    ch.innerHTML=probs.length?probs.slice(0,10).map(atsCheckRow).join('')+(probs.length>10?'<div class="ats-checks-head">+ '+(probs.length-10)+' more \u2014 fix the top items first.</div>':''):'';
+    if(hd)hd.textContent=probs.length?('Fix these '+probs.length+' \u2014 everything else passed.'):'All checks passed \u2014 nothing is holding this CV back.';
   }
   const kc=document.getElementById('keywordCloud');
   if(kc){
-    kc.innerHTML=results.map(r=>{
-      const isCustom=r.custom;
-      const clickable=!r.present&&!isCustom;
-      const cls='kw-chip '+(r.present?(isCustom?'kw-custom':'kw-pass'):(isCustom?'kw-custom':'kw-miss'))+(clickable?' kw-click':'');
-      const onclick=clickable?`onclick="addKWFromCloud('${r.keyword.replace(/'/g,"\\'")}')"`:'';
-      const title=clickable?`title="Click to add '${r.keyword}' to your skills"`:'';
-      return `<span ${onclick} ${title} class="${cls}">${r.keyword}${isCustom?'<span class="star">★</span>':''}${clickable?' +':''}</span>`;
-    }).join('');
+    if(rep.kwResults){
+      kc.innerHTML=rep.kwResults.map(r=>{
+        const clickable=!r.present&&!r.custom;
+        const cls='kw-chip '+(r.present?(r.custom?'kw-custom':'kw-pass'):(r.custom?'kw-custom':'kw-miss'))+(clickable?' kw-click':'');
+        const oc=clickable?('onclick="addKWFromCloud(\''+r.keyword.replace(/'/g,"\\'")+'\')"'):'';
+        const ti=clickable?('title="Click to add \''+atsEsc(r.keyword)+'\' to your skills"'):'';
+        return '<span '+oc+' '+ti+' class="'+cls+'">'+atsEsc(r.keyword)+(r.custom?'<span class="star">\u2605</span>':'')+(clickable?' +':'')+'</span>';
+      }).join('');
+    }else{
+      kc.innerHTML='<span style="font-size:11px;color:var(--text-tertiary)">Set a target role or paste a job description to get keyword suggestions.</span>';
+    }
   }
-  const C2=150.8; /* 2π×24 */
-  const pr=document.getElementById('atsPreviewRing');
-  if(pr){pr.style.strokeDasharray=C2;pr.style.strokeDashoffset=C2-(C2*score/100);pr.style.stroke=col;}
-  const pn=document.getElementById('atsPreviewNum');
-  if(pn){pn.textContent=score;pn.style.color=col;}
+  const jr=document.getElementById('jdResults');
+  if(jr){
+    if(rep.mode==='jd'&&rep.kwResults){
+      const found=rep.kwResults.filter(r=>r.present).length,total=rep.kwResults.length;
+      const pct=Math.round(found/total*100);
+      const jcol=pct>=70?'#16a34a':pct>=45?'#d97706':'#dc2626';
+      const missing=rep.kwResults.filter(r=>!r.present);
+      jr.innerHTML='<div class="jd-score-row"><div class="jd-score-bar"><div class="jd-score-fill" style="width:'+pct+'%;background:'+jcol+'"></div></div><span class="jd-score-num" style="color:'+jcol+'">'+pct+'%</span></div>'
+        +'<div class="jd-note"><strong>'+found+' of '+total+'</strong> keywords from this posting appear in your CV. '+(missing.length===0?'Nothing obvious missing \u2014 this posting matches you well.':'Only add the ones that are genuinely true for you; ATS filters and human readers both punish padding.')+'</div>'
+        +(missing.length?'<div class="jd-actions"><button class="btn btn-sm" data-kws="'+atsEsc(JSON.stringify(missing.map(m=>m.keyword)))+'" onclick="addJDMissing(this.getAttribute(\'data-kws\'))">Add all missing to keywords</button></div>':'')
+        +'<div style="display:flex;flex-wrap:wrap;gap:0.3rem">'+rep.kwResults.map(r=>r.present
+          ?'<span class="kw-chip kw-pass">'+atsEsc(r.keyword)+'</span>'
+          :'<span class="kw-chip kw-miss kw-click" title="Click to add \''+atsEsc(r.keyword)+'\' to your skills" onclick="addKWFromCloud(\''+r.keyword.replace(/'/g,"\\'")+'\')">'+atsEsc(r.keyword)+' +</span>').join('')+'</div>';
+    }else if(cv.jd.length>=120){
+      jr.innerHTML='<div class="jd-note">Couldn\u2019t extract enough keywords from this text \u2014 is it a real job posting?</div>';
+    }else if(cv.jd.length>0){
+      jr.innerHTML='<div class="jd-note">Paste a full job description (at least a paragraph or two) for a meaningful match.</div>';
+    }else{
+      jr.innerHTML='';
+    }
+  }
   const pc=document.getElementById('atsPreviewChecks');
   if(pc){
-    pc.innerHTML=checks.map(b=>`<div class="ats-chk ${b.pass?'pass':'fail'}"><span>${b.label}</span><span class="dot"></span></div>`).join('');
+    pc.innerHTML=rep.cats.map(cat=>{
+      const pct=Math.round(cat.score*100);
+      const cls=pct>=70?'pass':pct>=40?'warn':'fail';
+      return '<div class="ats-chk '+cls+'"><span>'+atsEsc(cat.label)+'</span><span class="dot"></span></div>';
+    }).join('');
   }
+}
+/* ── AI Coach: Gemini review layered on top of the local report (user's own key) ── */
+const ATS_AI_SCHEMA={
+  type:'OBJECT',
+  properties:{
+    verdict:{type:'STRING',description:'One-sentence overall assessment of the CV'},
+    quickWins:{type:'ARRAY',items:{type:'OBJECT',properties:{title:{type:'STRING'},detail:{type:'STRING'}},required:['title','detail']}},
+    summaryRewrite:{type:'STRING',description:'Improved professional summary, or empty string if the current one is already good'},
+    bulletRewrites:{type:'ARRAY',items:{type:'OBJECT',properties:{
+      experience:{type:'INTEGER',description:'0-based index into the experiences array'},
+      bullet:{type:'INTEGER',description:'0-based line index within that experience description'},
+      original:{type:'STRING'},improved:{type:'STRING'},why:{type:'STRING'}},
+      required:['experience','bullet','original','improved','why']}},
+    keywordsToAdd:{type:'ARRAY',items:{type:'STRING'},description:'Up to 8 relevant keywords plausibly missing from the CV'},
+    tips:{type:'ARRAY',items:{type:'STRING'},description:'Up to 4 additional concise tips'}
+  },
+  required:['verdict','quickWins','summaryRewrite','bulletRewrites','keywordsToAdd','tips']
+};
+function atsAiParts(cv,rep){
+  const inst='You are an expert CV/resume coach specialised in ATS (applicant tracking system) optimisation and achievement writing.\nYou receive: the CV content, the target role, optionally a job description, and a rule-based ATS report.\nRules:\n- Never invent employers, titles, dates, metrics or skills. Where a number is needed but unknown, use a placeholder like [X%] or [N users] for the user to fill in.\n- "bulletRewrites": pick at most 4 weak bullets (duty phrasing, no action verb, no measurable outcome). Rewrite as: strong action verb + what you did + measurable result/impact. "experience" and "bullet" are 0-based indexes into the data you receive.\n- "summaryRewrite": only if the current summary is missing or weak. Max 55 words, no first person, only facts from the CV.\n- "keywordsToAdd": up to 8 keywords relevant to the target role / job description that are plausibly missing from this CV.\n- Be specific and honest. Output valid JSON matching the schema exactly. Use empty string / empty array when not applicable.';
+  const payload={cv:{title:cv.title,name:cv.name,summary:cv.summary,skills:cv.skills,experiences:cv.experiences,education:cv.education,languages:cv.languages,targetRole:cv.targetRole},jobDescription:cv.jd?cv.jd.slice(0,4000):'',atsReport:{score:rep?rep.score:null,failingChecks:rep?rep.checks.filter(c=>c.status==='fail').map(c=>c.label):[],warningChecks:rep?rep.checks.filter(c=>c.status==='warn').map(c=>c.label):[]}};
+  return [{text:inst},{text:'CV AND REPORT DATA:\n'+JSON.stringify(payload)}];
+}
+async function runAtsAiCoach(){
+  const keyEl=document.getElementById('atsAiKey');
+  const key=(keyEl?keyEl.value:'').trim()||cviGetKey();
+  if(keyEl&&key)keyEl.value=key;
+  const st=document.getElementById('atsAiStatus');
+  const btn=document.getElementById('atsAiBtn');
+  if(!key){if(st){st.textContent='Paste a Gemini API key first \u2014 get a free one at aistudio.google.com/apikey.';st.className='ats-ai-status err';}return;}
+  const cv=atsCollectCv();
+  if(!atsHasContent(cv)){if(st){st.textContent='Fill in your CV first \u2014 there is nothing to review yet.';st.className='ats-ai-status err';}return;}
+  cviSetKey(key);
+  if(btn)btn.disabled=true;
+  if(st){st.textContent='Asking Gemini\u2026';st.className='ats-ai-status';}
+  try{
+    const {data,model}=await cviCallGemini(key,cviGetModel(),atsAiParts(cv,atsLastReport),m=>{if(st)st.textContent=m;});
+    atsRenderAi(data);
+    if(st){st.textContent='Reviewed with '+model+' \u2014 re-run the analysis after applying changes.';st.className='ats-ai-status ok';}
+  }catch(e){
+    if(st){st.textContent=e&&e.message?e.message:'Gemini request failed \u2014 try again in a minute.';st.className='ats-ai-status err';}
+  }finally{
+    if(btn)btn.disabled=false;
+  }
+}
+function atsRenderAi(d){
+  const box=document.getElementById('atsAiResults');
+  if(!box)return;
+  window.atsAiData=d||null;
+  if(!d){box.innerHTML='';return;}
+  let h='';
+  if(d.verdict)h+='<div class="ats-ai-verdict">'+atsEsc(d.verdict)+'</div>';
+  (d.quickWins||[]).forEach(w=>{h+='<div class="ai-card"><div class="ai-card-t">'+atsEsc(w.title)+'</div><div class="ai-card-d">'+atsEsc(w.detail)+'</div></div>';});
+  if(d.summaryRewrite){h+='<div class="ai-card"><div class="ai-card-t">Suggested summary <button class="btn-ai-apply" onclick="atsApplySummary()">Apply</button></div><div class="ai-rew"><div class="line new">'+atsEsc(d.summaryRewrite)+'</div></div></div>';}
+  (d.bulletRewrites||[]).forEach((r,i)=>{h+='<div class="ai-card"><div class="ai-card-t">Bullet rewrite <button class="btn-ai-apply" onclick="atsApplyBullet('+i+')">Apply</button></div><div class="ai-rew"><div class="line old">'+atsEsc(r.original)+'</div><div class="line new">'+atsEsc(r.improved)+'</div></div><div class="ai-card-d">Why: '+atsEsc(r.why)+'</div></div>';});
+  if((d.keywordsToAdd||[]).length){h+='<div class="ai-card"><div class="ai-card-t">Suggested keywords <button class="btn-ai-apply" onclick="atsApplyKeywords()">Add all</button></div><div class="ai-card-d" style="display:flex;flex-wrap:wrap;gap:0.3rem">'+d.keywordsToAdd.map(k=>'<span class="kw-chip kw-custom">'+atsEsc(k)+'</span>').join('')+'</div><div class="ai-card-d">Only keep the ones that are genuinely true for you.</div></div>';}
+  (d.tips||[]).forEach(t=>{h+='<div class="ai-card"><div class="ai-card-d">\u2022 '+atsEsc(t)+'</div></div>';});
+  box.innerHTML=h||'<div class="ai-card-d">No suggestions returned \u2014 try again.</div>';
+}
+function atsApplySummary(){
+  const d=window.atsAiData;
+  if(!d||!d.summaryRewrite)return;
+  if(!confirm('Replace your current summary with the AI version?'))return;
+  const el=document.getElementById('summary');
+  if(!el)return;
+  el.value=String(d.summaryRewrite);
+  updatePreview();
+  showToast('Summary updated \u2014 tweak any [placeholders]');
+}
+function atsApplyBullet(i){
+  const d=window.atsAiData;
+  if(!d)return;
+  const rw=(d.bulletRewrites||[])[i];
+  if(!rw)return;
+  const exps=getExperiences();
+  const tgt=exps[rw.experience];
+  if(!tgt){showToast('That role is no longer in the editor');return;}
+  const items=Array.from(document.querySelectorAll('#experienceList .dynamic-item'));
+  const it=items.find(n=>(((n.querySelectorAll('input')[0]||{}).value)||'')===tgt.title&&(((n.querySelectorAll('input')[1]||{}).value)||'')===tgt.company);
+  const ta=it?it.querySelector('textarea'):null;
+  if(!ta){showToast('Could not locate that role in the editor');return;}
+  const lines=ta.value.split('\n');
+  if(rw.bullet<0||rw.bullet>=lines.length){showToast('That bullet no longer matches \u2014 edit it manually');return;}
+  if(!confirm('Replace this bullet?'))return;
+  lines[rw.bullet]=String(rw.improved);
+  ta.value=lines.join('\n');
+  updatePreview();
+  showToast('Bullet updated \u2014 tweak any [placeholders]');
+}
+function atsApplyKeywords(){
+  const d=window.atsAiData;
+  if(!d||!(d.keywordsToAdd||[]).length)return;
+  if(!confirm('Add these keywords to your skills list? (Only keep what is genuinely true.)'))return;
+  const el=document.getElementById('skills');
+  if(!el)return;
+  const cur=el.value.split(',').map(s=>s.trim()).filter(Boolean);
+  d.keywordsToAdd.forEach(k=>{k=String(k).trim();if(k&&!cur.some(c=>c.toLowerCase()===k.toLowerCase()))cur.push(k);});
+  el.value=cur.join(', ');
+  updatePreview();
+  showToast('Keywords merged into skills');
 }
 
 // ============ LinkedIn Import ============
