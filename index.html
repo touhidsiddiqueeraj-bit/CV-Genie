@@ -559,6 +559,36 @@ html.dark .cv-preview{box-shadow:0 1px 3px rgba(0,0,0,0.4),0 8px 32px rgba(0,0,0
   .app-header{padding:0 0.6rem;}
   .brand-tag{display:none;}
 }
+/* ── Document toggle (CV / Cover letter) in preview toolbar ── */
+.doc-toggle{display:inline-flex;border:1px solid var(--border);border-radius:8px;overflow:hidden;flex-shrink:0;}
+.doc-toggle button{border:none;background:transparent;color:var(--text-secondary);font-size:12px;font-weight:600;padding:0.32rem 0.7rem;cursor:pointer;transition:background .15s,color .15s;}
+.doc-toggle button+button{border-left:1px solid var(--border);}
+.doc-toggle button.active{background:var(--text);color:var(--surface);}
+/* ── Cover letter ── */
+.cl-letter{font-size:10.5pt;line-height:1.62;color:#1f2937;}
+.cl-name{font-family:var(--cv-font-heading);font-size:19pt;font-weight:700;line-height:1.15;margin:0 0 1mm;color:#111827;}
+.cl-title{font-size:10pt;color:var(--cv-color);font-weight:600;margin-bottom:1.6mm;}
+.cl-contact{font-size:8pt;color:#6b7280;display:flex;flex-wrap:wrap;gap:1mm 3mm;padding-bottom:3mm;border-bottom:1.5px solid var(--cv-color);margin-bottom:5mm;}
+.cl-contact a{color:inherit;text-decoration:none;}
+.cl-date{font-size:9pt;color:#6b7280;margin-bottom:4mm;}
+.cl-recipient{font-size:10pt;line-height:1.5;margin-bottom:4.5mm;}
+.cl-subject{font-size:10.5pt;font-weight:700;margin-bottom:4mm;}
+.cl-salutation{margin-bottom:2.5mm;}
+.cl-letter p.cl-p{margin:0 0 2.8mm;text-align:left;}
+.cl-signoff{margin-top:4mm;margin-bottom:1mm;}
+.cl-sig{font-family:var(--cv-font-heading);font-weight:700;font-size:11.5pt;color:var(--cv-color);}
+/* ── Job description matcher ── */
+.jd-box textarea{width:100%;min-height:110px;resize:vertical;}
+.jd-results{margin-top:0.55rem;}
+.jd-score-row{display:flex;align-items:center;gap:0.6rem;margin-bottom:0.5rem;}
+.jd-score-bar{flex:1;height:8px;border-radius:6px;background:var(--surface-3);overflow:hidden;}
+.jd-score-fill{height:100%;border-radius:6px;transition:width .8s cubic-bezier(.4,0,.2,1),background .5s;}
+.jd-score-num{font-size:15px;font-weight:700;min-width:2.6ch;text-align:right;}
+.jd-note{font-size:11.5px;color:var(--text-secondary);margin:0.35rem 0 0.5rem;line-height:1.45;}
+.jd-actions{display:flex;gap:0.4rem;flex-wrap:wrap;margin-bottom:0.5rem;}
+/* ── ATS plain-text view ── */
+.atstext-pre{white-space:pre-wrap;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:11.5px;line-height:1.55;background:var(--surface-3);border:1px solid var(--border);border-radius:10px;padding:0.8rem;max-height:46vh;overflow:auto;margin:0.6rem 0;}
+.atstext-checks{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:0.4rem;margin-top:0.4rem;}
 </style>
 </head>
 <body>
@@ -584,6 +614,7 @@ html.dark .cv-preview{box-shadow:0 1px 3px rgba(0,0,0,0.4),0 8px 32px rgba(0,0,0
             <button class="smart-tab-btn active" onclick="switchTab('edit',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>Edit</button>
             <button class="smart-tab-btn" onclick="switchTab('content',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>Content</button>
             <button class="smart-tab-btn" onclick="switchTab('design',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg>Design</button>
+            <button class="smart-tab-btn" onclick="switchTab('letter',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>Letter</button>
             <button class="smart-tab-btn" onclick="switchTab('ats',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>ATS</button>
             <button class="smart-tab-btn" onclick="switchTab('tools',this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>Tools</button>
         </nav>
@@ -727,6 +758,59 @@ html.dark .cv-preview{box-shadow:0 1px 3px rgba(0,0,0,0.4),0 8px 32px rgba(0,0,0
             </div>
         </div>
 
+        <div id="tab-letter" class="tab-content" style="display:none">
+            <div style="display:flex;flex-direction:column;gap:0.75rem;">
+                <div class="jd-note" style="margin:0">A matching cover letter, styled with the same colour and fonts as your CV. Toggle <strong>CV / Letter</strong> above the preview to switch documents — exports follow the active one.</div>
+                <div class="form-group" style="margin:0">
+                    <label for="clCompany">Company</label>
+                    <input type="text" id="clCompany" oninput="sanitizeInput(this);updateLetterPreview()" placeholder="Acme Corp">
+                </div>
+                <div class="form-group" style="margin:0">
+                    <label for="clHiringManager">Hiring manager <span style="font-weight:400;color:var(--text-tertiary)">— optional</span></label>
+                    <input type="text" id="clHiringManager" oninput="sanitizeInput(this);updateLetterPreview()" placeholder="Ms. Jane Smith">
+                </div>
+                <div class="form-group" style="margin:0">
+                    <label for="clRole">Role you're applying for</label>
+                    <input type="text" id="clRole" oninput="sanitizeInput(this);updateLetterPreview()" placeholder="Senior Product Designer">
+                </div>
+                <div class="form-group" style="margin:0">
+                    <label for="clTone">Tone</label>
+                    <select id="clTone" onchange="updateLetterPreview()">
+                        <option value="formal">Formal — classic business register</option>
+                        <option value="direct">Direct — confident and concise</option>
+                        <option value="warm">Warm — personable, human</option>
+                    </select>
+                </div>
+                <button class="btn btn-sm" onclick="draftLetter()" style="align-self:flex-start"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;vertical-align:-2px"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/></svg>Draft from my CV</button>
+                <div class="form-group" style="margin:0">
+                    <label for="clP1">Opening paragraph</label>
+                    <textarea id="clP1" rows="3" oninput="sanitizeInput(this);updateLetterPreview()" placeholder="Why you're writing and the role you want…"></textarea>
+                </div>
+                <div class="form-group" style="margin:0">
+                    <label for="clP2">Why this company</label>
+                    <textarea id="clP2" rows="3" oninput="sanitizeInput(this);updateLetterPreview()" placeholder="What draws you to them specifically…"></textarea>
+                </div>
+                <div class="form-group" style="margin:0">
+                    <label for="clP3">Why you — evidence</label>
+                    <textarea id="clP3" rows="3" oninput="sanitizeInput(this);updateLetterPreview()" placeholder="Your strongest, most relevant achievements…"></textarea>
+                </div>
+                <div class="form-group" style="margin:0">
+                    <label for="clP4">Closing paragraph</label>
+                    <textarea id="clP4" rows="2" oninput="sanitizeInput(this);updateLetterPreview()" placeholder="Call to action — interview availability…"></textarea>
+                </div>
+                <div class="form-group" style="margin:0">
+                    <label for="clSignoff">Sign-off</label>
+                    <select id="clSignoff" onchange="updateLetterPreview()">
+                        <option>Kind regards,</option>
+                        <option>Yours sincerely,</option>
+                        <option>Yours faithfully,</option>
+                        <option>Best regards,</option>
+                        <option>Warm regards,</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
         <div id="tab-ats" class="tab-content" style="display:none">
             <div style="display:flex;flex-direction:column;gap:0.75rem;">
                 <div class="ats-score-hero">
@@ -754,6 +838,16 @@ html.dark .cv-preview{box-shadow:0 1px 3px rgba(0,0,0,0.4),0 8px 32px rgba(0,0,0
                     <span class="kw-label">Missing keywords — click one to add it to your skills</span>
                     <div id="keywordCloud" style="display:flex;flex-wrap:wrap;gap:0.3rem;margin-top:0.2rem;min-height:1rem;"></div>
                 </div>
+                <div class="jd-box" style="border-top:1px solid var(--border);padding-top:0.75rem">
+                    <label for="jdText"><strong>Job description match</strong> <span style="font-weight:400;color:var(--text-tertiary)">— paste a real posting, see what you're missing</span></label>
+                    <textarea id="jdText" rows="5" style="margin-top:0.35rem" placeholder="Paste the full job description here…"></textarea>
+                    <div style="display:flex;gap:0.4rem;margin-top:0.45rem;flex-wrap:wrap">
+                        <button class="btn btn-primary btn-sm" onclick="runJDMatch()">Match against my CV</button>
+                        <button class="btn btn-sm" onclick="document.getElementById('jdText').value='';document.getElementById('jdResults').innerHTML='';saveState?saveState():null">Clear</button>
+                    </div>
+                    <div id="jdResults" class="jd-results"></div>
+                </div>
+                <button class="btn btn-sm" style="border-style:dashed;justify-content:center;display:flex" onclick="openAtsTextView()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;vertical-align:-2px"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>What the ATS sees — plain-text & parse check</button>
             </div>
         </div>
 
@@ -817,6 +911,11 @@ html.dark .cv-preview{box-shadow:0 1px 3px rgba(0,0,0,0.4),0 8px 32px rgba(0,0,0
     <main class="preview-panel" id="previewPanel">
         <div class="preview-toolbar" id="previewToolbar">
             <button class="btn-icon" onclick="openTemplateGallery()" title="Template gallery" aria-label="Template gallery"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg></button>
+            <div class="doc-toggle" role="tablist" aria-label="Active document">
+                <button id="docToggleCv" class="active" onclick="setActiveDoc('cv')" type="button">CV</button>
+                <button id="docToggleLetter" onclick="setActiveDoc('letter')" type="button">Letter</button>
+            </div>
+            <span class="bar-divider"></span>
             <select class="template-select" id="templateSelect" onchange="changeTemplate(this.value)" aria-label="Template"></select>
             <span class="bar-divider"></span>
             <div style="display:flex;align-items:center;gap:0.4rem;flex-wrap:wrap;">
@@ -830,7 +929,7 @@ html.dark .cv-preview{box-shadow:0 1px 3px rgba(0,0,0,0.4),0 8px 32px rgba(0,0,0
             </div>
         </div>
         <div class="preview-panel-inner">
-            <div class="cv-wrapper"><div class="cv-scale-outer" id="cvScaleOuter"><div class="cv-scale-inner" id="cvScaleInner"><div class="cv-preview cv-classic" id="cvPreview"></div></div></div></div>
+            <div class="cv-wrapper"><div class="cv-scale-outer" id="cvScaleOuter"><div class="cv-scale-inner" id="cvScaleInner"><div class="cv-preview cv-classic" id="cvPreview"></div><div class="cv-preview cl-letter" id="clPreview" style="display:none"></div></div></div></div>
             <aside class="ats-sidebar" id="atsPreviewWidget">
                 <div class="ats-sidebar-title">ATS Score</div>
                 <div class="ats-sidebar-ring">
@@ -860,14 +959,25 @@ html.dark .cv-preview{box-shadow:0 1px 3px rgba(0,0,0,0.4),0 8px 32px rgba(0,0,0
 
 <div id="photoCropperModal" class="modal-overlay" style="display:none"><div class="modal" style="max-width:480px"><h2>Edit photo<button class="modal-close" onclick="closePhotoEditor()" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></h2><div style="max-height:300px"><img id="cropperImage" style="max-width:100%;display:none" alt="Crop"></div><div class="cropper-actions"><button class="btn btn-sm" onclick="document.getElementById('photoInput').click()">New image</button><button class="btn btn-sm" onclick="rotatePhoto(-90)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>Rotate</button><button class="btn btn-primary btn-sm" onclick="applyCrop()" style="margin-left:auto">Apply crop</button></div></div></div>
 
-<div id="exportModal" class="modal-overlay" style="display:none" onclick="if(event.target===this)closeExportModal()"><div class="modal"><h2>Export CV<button class="modal-close" onclick="closeExportModal()" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></h2>
+<div id="atsTextModal" class="modal-overlay" style="display:none" onclick="if(event.target===this)closeAtsTextView()"><div class="modal"><h2>What the ATS sees<button class="modal-close" onclick="closeAtsTextView()" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></h2>
+    <p style="font-size:12.5px;color:var(--text-secondary);margin:0">This is the plain text a parser extracts from your data, in reading order — the same content every CV template here produces, since parsing depends on content, not styling. If something is missing below, it's missing from your CV.</p>
+    <div class="atstext-checks" id="atsTextChecks"></div>
+    <pre class="atstext-pre" id="atsTextPre"></pre>
+    <div style="display:flex;gap:0.4rem">
+        <button class="btn btn-sm" onclick="copyAtsText()">Copy text</button>
+    </div>
+</div></div>
+
+<div id="exportModal" class="modal-overlay" style="display:none" onclick="if(event.target===this)closeExportModal()"><div class="modal"><h2 id="exportModalTitle">Export CV<button class="modal-close" onclick="closeExportModal()" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></h2>
     <div class="export-option recommended"><input type="checkbox" checked onchange="exportSel.serverPdf=this.checked" id="chkServerPdf"><label for="chkServerPdf"><strong>High-quality PDF (server)</strong><small>Rendered with Chrome typography — best for submissions</small></label></div>
     <div class="export-option"><input type="checkbox" onchange="exportSel.clientPdf=this.checked" id="chkClientPdf"><label for="chkClientPdf"><strong>PDF (instant)</strong><small>Works offline — good for quick drafts</small></label></div>
     <div class="export-option"><input type="checkbox" checked onchange="exportSel.serverDocx=this.checked" id="chkServerDocx"><label for="chkServerDocx"><strong>DOCX (server)</strong><small>Fully editable Word document</small></label></div>
     <div class="export-option"><input type="checkbox" onchange="exportSel.rtf=this.checked" id="chkRtf"><label for="chkRtf"><strong>RTF (instant)</strong><small>Lightweight editable text format</small></label></div>
+    <div class="export-option"><input type="checkbox" onchange="exportSel.markdown=this.checked" id="chkMarkdown"><label for="chkMarkdown"><strong>Markdown (instant)</strong><small>For GitHub profiles, READMEs and web posting</small></label></div>
+    <div class="export-option"><input type="checkbox" onchange="exportSel.txt=this.checked" id="chkTxt"><label for="chkTxt"><strong>Plain text (instant)</strong><small>Stripped-down .txt for forms and pasting</small></label></div>
     <div id="exportStatus" style="display:none"></div>
     <button class="btn btn-success" onclick="executeExport()" style="width:100%;padding:0.55rem;font-size:13.5px;margin-top:0.4rem">Export selected formats</button>
-    <button class="btn btn-sm" onclick="exportAllTemplates()" style="width:100%;padding:0.5rem;margin-top:0.4rem">Export all 18 templates as ZIP</button>
+    <button class="btn btn-sm" id="exportAllBtn" onclick="exportAllTemplates()" style="width:100%;padding:0.5rem;margin-top:0.4rem">Export all 18 templates as ZIP</button>
 </div></div>
 
 <script>
@@ -938,7 +1048,8 @@ const LANG_LEVELS=['','Native','A1','A2','B1','B2','C1','C2'];
 let currentTemplate='classic',currentColor='#2563eb',photoData=null,expCounter=0,eduCounter=0,langCounter=0;
 let photoShape='circle',photoSize='md';
 let undoStack=[],redoStack=[],currentTab='edit',currentFontPair=0,pendingSummaryIdx=-1;
-let exportSel={serverPdf:true,clientPdf:false,serverDocx:true,rtf:false},cropperInstance=null,versionSlots=[],selectedSkills=new Set();
+let exportSel={serverPdf:true,clientPdf:false,serverDocx:true,rtf:false,markdown:false,txt:false},cropperInstance=null,versionSlots=[],selectedSkills=new Set();
+let activeDoc='cv';/* 'cv' | 'letter' — which document the preview & exports target */
 let sectionOrder=['summary','skills','experience','education','languages'],debounceTimer=null,pendingLinkedInData=null;
 
 const A4_W=794;
@@ -1019,7 +1130,7 @@ function mobileNav(mode){
   }
 }
 function showToast(m){const t=document.createElement('div');t.className='toast';t.textContent=m;document.body.appendChild(t);setTimeout(()=>t.remove(),2500);}
-function switchTab(tab,btn){currentTab=tab;document.querySelectorAll('.smart-tab-btn').forEach(t=>t.classList.remove('active'));if(btn){btn.classList.add('active');}else{const b=Array.from(document.querySelectorAll('.smart-tab-btn')).find(b=>(b.getAttribute('onclick')||'').includes("'"+tab+"'"));if(b)b.classList.add('active');}document.querySelectorAll('.tab-content').forEach(c=>c.style.display='none');const el=document.getElementById('tab-'+tab);if(el){el.style.display='block';el.classList.remove('tab-anim');void el.offsetWidth;el.classList.add('tab-anim');}if(tab==='ats')runATSAnalysis();if(tab==='content')renderSkillCloud();if(tab==='tools')renderVersionSlots();}
+function switchTab(tab,btn){currentTab=tab;document.querySelectorAll('.smart-tab-btn').forEach(t=>t.classList.remove('active'));if(btn){btn.classList.add('active');}else{const b=Array.from(document.querySelectorAll('.smart-tab-btn')).find(b=>(b.getAttribute('onclick')||'').includes("'"+tab+"'"));if(b)b.classList.add('active');}document.querySelectorAll('.tab-content').forEach(c=>c.style.display='none');const el=document.getElementById('tab-'+tab);if(el){el.style.display='block';el.classList.remove('tab-anim');void el.offsetWidth;el.classList.add('tab-anim');}if(tab==='ats')runATSAnalysis();if(tab==='content')renderSkillCloud();if(tab==='tools')renderVersionSlots();if(tab==='letter')renderLetter();}
 
 /* ── Photo handling ── */
 function handlePhoto(e){const f=e.target.files[0];if(!f||f.size>5*1024*1024){if(f)showToast('Photo must be under 5MB');return;}const r=new FileReader();r.onload=ev=>{photoData=ev.target.result;document.getElementById('photoPreview').src=photoData;document.getElementById('photoPreview').style.display='block';document.getElementById('photoPlaceholder').style.display='none';renderPhotoControls();openPhotoEditor();};r.readAsDataURL(f);}
@@ -1039,8 +1150,8 @@ function updateCharCount(){const len=document.getElementById('summary')?.value.l
 function pushUndo(){undoStack.push(getState());if(undoStack.length>50)undoStack.shift();redoStack=[];document.getElementById('redoBtn').disabled=true;document.getElementById('undoBtn').disabled=false;}
 function undo(){if(!undoStack.length)return;redoStack.push(getState());restoreState(undoStack.pop());document.getElementById('redoBtn').disabled=false;if(!redoStack.length)document.getElementById('redoBtn').disabled=true;}
 function redo(){if(!redoStack.length)return;undoStack.push(getState());restoreState(redoStack.pop());document.getElementById('undoBtn').disabled=false;if(!redoStack.length)document.getElementById('redoBtn').disabled=true;}
-function getState(){return{template:currentTemplate,color:currentColor,fontPair:currentFontPair,sectionOrder:[...sectionOrder],photoShape,photoSize,name:document.getElementById('fullName')?.value||'',title:document.getElementById('title')?.value||'',email:document.getElementById('email')?.value||'',phone:document.getElementById('phone')?.value||'',linkedin:document.getElementById('linkedin')?.value||'',location:document.getElementById('location')?.value||'',summary:document.getElementById('summary')?.value||'',skills:document.getElementById('skills')?.value||'',targetRole:document.getElementById('targetRole')?.value||'',customKWList:[...customKWList],experiences:getExperiences(),education:getEducation(),languages:getLanguages(),photo:photoData};}
-function restoreState(s){if(!s)return;['fullName','title','email','phone','linkedin','location','summary','skills','targetRole'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=(id==='fullName'?(s.fullName??s.name??''):(s[id]||''))||'';});customKWList=Array.isArray(s.customKWList)?[...s.customKWList]:[];renderCustomKWChips();currentTemplate=s.template||'classic';currentColor=s.color||'#2563eb';currentFontPair=s.fontPair||0;photoShape=s.photoShape||'circle';photoSize=s.photoSize||'md';sectionOrder=s.sectionOrder||['summary','skills','experience','education','languages'];if(s.photo){photoData=s.photo;document.getElementById('photoPreview').src=photoData;document.getElementById('photoPreview').style.display='block';document.getElementById('photoPlaceholder').style.display='none';}else{photoData=null;document.getElementById('photoPreview').style.display='none';document.getElementById('photoPlaceholder').style.display='block';}renderPhotoControls();document.getElementById('templateSelect').value=currentTemplate;document.getElementById('experienceList').innerHTML='';document.getElementById('educationList').innerHTML='';document.getElementById('languageList').innerHTML='';(s.experiences||[]).forEach(e=>{addExpSilent();const is=document.querySelectorAll('#experienceList .dynamic-item');const l=is[is.length-1];if(l){l.querySelectorAll('input')[0].value=e.title||'';l.querySelectorAll('input')[1].value=e.company||'';l.querySelectorAll('input')[2].value=e.dates||'';l.querySelector('textarea').value=e.description||'';}});(s.education||[]).forEach(e=>{addEduSilent();const is=document.querySelectorAll('#educationList .dynamic-item');const l=is[is.length-1];if(l){l.querySelectorAll('input')[0].value=e.degree||'';l.querySelectorAll('input')[1].value=e.institution||'';l.querySelectorAll('input')[2].value=e.year||'';}});(s.languages||[]).forEach(e=>{addLangSilent();const is=document.querySelectorAll('#languageList .dynamic-item');const l=is[is.length-1];if(l){l.querySelector('input').value=e.language||'';l.querySelector('select').value=e.level||'';}});if(!s.experiences||!s.experiences.length)addExpSilent();if(!s.education||!s.education.length)addEduSilent();if(!s.languages||!s.languages.length)addLangSilent();document.getElementById('cvPreview').className='cv-preview cv-'+currentTemplate;document.documentElement.style.setProperty('--cv-color',currentColor);const fp=FONT_PAIRS[currentFontPair];document.documentElement.style.setProperty('--cv-font-heading',fp.heading);document.documentElement.style.setProperty('--cv-font-body',fp.body);buildAll();reorderFormSections();_updatePreviewNow();initDragDrop();initSectionSortable();}
+function getState(){return{template:currentTemplate,color:currentColor,fontPair:currentFontPair,sectionOrder:[...sectionOrder],photoShape,photoSize,name:document.getElementById('fullName')?.value||'',title:document.getElementById('title')?.value||'',email:document.getElementById('email')?.value||'',phone:document.getElementById('phone')?.value||'',linkedin:document.getElementById('linkedin')?.value||'',location:document.getElementById('location')?.value||'',summary:document.getElementById('summary')?.value||'',skills:document.getElementById('skills')?.value||'',targetRole:document.getElementById('targetRole')?.value||'',customKWList:[...customKWList],experiences:getExperiences(),education:getEducation(),languages:getLanguages(),photo:photoData,letter:getLetterFields(),jd:document.getElementById('jdText')?.value||''};}
+function restoreState(s){if(!s)return;['fullName','title','email','phone','linkedin','location','summary','skills','targetRole'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=(id==='fullName'?(s.fullName??s.name??''):(s[id]||''))||'';});customKWList=Array.isArray(s.customKWList)?[...s.customKWList]:[];renderCustomKWChips();const jdEl=document.getElementById('jdText');if(jdEl)jdEl.value=s.jd||'';const L=s.letter||{};[['clCompany','company'],['clHiringManager','hiringManager'],['clRole','role'],['clTone','tone'],['clP1','p1'],['clP2','p2'],['clP3','p3'],['clP4','p4'],['clSignoff','signoff']].forEach(([id,k])=>{const el=document.getElementById(id);if(el&&L[k])el.value=L[k];});renderLetter();currentTemplate=s.template||'classic';currentColor=s.color||'#2563eb';currentFontPair=s.fontPair||0;photoShape=s.photoShape||'circle';photoSize=s.photoSize||'md';sectionOrder=s.sectionOrder||['summary','skills','experience','education','languages'];if(s.photo){photoData=s.photo;document.getElementById('photoPreview').src=photoData;document.getElementById('photoPreview').style.display='block';document.getElementById('photoPlaceholder').style.display='none';}else{photoData=null;document.getElementById('photoPreview').style.display='none';document.getElementById('photoPlaceholder').style.display='block';}renderPhotoControls();document.getElementById('templateSelect').value=currentTemplate;document.getElementById('experienceList').innerHTML='';document.getElementById('educationList').innerHTML='';document.getElementById('languageList').innerHTML='';(s.experiences||[]).forEach(e=>{addExpSilent();const is=document.querySelectorAll('#experienceList .dynamic-item');const l=is[is.length-1];if(l){l.querySelectorAll('input')[0].value=e.title||'';l.querySelectorAll('input')[1].value=e.company||'';l.querySelectorAll('input')[2].value=e.dates||'';l.querySelector('textarea').value=e.description||'';}});(s.education||[]).forEach(e=>{addEduSilent();const is=document.querySelectorAll('#educationList .dynamic-item');const l=is[is.length-1];if(l){l.querySelectorAll('input')[0].value=e.degree||'';l.querySelectorAll('input')[1].value=e.institution||'';l.querySelectorAll('input')[2].value=e.year||'';}});(s.languages||[]).forEach(e=>{addLangSilent();const is=document.querySelectorAll('#languageList .dynamic-item');const l=is[is.length-1];if(l){l.querySelector('input').value=e.language||'';l.querySelector('select').value=e.level||'';}});if(!s.experiences||!s.experiences.length)addExpSilent();if(!s.education||!s.education.length)addEduSilent();if(!s.languages||!s.languages.length)addLangSilent();document.getElementById('cvPreview').className='cv-preview cv-'+currentTemplate;document.documentElement.style.setProperty('--cv-color',currentColor);const fp=FONT_PAIRS[currentFontPair];document.documentElement.style.setProperty('--cv-font-heading',fp.heading);document.documentElement.style.setProperty('--cv-font-body',fp.body);buildAll();reorderFormSections();_updatePreviewNow();initDragDrop();initSectionSortable();}
 function reorderFormSections(){const c=document.getElementById('formSectionsContainer');if(!c)return;const ex={};c.querySelectorAll('.section-draggable').forEach(el=>ex[el.dataset.section]=el);c.innerHTML='';sectionOrder.forEach(k=>{if(ex[k])c.appendChild(ex[k]);});}
 
 /* ── Dynamic list builders ── */
@@ -1163,6 +1274,7 @@ function _updatePreviewNow(){
         default:html=`<div class="cv-name">${esc(name)}</div><p>${esc(title)} | ${esc(cs)}</p>${orderedContent}`;
     }
     document.getElementById('cvPreview').innerHTML=html;
+    renderLetter();
     document.documentElement.style.setProperty('--cv-color',currentColor);
     scaleCVToFit();
     /* re-measure once web fonts settle (metrics can shift after load) */
@@ -1189,23 +1301,26 @@ async function executeExport(){
     try{
         if(exportSel.serverPdf){s.textContent='Rendering server PDF…';await exportServerPDF();}
         if(exportSel.clientPdf){s.textContent='Rendering browser PDF…';await exportClientPDF();}
-        if(exportSel.serverDocx){s.textContent='Rendering DOCX…';await exportServerDOCX();}
-        if(exportSel.rtf){s.textContent='Rendering RTF…';exportRTF();}
+        if(exportSel.serverDocx&&activeDoc==='cv'){s.textContent='Rendering DOCX…';await exportServerDOCX();}
+        if(exportSel.rtf){s.textContent='Building RTF…';exportRTF();}
+        if(exportSel.markdown){s.textContent='Building Markdown…';exportMarkdown();}
+        if(exportSel.txt){s.textContent='Building plain text…';exportTXT();}
         s.textContent='Done — check your downloads.';setTimeout(()=>s.style.display='none',2000);
     }catch(e){s.textContent='Export failed: '+e.message;setTimeout(()=>s.style.display='none',5000);}
 }
 async function exportServerPDF(){
-    const preview=document.getElementById('cvPreview');
+    const preview=activeDoc==='letter'?document.getElementById('clPreview'):document.getElementById('cvPreview');
     const computedStyle=getComputedStyle(document.documentElement);
     const cvColor=computedStyle.getPropertyValue('--cv-color').trim()||'#2563eb';
     const fontHeading=computedStyle.getPropertyValue('--cv-font-heading').trim()||'Georgia, serif';
     const fontBody=computedStyle.getPropertyValue('--cv-font-body').trim()||'Georgia, serif';
     const r=await fetch(PDF_SERVER_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({html:preview.outerHTML,color:cvColor,fontHeading,fontBody})});
     if(!r.ok){const e=await r.json().catch(()=>({error:'Server error'}));throw new Error(e.error);}
-    const b=await r.blob();if(b.size<1000)throw new Error('PDF too small');saveAs(b,'cv-genie-'+currentTemplate+'.pdf');
+    const b=await r.blob();if(b.size<1000)throw new Error('PDF too small');saveAs(b,'cv-genie-'+(activeDoc==='letter'?'cover-letter':currentTemplate)+'.pdf');
 }
 async function exportClientPDF(){
-    await html2pdf().set({margin:[8,8],filename:'cv-genie-'+currentTemplate+'.pdf',image:{type:'jpeg',quality:0.95},html2canvas:{scale:2,useCORS:true},jsPDF:{unit:'mm',format:'a4',orientation:'portrait'}}).from(document.getElementById('cvPreview')).save();
+    const el=activeDoc==='letter'?document.getElementById('clPreview'):document.getElementById('cvPreview');
+    await html2pdf().set({margin:[8,8],filename:'cv-genie-'+(activeDoc==='letter'?'cover-letter':currentTemplate)+'.pdf',image:{type:'jpeg',quality:0.95},html2canvas:{scale:2,useCORS:true},jsPDF:{unit:'mm',format:'a4',orientation:'portrait'}}).from(el).save();
 }
 function docxPayload(){
     return{name:document.getElementById('fullName')?.value||'Your Name',title:document.getElementById('title')?.value||'',contact:[document.getElementById('email')?.value,document.getElementById('phone')?.value,document.getElementById('linkedin')?.value,document.getElementById('location')?.value].filter(Boolean).join(' | '),summary:document.getElementById('summary')?.value||'',skills:document.getElementById('skills')?.value||'',experiences:getExperiences(),education:getEducation(),languages:getLanguages()};
@@ -1232,7 +1347,218 @@ function buildRTF(){
     r+='}';
     return r;
 }
-function exportRTF(){saveAs(new Blob([buildRTF()],{type:'application/rtf'}),'cv-genie-'+currentTemplate+'.rtf');}
+function exportRTF(){saveAs(new Blob([activeDoc==='letter'?buildLetterRTF():buildRTF()],{type:'application/rtf'}),'cv-genie-'+(activeDoc==='letter'?'cover-letter':currentTemplate)+'.rtf');}
+
+/* ============ COVER LETTER ============ */
+function getLetterFields(){return{company:document.getElementById('clCompany')?.value||'',hiringManager:document.getElementById('clHiringManager')?.value||'',role:document.getElementById('clRole')?.value||'',tone:document.getElementById('clTone')?.value||'formal',p1:document.getElementById('clP1')?.value||'',p2:document.getElementById('clP2')?.value||'',p3:document.getElementById('clP3')?.value||'',p4:document.getElementById('clP4')?.value||'',signoff:document.getElementById('clSignoff')?.value||'Kind regards,'};}
+function setActiveDoc(doc){
+    activeDoc=doc;
+    document.getElementById('docToggleCv').classList.toggle('active',doc==='cv');
+    document.getElementById('docToggleLetter').classList.toggle('active',doc==='letter');
+    document.getElementById('cvPreview').style.display=doc==='cv'?'':'none';
+    document.getElementById('clPreview').style.display=doc==='letter'?'':'none';
+    updateLetterPreview();
+    scaleCVToFit();
+}
+function updateLetterPreview(){if(debounceTimer)clearTimeout(debounceTimer);debounceTimer=setTimeout(()=>{renderLetter();scaleCVToFit();},200);}
+function renderLetter(){
+    const el=document.getElementById('clPreview');if(!el)return;
+    const f=getLetterFields(),name=document.getElementById('fullName')?.value||'Your Name',title=document.getElementById('title')?.value||'';
+    const email=document.getElementById('email')?.value||'',phone=document.getElementById('phone')?.value||'',loc=document.getElementById('location')?.value||'',li=document.getElementById('linkedin')?.value||'';
+    const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    const nl=s=>esc(s).split('\n').filter(x=>x.trim()).map(x=>`<p class="cl-p">${x}</p>`).join('');
+    const contacts=[email?`<a href="mailto:${esc(email)}">${esc(email)}</a>`:'',esc(phone),esc(loc),li?esc(li):''].filter(Boolean);
+    const hm=f.hiringManager.trim();
+    const salutation=hm?`Dear ${esc(hm)},`:(f.company.trim()?'Dear Hiring Team,':'Dear Sir or Madam,');
+    const subject=f.role.trim()?`Re: Application for ${esc(f.role.trim())}`:'Re: Application';
+    const dateStr=new Date().toLocaleDateString(undefined,{year:'numeric',month:'long',day:'numeric'});
+    el.innerHTML=`<div class="cl-name">${esc(name)}</div>${title?`<div class="cl-title">${esc(title)}</div>`:''}${contacts.length?`<div class="cl-contact">${contacts.map(c=>`<span>${c}</span>`).join('')}</div>`:''}<div class="cl-date">${dateStr}</div>${f.company.trim()?`<div class="cl-recipient">${hm?esc(hm)+'<br>':''}${esc(f.company)}</div>`:''}<div class="cl-subject">${subject}</div><div class="cl-salutation">${salutation}</div>${nl(f.p1)}${nl(f.p2)}${nl(f.p3)}${nl(f.p4)}<div class="cl-signoff">${esc(f.signoff)}</div><div class="cl-sig">${esc(name)}</div>`;
+}
+function draftLetter(){
+    const f=getLetterFields(),name=(document.getElementById('fullName')?.value||'').trim()||'me';
+    const role=f.role.trim()||(document.getElementById('targetRole')?.value||'').trim()||'the advertised role';
+    const company=f.company.trim()||'your company';
+    const skills=(document.getElementById('skills')?.value||'').split(',').map(s=>s.trim()).filter(Boolean);
+    const exp=getExperiences(),latest=exp[0];
+    const topSkills=skills.slice(0,3).join(', ')||'the skills outlined in my CV';
+    let p1,p2,p3,p4;
+    if(f.tone==='direct'){
+        p1=`I'm writing to apply for ${role==='the advertised role'?'the advertised role':'the '+role} at ${company}. In one line: I do this work, I enjoy it, and I'm good at it.`;
+        p2=`What draws me to ${company} is simple — the problems you're solving are the ones I've built my career on.`;
+        p3=latest?`Most recently as ${latest.title||'a professional'}${latest.company?' at '+latest.company:''}, I focused on exactly this kind of work. Day to day, that meant ${latest.description?latest.description.split('.')[0].toLowerCase().trim():'delivering results against clear goals'}. My strongest assets: ${topSkills}.`:`My strongest assets for this role: ${topSkills}.`;
+        p4=`I'd welcome a conversation about how I can help ${company} succeed. I'm available for an interview at your convenience.`;
+    }else if(f.tone==='warm'){
+        p1=`I was genuinely pleased to see ${company} is hiring for ${role==='the advertised role'?'this role':'the '+role} — it's exactly the kind of opportunity I've been hoping to find.`;
+        p2=`I've followed ${company} for a while, and what stands out to me is the way you approach your work. It's the kind of environment where I do my best.`;
+        p3=latest?`In my current role as ${latest.title||'a professional'}${latest.company?' at '+latest.company:''}, I've grown strongest in ${topSkills}. ${latest.description?'A recent highlight: '+latest.description.split('.')[0].trim()+'.':''}`:`I bring ${topSkills}, and I'm eager to keep growing.`;
+        p4=`I'd love to talk about what ${company} needs from this role — thank you for considering my application.`;
+    }else{
+        p1=`I am writing to express my interest in ${role==='the advertised role'?'the advertised position':'the position of '+role} at ${company}.`;
+        p2=`${company}'s reputation for quality and its approach to the work align closely with my own professional values.`;
+        p3=latest?`In my present role as ${latest.title||'a professional'}${latest.company?' at '+latest.company:''}, I have developed considerable expertise in ${topSkills}. ${latest.description?'Among my responsibilities: '+latest.description.split('.')[0].trim()+'.':''}`:`I offer considerable expertise in ${topSkills}.`;
+        p4=`I have attached my CV for your consideration and would be delighted to discuss my application further at your convenience.`;
+    }
+    if((f.p1+f.p2+f.p3+f.p4).trim()&&!confirm('Replace your current letter text with a fresh draft?'))return;
+    document.getElementById('clP1').value=p1;document.getElementById('clP2').value=p2;document.getElementById('clP3').value=p3;document.getElementById('clP4').value=p4;
+    renderLetter();scaleCVToFit();showToast('Letter drafted from your CV');
+}
+function buildLetterRTF(){
+    const f=getLetterFields(),name=document.getElementById('fullName')?.value||'Your Name';
+    const e=s=>String(s).replace(/\\/g,'\\\\').replace(/\{/g,'\\{').replace(/\}/g,'\\}').replace(/\n/g,'\\line ');
+    let r='{\\rtf1\\ansi\\deff0\n{\\fonttbl{\\f0\\fswiss Helvetica;}{\\f1\\froman Georgia;}}\n\\paperw11906\\paperh16838\\margl1440\\margr1440\\margt1440\\margb1440\n';
+    r+='\\pard\\qc\\sb100{\\f1\\fs36\\b '+e(name)+'}\\par\n';
+    const contactLine=[document.getElementById('email')?.value,document.getElementById('phone')?.value,document.getElementById('location')?.value].filter(Boolean).join(' | ');
+    if(contactLine)r+='\\pard\\qc\\sb0\\sa120{\\f0\\fs18 '+e(contactLine)+'}\\par\n';
+    if(f.company)r+='\\pard\\sb200\\sa0{\\f0\\fs20 '+e((f.hiringManager?f.hiringManager+'\\line ':'')+f.company)+'}\\par\n';
+    r+='\\pard\\sb200\\sa0{\\f1\\fs22\\b Re: '+e(f.role||'Application')+'}\\par\n';
+    const sal=f.hiringManager?'Dear '+f.hiringManager+',':'Dear Hiring Team,';
+    r+='\\pard\\sb200\\sa0{\\f1\\fs20 '+e(sal)+'}\\par\n';
+    [f.p1,f.p2,f.p3,f.p4].filter(p=>p.trim()).forEach(p=>{r+='\\pard\\sb120\\sa0{\\f1\\fs20 '+e(p)+'}\\par\n';});
+    r+='\\pard\\sb200\\sa0{\\f1\\fs20 '+e(f.signoff)+'}\\par\n\\pard\\sb60{\\f1\\fs22\\b '+e(name)+'}\\par\n}';
+    return r;
+}
+
+/* ============ MARKDOWN / PLAIN-TEXT EXPORT ============ */
+function buildMarkdownCV(){
+    const name=document.getElementById('fullName')?.value||'Your Name',title=document.getElementById('title')?.value||'';
+    const email=document.getElementById('email')?.value||'',phone=document.getElementById('phone')?.value||'',li=document.getElementById('linkedin')?.value||'',loc=document.getElementById('location')?.value||'';
+    const summary=document.getElementById('summary')?.value||'',skills=document.getElementById('skills')?.value||'';
+    const exp=getExperiences(),edu=getEducation(),langs=getLanguages();
+    let m=`# ${name}\n`;
+    if(title)m+=`**${title}**\n\n`;
+    const cl=[email,phone,li,loc].filter(Boolean).join(' · ');if(cl)m+=`${cl}\n`;
+    m+='\n';
+    if(summary.trim())m+=`## Summary\n\n${summary.trim()}\n\n`;
+    if(skills.trim())m+=`## Skills\n\n${skills.split(',').map(s=>s.trim()).filter(Boolean).map(s=>`- ${s}`).join('\n')}\n\n`;
+    if(exp.length){m+=`## Experience\n\n`;exp.forEach(x=>{m+=`### ${x.title||''}${x.company?` — ${x.company}`:''}\n\n${x.dates||''}\n\n`;if(x.description)m+=`${x.description.split('\n').filter(Boolean).map(d=>`- ${d.trim()}`).join('\n')}\n\n`;});}
+    if(edu.length){m+=`## Education\n\n`;edu.forEach(x=>{m+=`### ${x.degree||''}${x.institution?` — ${x.institution}`:''}\n\n${x.year||''}\n\n`;});}
+    if(langs.length){m+=`## Languages\n\n`;langs.forEach(l=>{m+=`- ${l.language}${l.level?` (${l.level})`:''}\n`;});m+='\n';}
+    return m;
+}
+function buildLetterMarkdown(){
+    const f=getLetterFields(),name=document.getElementById('fullName')?.value||'Your Name';
+    const contactLine=[document.getElementById('email')?.value,document.getElementById('phone')?.value,document.getElementById('location')?.value,document.getElementById('linkedin')?.value].filter(Boolean).join(' · ');
+    let m=`# ${name}\n\n`;
+    if(contactLine)m+=`${contactLine}\n\n`;
+    if(f.company)m+=`*${new Date().toLocaleDateString(undefined,{year:'numeric',month:'long',day:'numeric'})}*\n\n${f.hiringManager?f.hiringManager+'  \n':''}${f.company}\n\n`;
+    m+=`**Re: ${f.role||'Application'}**\n\n`;
+    m+=`${f.hiringManager?'Dear '+f.hiringManager+',':'Dear Hiring Team,'}\n\n`;
+    [f.p1,f.p2,f.p3,f.p4].filter(p=>p.trim()).forEach(p=>{m+=`${p.trim()}\n\n`;});
+    m+=`${f.signoff}\n\n**${name}**\n`;
+    return m;
+}
+function buildPlainCV(){
+    const name=document.getElementById('fullName')?.value||'Your Name',title=document.getElementById('title')?.value||'';
+    const email=document.getElementById('email')?.value||'',phone=document.getElementById('phone')?.value||'',li=document.getElementById('linkedin')?.value||'',loc=document.getElementById('location')?.value||'';
+    const summary=document.getElementById('summary')?.value||'',skills=document.getElementById('skills')?.value||'';
+    const exp=getExperiences(),edu=getEducation(),langs=getLanguages();
+    let t=`${name.toUpperCase()}\n${title?title+'\n':''}${[email,phone,li,loc].filter(Boolean).join(' | ')}\n\n`;
+    if(summary.trim())t+=`SUMMARY\n${summary.trim()}\n\n`;
+    if(skills.trim())t+=`SKILLS\n${skills.split(',').map(s=>s.trim()).filter(Boolean).join(', ')}\n\n`;
+    if(exp.length){t+=`EXPERIENCE\n`;exp.forEach(x=>{t+=`${x.title||''}${x.company?' - '+x.company:''} (${x.dates||''})\n`;if(x.description)t+=x.description.split('\n').filter(Boolean).map(d=>'  * '+d.trim()).join('\n')+'\n';t+='\n';});}
+    if(edu.length){t+=`EDUCATION\n`;edu.forEach(x=>{t+=`${x.degree||''}${x.institution?' - '+x.institution:''} (${x.year||''})\n`;});t+='\n';}
+    if(langs.length){t+=`LANGUAGES\n`;langs.forEach(l=>{t+=`  ${l.language}${l.level?' ('+l.level+')':''}\n`;});}
+    return t;
+}
+function buildLetterPlain(){
+    const f=getLetterFields(),name=document.getElementById('fullName')?.value||'Your Name';
+    const contactLine=[document.getElementById('email')?.value,document.getElementById('phone')?.value,document.getElementById('location')?.value,document.getElementById('linkedin')?.value].filter(Boolean).join(' | ');
+    let t=`${name}\n${contactLine}\n${new Date().toLocaleDateString()}\n\n`;
+    if(f.company)t+=`${f.hiringManager?f.hiringManager+'\n':''}${f.company}\n\n`;
+    t+=`Re: ${f.role||'Application'}\n\n${f.hiringManager?'Dear '+f.hiringManager+',':'Dear Hiring Team,'}\n\n`;
+    [f.p1,f.p2,f.p3,f.p4].filter(p=>p.trim()).forEach(p=>{t+=`${p.trim()}\n\n`;});
+    t+=`${f.signoff}\n${name}\n`;
+    return t;
+}
+function exportMarkdown(){saveAs(new Blob([activeDoc==='letter'?buildLetterMarkdown():buildMarkdownCV()],{type:'text/markdown'}),'cv-genie-'+(activeDoc==='letter'?'cover-letter':currentTemplate)+'.md');}
+function exportTXT(){saveAs(new Blob([activeDoc==='letter'?buildLetterPlain():buildPlainCV()],{type:'text/plain'}),'cv-genie-'+(activeDoc==='letter'?'cover-letter':currentTemplate)+'.txt');}
+
+/* ============ JOB DESCRIPTION MATCHER ============ */
+const JD_STOP=new Set(('a,an,the,and,or,but,if,then,else,for,to,of,in,on,at,by,with,from,as,is,are,was,were,be,been,being,have,has,had,do,does,did,will,would,shall,should,can,could,may,might,must,about,across,after,all,also,any,both,each,either,every,few,more,most,other,some,such,no,nor,not,only,own,same,so,than,too,very,you,your,yours,we,our,ours,they,their,them,he,she,his,her,it,its,i,me,my,this,that,these,those,what,which,who,whom,when,where,why,how,all,any,both,each,few,more,most,other,some,such,s, t, just, don, now, up, out, off, over, under, again, further, once, here, there, during, before, after, above, below, between, into, through, while,because,until,against,role,position,job,work,working,works,team,teams,company,companies,organisation,organization,ability,able,experience,experiences,year,years,including,include,includes,included,strong,excellent,good,great,plus,etc,via,per,within,without,apply,applicant,applicants,candidate,candidates,seeking,looking,join,joining,offer,offering,opportunity,opportunities,environment,culture,benefits,salary,package,location,based,remote,hybrid,onsite,full,part,time,contract,permanent,required,require,requires,requirement,requirements,preferred,desirable,responsibilities,responsible,duties,tasks,ideal,perfect,successful,new,well,using,use,used,tools,tool,systems,system,support,supported,supporting,help,helps,helping,ensure,ensuring,ensures,across,around,role').split(',').map(w=>w.trim()).filter(Boolean));
+function extractJDTerms(text){
+    const norm=text.toLowerCase().replace(/[\u2018\u2019]/g,"'").replace(/[\u2013\u2014]/g,'-');
+    /* protect technical tokens like c++, c#, node.js, ci/cd before splitting */
+    const tokens=norm.match(/[a-z0-9][a-z0-9+#./-]*[a-z0-9+#]|[a-z0-9]/g)||[];
+    const kept=tokens.filter(t=>t.length>1&&!JD_STOP.has(t)&&!/^\d+$/.test(t));
+    const counts={};
+    kept.forEach(t=>{counts[t]=(counts[t]||0)+1;});
+    /* 2- and 3-word phrases from consecutive kept tokens */
+    const phrases={};
+    for(let n=2;n<=3;n++){
+        for(let i=0;i+n<=kept.length;i++){
+            const ph=kept.slice(i,i+n).join(' ');
+            if(norm.includes(ph)){phrases[ph]=(phrases[ph]||0)+1;}
+        }
+    }
+    /* score: phrases get a big boost (they're specific) and frequency matters */
+    const scored=[];
+    Object.entries(phrases).forEach(([ph,c])=>{if(c>=2)scored.push({term:ph,score:c*(2+ph.split(' ').length)});});
+    Object.entries(counts).forEach(([w,c])=>{if(c>=2&&!scored.some(s=>s.term.includes(w)))scored.push({term:w,score:c});});
+    /* keep single words that are part of no kept phrase, appearing >=3 times, as extras */
+    Object.entries(counts).forEach(([w,c])=>{if(c>=3&&!scored.some(s=>s.term===w||s.term.includes(' '+w+' ')||s.term.startsWith(w+' ')||s.term.endsWith(' '+w)))scored.push({term:w,score:c*0.5});});
+    scored.sort((a,b)=>b.score-a.score);
+    /* drop terms that are substrings of an already-picked higher term */
+    const picked=[];
+    for(const s of scored){if(!picked.some(p=>p.term.includes(s.term)||s.term.includes(p.term)))picked.push(s);if(picked.length>=24)break;}
+    return picked.map(p=>p.term);
+}
+function runJDMatch(){
+    const box=document.getElementById('jdResults');if(!box)return;
+    const jd=(document.getElementById('jdText')?.value||'').trim();
+    if(jd.length<120){box.innerHTML='<div class="jd-note">Paste a full job description (at least a paragraph or two) for a meaningful match.</div>';return;}
+    const cvText=getAllText();
+    const terms=extractJDTerms(jd);
+    if(!terms.length){box.innerHTML='<div class="jd-note">Couldn\'t extract enough keywords from this text — is it a real job posting?</div>';return;}
+    const results=terms.map(t=>({term:t,present:cvText.includes(t)}));
+    const found=results.filter(r=>r.present).length,score=Math.round((found/terms.length)*100);
+    const col=score>=70?'#16a34a':score>=40?'#d97706':'#dc2626';
+    const missing=results.filter(r=>!r.present);
+    box.innerHTML=`<div class="jd-score-row"><div class="jd-score-bar"><div class="jd-score-fill" style="width:${score}%;background:${col}"></div></div><span class="jd-score-num" style="color:${col}">${score}%</span></div>
+    <div class="jd-note"><strong>${found} of ${terms.length}</strong> keywords from this posting appear in your CV. ${missing.length===0?'Nothing obvious missing — this posting matches you well.':'Only add the ones that are genuinely true for you; ATS filters and human readers both punish padding.'}</div>
+    ${missing.length?`<div class="jd-actions"><button class="btn btn-sm" onclick="addJDMissing(${JSON.stringify(JSON.stringify(missing.map(m=>m.term)))})">Add all missing to keywords</button></div>`:''}
+    <div style="display:flex;flex-wrap:wrap;gap:0.3rem">${results.map(r=>r.present
+        ?`<span class="kw-chip kw-pass">${r.term}</span>`
+        :`<span class="kw-chip kw-miss kw-click" title="Click to add '${r.term}' to your skills" onclick="addKWFromCloud('${r.term.replace(/'/g,"\\'")}')">${r.term} +</span>`).join('')}</div>`;
+}
+function addJDMissing(jsonStr){
+    try{const arr=JSON.parse(jsonStr);arr.forEach(k=>{if(!customKWList.includes(k))customKWList.push(k);});renderCustomKWChips();runATSAnalysis();showToast(arr.length+' keywords added');}catch(e){}
+}
+
+/* ============ ATS PLAIN-TEXT VIEW ============ */
+function buildAtsPlainText(){
+    const name=document.getElementById('fullName')?.value||'Your Name',title=document.getElementById('title')?.value||'';
+    const email=document.getElementById('email')?.value||'',phone=document.getElementById('phone')?.value||'',li=document.getElementById('linkedin')?.value||'',loc=document.getElementById('location')?.value||'';
+    const summary=document.getElementById('summary')?.value||'',skills=document.getElementById('skills')?.value||'';
+    const exp=getExperiences(),edu=getEducation(),langs=getLanguages();
+    let t=`${name}\n${title}\n${[email,phone,li,loc].filter(Boolean).join('\n')}\n\n`;
+    if(summary.trim())t+=`SUMMARY\n${summary.trim()}\n\n`;
+    if(skills.trim())t+=`SKILLS\n${skills.split(',').map(s=>s.trim()).filter(Boolean).join(', ')}\n\n`;
+    if(exp.length){t+=`EXPERIENCE\n`;exp.forEach(x=>{t+=`${x.title} - ${x.company} - ${x.dates}\n`;if(x.description)t+=x.description.split('\n').filter(Boolean).map(d=>'* '+d.trim()).join('\n')+'\n';t+='\n';});}
+    if(edu.length){t+=`EDUCATION\n`;edu.forEach(x=>{t+=`${x.degree} - ${x.institution} - ${x.year}\n`;});t+='\n';}
+    if(langs.length){t+=`LANGUAGES\n`;langs.forEach(l=>{t+=`${l.language} - ${l.level||'not specified'}\n`;});}
+    return t;
+}
+function openAtsTextView(){
+    const txt=buildAtsPlainText();
+    const emailOk=/[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}/i.test(txt);
+    const phoneOk=/(\+?\d[\d\s().-]{7,}\d)/.test(txt);
+    const words=txt.split(/\s+/).filter(Boolean).length;
+    const dates=(txt.match(/\b(19|20)\d{2}\b/g)||[]).length;
+    const sections=['SUMMARY','SKILLS','EXPERIENCE','EDUCATION','LANGUAGES'].filter(s=>txt.includes(s+'\n'));
+    const checks=[
+        {label:'Email found',pass:emailOk},
+        {label:'Phone found',pass:phoneOk},
+        {label:words>=200&&words<=1000?`Word count ${words} (in range)`:`Word count ${words} (aim 200–1000)`,pass:words>=200&&words<=1000},
+        {label:`Sections detected: ${sections.length}`,pass:sections.length>=3},
+        {label:`Date references: ${dates}`,pass:dates>=2},
+        {label:photoData?'Photo: present (fine for humans, some parsers prefer none)':'Photo: none (safest for parsing)',pass:true},
+    ];
+    document.getElementById('atsTextChecks').innerHTML=checks.map(c=>`<div class="ats-chk-tile ${c.pass?'pass':'fail'}"><span>${c.label}</span><span class="dot"></span></div>`).join('');
+    document.getElementById('atsTextPre').textContent=txt;
+    document.getElementById('atsTextModal').style.display='flex';
+}
+function closeAtsTextView(){document.getElementById('atsTextModal').style.display='none';}
+function copyAtsText(){navigator.clipboard.writeText(buildAtsPlainText()).then(()=>showToast('Copied'));}
 
 // Export all templates as ZIP — uses whichever formats the user has selected
 async function exportAllTemplates(){
@@ -1290,7 +1616,15 @@ async function exportAllTemplates(){
     s.textContent='Done — '+successCount+'/'+total+' files exported.';
     setTimeout(()=>s.style.display='none',3000);
 }
-function openExportModal(){document.getElementById('exportModal').style.display='flex';}
+function openExportModal(){
+  const m=document.getElementById('exportModal');
+  const isLetter=activeDoc==='letter';
+  document.getElementById('exportModalTitle').childNodes[0].textContent=isLetter?'Export cover letter':'Export CV';
+  document.getElementById('chkServerDocx').closest('.export-option').style.display=isLetter?'none':'';
+  document.getElementById('exportAllBtn').style.display=isLetter?'none':'';
+  if(isLetter){document.getElementById('chkServerDocx').checked=false;exportSel.serverDocx=false;}
+  m.style.display='flex';
+}
 function closeExportModal(){document.getElementById('exportModal').style.display='none';}
 
 /* ── Version history ── */

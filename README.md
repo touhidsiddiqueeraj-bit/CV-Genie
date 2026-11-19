@@ -2,7 +2,7 @@
 
 # CV Genie
 
-**A fast, private, minimalist CV builder — 18 templates including Europass, live ATS analysis, profile photos, and PDF / DOCX / RTF export.**
+**A fast, private, minimalist CV builder — 18 templates including Europass, a matching cover letter builder, live ATS analysis with job-description matching, profile photos, and PDF / DOCX / RTF / Markdown / TXT export.**
 
 [![CI](https://github.com/touhidsiddiqueeraj-bit/CV-Genie/actions/workflows/ci.yml/badge.svg)](https://github.com/touhidsiddiqueeraj-bit/CV-Genie/actions/workflows/ci.yml)
 [![Deploy](https://github.com/touhidsiddiqueeraj-bit/CV-Genie/actions/workflows/deploy.yml/badge.svg)](https://github.com/touhidsiddiqueeraj-bit/CV-Genie/actions/workflows/deploy.yml)
@@ -19,10 +19,20 @@
 ## ✦ Why CV Genie
 
 - **Private by default** — everything runs in your browser. No accounts, no tracking, no data leaves your device (unless you explicitly use the optional server-rendered exports).
+- **No paywall at the download button** — every template, every export format, the cover letter, the matcher: free, forever. Most builders let you build for free, then charge $25/month to export.
 - **Zero friction** — no build step, no dependencies to install. One HTML file, open it and go.
 - **ATS-aware** — a built-in analyser scores your CV against role-specific keyword dictionaries and shows exactly what's missing.
 - **Serious output** — high-quality PDF, editable DOCX and RTF, plus bulk export of all 18 templates in one ZIP.
 - **Works everywhere** — responsive down to phone screens, dark mode, offline-capable (PWA service worker).
+
+## ✦ What's new in v2.1
+
+| Area | Change |
+|---|---|
+| **Cover letter builder** | A full letter editor with a one-click draft generated from your CV. The letter shares your CV's accent colour and fonts, so the pair reads as a matching set. Export as PDF (server or instant), RTF, Markdown or plain text. |
+| **Job description match** | Paste a real posting and CV Genie extracts its keywords (multi-word phrases included), scores your CV against them, and shows exactly what's missing — click any missing keyword to add it, or add all missing at once. |
+| **"What the ATS sees"** | An honest plain-text extraction of your CV in parse order, plus parse checks (email/phone detection, word count, sections, dates). See what a parser gets, not what a marketing score claims. |
+| **Markdown & TXT export** | For GitHub profiles, web posting and online forms — works for both CV and cover letter. |
 
 ## ✦ What's new in v2.0
 
@@ -58,6 +68,20 @@ Type a target role and the analyser matches it against a dictionary of 80+ roles
 
 ![ATS analyser](docs/images/ats.png)
 
+**Job description match.** Dictionaries are generic; postings are not. Paste the actual job description and CV Genie extracts its key terms — favouring multi-word phrases like *design systems* or *stakeholder communication* over noise words — then shows which ones your CV already contains and which it doesn't, with a match score. Missing keywords are one click away from your Skills field, and an *add all* button bulk-imports them as custom keywords. Everything runs locally; the posting never leaves your browser.
+
+![Job description match](docs/images/ats-jd.png)
+
+**What the ATS sees.** One click shows the plain text a parser extracts from your CV, in reading order, with parse checks — email and phone detection, word count range, section detection, date references, photo advisory. It's the same content every template produces, because parsing depends on content, not styling — and it's the honest view no builder shows you.
+
+![What the ATS sees](docs/images/ats-text.png)
+
+### Cover letter builder
+
+A **Letter** tab beside the editor builds a cover letter that matches your CV — same accent colour, same fonts — from shared contact details. Fill in the company, hiring manager and role, pick a tone (formal / direct / warm), and press **Draft from my CV** to generate all four paragraphs from your own experience, skills and most recent role. No AI, no data leaving the browser — just your content, structured. Toggle **CV / Letter** above the preview to switch documents; exports (PDF, RTF, Markdown, TXT) follow whichever is active. Letter content travels with saves, share links and version history like everything else.
+
+![Cover letter](docs/images/letter.png)
+
 ### Template gallery
 
 Browse all 18 designs with live layout wireframes, or switch instantly from the toolbar dropdown.
@@ -72,7 +96,7 @@ Six font pairings (now properly loaded as web fonts, so exports match the previe
 
 ### Export
 
-Pick any combination of high-quality server PDF, instant client PDF, server DOCX and instant RTF — or export **all 18 templates** in one ZIP.
+Pick any combination of high-quality server PDF, instant client PDF, server DOCX, instant RTF, **Markdown** and **plain text** — or export **all 18 templates** in one ZIP. The export dialog follows the active document: cover letters export as PDF / RTF / Markdown / TXT.
 
 ![Export dialog](docs/images/export.png)
 
