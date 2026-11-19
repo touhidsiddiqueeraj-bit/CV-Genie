@@ -108,8 +108,22 @@ A dedicated mobile layout with edit/preview navigation, and a full dark theme (a
 |:---:|:---:|:---:|
 | ![Mobile edit](docs/images/mobile-edit.png) | ![Mobile preview](docs/images/mobile-preview.png) | ![Dark mode](docs/images/hero-dark.png) |
 
+### Import your existing CV
+
+Upload an old CV in **PDF, DOCX or plain text** (or paste its text) and CV Genie fills in the whole form — personal details, summary, work experience, education, skills and languages.
+
+**How it works, in order of preference:**
+
+1. **Local rule-based parser (default, fully offline).** Text is extracted in your browser — pdf.js for PDFs, JSZip for DOCX — and a section/line heuristic parser maps it onto the app's data model: contact details via targeted regexes, section segmentation by header keywords, experience/education entries anchored on date ranges with role/company splitting, skill-list splitting and CEFR language-level mapping. Every parse gets a **confidence score (0–100)**; the review screen shows exactly what was found, per-section checkboxes to untick anything you don't want, and a heads-up list of anything missing.
+2. **Optional Gemini AI fallback.** When the layout is unusual, the CV isn't in English, or the PDF is scanned (no extractable text), you can paste **your own free Google AI Studio API key** and let Gemini re-extract the CV with a strict JSON response schema. The key is stored only in your browser's `localStorage` and used for direct browser → Google calls; CV-Genie has no server-side AI. For scanned PDFs the original PDF bytes are sent as inline data so Gemini can read it natively (no separate OCR step). AI results are merged with the parser's (parser values fill any gaps) and shown in the same review screen with an "AI" badge.
+
+Importing pushes an undo snapshot first (Ctrl+Z restores your previous CV) and asks before overwriting existing content.
+
+![Import dialog](docs/images/import-cv.png)
+
 ### Data portability
 
+- **CV import** — upload any PDF/DOCX/text CV and autofill the form (local parser, optional Gemini AI with your own key — see above).
 - **LinkedIn import** — upload your LinkedIn "Save to PDF" export and autofill the form (experiences, education, skills and languages).
 - **Share links** — the entire CV is LZ-compressed into a URL. Anyone with the link sees your exact CV; nothing is sent to a server.
 - **JSON backup** — full export/import of your state.
@@ -288,6 +302,17 @@ Append `{name, heading, body}` to `FONT_PAIRS` and add the families to the Googl
 ### Updating ATS keyword roles
 
 Edit the `ROLE_KW` dictionary inside `runATSAnalysis()`. Target roles are matched longest-first and case-insensitively.
+
+### Testing the CV import parser
+
+`scripts/make-cv-fixtures.py` generates three sample CVs (TXT, DOCX via python-docx, PDF via ReportLab) into `/tmp/cvfix`; `scripts/test-cv-import.js` is a Playwright E2E suite (80 assertions) that runs the real app, imports each fixture through the modal, and checks every parsed field plus the apply-into-editor flow, the no-section-headers fallback, AI response mapping/merging and the guard rails:
+
+```bash
+python3 scripts/make-cv-fixtures.py
+NODE_PATH="$(npm root -g)" node scripts/test-cv-import.js
+```
+
+The Gemini network call itself is intentionally not covered (it needs a real key); its response handling is tested via a canned JSON through `cviMapAi()`.
 
 ### Regenerating README screenshots
 

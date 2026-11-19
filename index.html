@@ -220,6 +220,48 @@ input,textarea,select{font-family:inherit;}
 .dropzone svg{width:20px;height:20px;color:var(--text-tertiary);}
 .dropzone strong{display:block;font-size:13px;margin-top:0.3rem;}
 .dropzone small{display:block;font-size:11px;color:var(--text-tertiary);margin-top:2px;}
+/* ── CV import (parser + AI) ────────────────────────────── */
+.cvi-banner{display:flex;align-items:center;gap:0.55rem;width:100%;padding:0.6rem 0.75rem;margin-bottom:0.75rem;border:1.5px dashed var(--border-strong);border-radius:var(--radius-lg);background:var(--surface-2);cursor:pointer;transition:border-color .15s;font-size:12.5px;text-align:left;color:var(--text);font-family:inherit;}
+.cvi-banner:hover{border-color:var(--text-secondary);}
+.cvi-banner svg{width:17px;height:17px;color:var(--text-tertiary);flex-shrink:0;}
+.cvi-banner small{display:block;color:var(--text-tertiary);font-size:10.5px;margin-top:1px;font-weight:400;}
+.cvi-status{margin-top:0.55rem;font-size:12px;color:var(--text-secondary);text-align:center;}
+.cvi-error{margin-top:0.55rem;padding:0.5rem 0.65rem;border-radius:var(--radius);background:var(--danger-bg);color:var(--danger);font-size:12px;line-height:1.45;}
+.cvi-conf{border-radius:var(--radius);padding:0.5rem 0.7rem;font-size:12px;line-height:1.45;margin-bottom:0.7rem;}
+.cvi-conf.high{background:var(--success-bg);color:var(--success);}
+.cvi-conf.medium{background:rgba(217,119,6,.12);color:var(--warning);}
+.cvi-conf.low{background:var(--danger-bg);color:var(--danger);}
+.cvi-notes{font-size:11px;opacity:.85;margin-top:2px;}
+.cvi-group{border:1px solid var(--border);border-radius:var(--radius);margin-bottom:0.55rem;overflow:hidden;}
+.cvi-g-head{display:flex;align-items:center;gap:0.45rem;padding:0.45rem 0.6rem;background:var(--surface-2);cursor:pointer;font-size:12px;user-select:none;}
+.cvi-g-head input{margin:0;flex-shrink:0;}
+.cvi-g-head strong{font-size:12px;}
+.cvi-count{color:var(--text-tertiary);font-size:11px;white-space:nowrap;}
+.cvi-badge{margin-left:auto;font-size:9.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:2px 7px;border-radius:99px;background:var(--surface);border:1px solid var(--border-strong);color:var(--text-secondary);flex-shrink:0;}
+.cvi-badge.ai{background:var(--accent);color:var(--accent-contrast);border-color:transparent;}
+.cvi-g-body{padding:0.5rem 0.65rem;font-size:12px;display:grid;gap:0.3rem;}
+.cvi-g-body p{margin:0;color:var(--text-secondary);font-size:11.5px;line-height:1.5;}
+.cvi-row{display:grid;grid-template-columns:88px 1fr;gap:0.5rem;align-items:baseline;}
+.cvi-row .k{color:var(--text-tertiary);font-size:11px;}
+.cvi-row .v{word-break:break-word;line-height:1.45;}
+.cvi-item{padding:0.35rem 0;border-top:1px dashed var(--border);line-height:1.5;}
+.cvi-item:first-child{border-top:none;padding-top:0;}
+.cvi-item p{margin:1px 0 0;color:var(--text-secondary);font-size:11.5px;}
+.cvi-dates{color:var(--text-tertiary);font-size:11px;}
+.cvi-chips{display:flex;flex-wrap:wrap;gap:0.3rem;}
+.cvi-chip{font-size:11px;padding:2px 8px;border-radius:99px;background:var(--surface-2);border:1px solid var(--border);line-height:1.5;}
+.cvi-actions{display:flex;gap:0.5rem;margin-top:0.75rem;}
+.cvi-actions .btn{flex:1;}
+.cvi-ai{margin-top:0.95rem;border-top:1px solid var(--border);padding-top:0.75rem;}
+.cvi-ai-head{font-size:12px;color:var(--text-secondary);line-height:1.5;}
+.cvi-ai-head strong{color:var(--text);}
+.cvi-ai-panel{margin-top:0.55rem;display:grid;gap:0.45rem;}
+.cvi-ai-panel .form-group{margin-bottom:0;}
+.cvi-ai-panel label{font-size:11px;color:var(--text-tertiary);display:block;margin-bottom:3px;}
+.cvi-ai-status{font-size:11.5px;color:var(--text-secondary);line-height:1.45;}
+.cvi-ai-status.err{color:var(--danger);}
+.cvi-ai-note{font-size:10.5px;color:var(--text-tertiary);line-height:1.5;margin:0.35rem 0 0;}
+.cvi-ai-note a{color:var(--text-secondary);}
 .progress-track{height:4px;background:var(--surface-2);border-radius:2px;overflow:hidden;}
 .progress-fill{height:100%;background:var(--text);width:0%;transition:width .3s;}
 .li-preview-table{width:100%;border-collapse:collapse;font-size:12px;margin-top:0.4rem;}
@@ -621,6 +663,10 @@ html.dark .cv-preview{box-shadow:0 1px 3px rgba(0,0,0,0.4),0 8px 32px rgba(0,0,0
         </div>
 
         <div id="tab-edit" class="tab-content">
+            <button type="button" class="cvi-banner" onclick="openCvImport()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                <span><strong>Import your existing CV</strong><small>Upload a PDF, DOCX or text file — CV Genie fills in this form for you</small></span>
+            </button>
             <div class="section">
                 <div class="section-header" onclick="toggleSection(this)">
                     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"/></svg>
@@ -854,6 +900,18 @@ html.dark .cv-preview{box-shadow:0 1px 3px rgba(0,0,0,0.4),0 8px 32px rgba(0,0,0
         <div id="tab-tools" class="tab-content" style="display:none">
             <div class="section">
                 <div class="section-header" onclick="toggleSection(this)">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                    <h3>Import Existing CV</h3>
+                    <svg class="chev open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="6 9 12 15 18 9"/></svg>
+                </div>
+                <div class="section-content" style="max-height:460px"><div class="section-inner">
+                    <p style="font-size:12px;color:var(--text-secondary);line-height:1.55;margin-bottom:0.55rem">Have an old CV in <strong>PDF, DOCX or text</strong>? Upload it and CV Genie fills in the whole form — personal details, experience, education, skills and languages. A rule-based parser runs privately in your browser; if the layout is unusual or the PDF is scanned, an optional Gemini AI step (free API key) cleans up the rest.</p>
+                    <button class="btn btn-primary btn-sm" style="width:100%" onclick="openCvImport()">Upload &amp; parse a CV</button>
+                    <p class="cvi-ai-note">Files never leave your browser unless you choose to run AI extraction.</p>
+                </div></div>
+            </div>
+            <div class="section">
+                <div class="section-header" onclick="toggleSection(this)">
                     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
                     <h3>Import LinkedIn Profile</h3>
                     <svg class="chev open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
@@ -978,6 +1036,45 @@ html.dark .cv-preview{box-shadow:0 1px 3px rgba(0,0,0,0.4),0 8px 32px rgba(0,0,0
     <div id="exportStatus" style="display:none"></div>
     <button class="btn btn-success" onclick="executeExport()" style="width:100%;padding:0.55rem;font-size:13.5px;margin-top:0.4rem">Export selected formats</button>
     <button class="btn btn-sm" id="exportAllBtn" onclick="exportAllTemplates()" style="width:100%;padding:0.5rem;margin-top:0.4rem">Export all 18 templates as ZIP</button>
+</div></div>
+
+<div id="cvImportModal" class="modal-overlay" style="display:none" onclick="if(event.target===this)closeCvImport()"><div class="modal" style="max-width:640px">
+    <h2>Import existing CV<button class="modal-close" onclick="closeCvImport()" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></h2>
+
+    <div id="cvImportStep1">
+        <div class="dropzone" id="cvImportDropZone" onclick="document.getElementById('cvImportFile').click()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            <strong>Click or drop your CV here</strong>
+            <small>PDF, DOCX or plain text — parsed privately in your browser</small>
+        </div>
+        <input type="file" id="cvImportFile" accept=".pdf,.docx,.txt,.md" onchange="cvImportHandleFiles(this.files)" style="display:none">
+        <div id="cvImportStatus" class="cvi-status" style="display:none"></div>
+        <div id="cvImportError" class="cvi-error" style="display:none"></div>
+        <div style="text-align:center;margin-top:0.55rem"><button class="btn btn-sm" onclick="toggleCvPaste()">…or paste CV text</button></div>
+        <div id="cvImportPasteWrap" style="display:none">
+            <div class="form-group" style="margin-top:0.45rem"><textarea id="cvImportPaste" placeholder="Paste the full text of your CV here…"></textarea></div>
+            <button class="btn btn-primary btn-sm" style="width:100%" onclick="cvImportParsePasted()">Parse pasted text</button>
+        </div>
+    </div>
+
+    <div id="cvImportStep2" style="display:none">
+        <div id="cvImportConfidence" class="cvi-conf"></div>
+        <div id="cvImportReview"></div>
+        <div class="cvi-actions">
+            <button class="btn btn-primary" onclick="applyCvImport()">Import into editor</button>
+            <button class="btn" onclick="cvImportStartOver()">Start over</button>
+        </div>
+        <div class="cvi-ai">
+            <div class="cvi-ai-head"><strong>Results look off?</strong> Let Gemini AI re-extract it — free with your own API key.</div>
+            <div class="cvi-ai-panel">
+                <div class="form-group"><label for="cvAiKey">Gemini API key</label><input type="password" id="cvAiKey" placeholder="AIza…" autocomplete="off" spellcheck="false"></div>
+                <div class="form-group"><label for="cvAiModel">Model</label><input type="text" id="cvAiModel" list="cviModelList" placeholder="gemini-flash-latest" spellcheck="false"><datalist id="cviModelList"><option value="gemini-flash-latest">latest fast model (recommended)</option><option value="gemini-3.5-flash-lite">stable &amp; budget</option><option value="gemini-3.8-flash">previous-gen flash</option><option value="gemini-4-hydrogen">current generation</option><option value="gemini-2.5-flash-lite">legacy fallback</option></datalist></div>
+                <button class="btn btn-primary btn-sm" id="cvAiRunBtn" onclick="runGeminiExtraction()">Run AI extraction</button>
+                <div id="cvAiStatus" class="cvi-ai-status" style="display:none"></div>
+                <p class="cvi-ai-note">Get a free key at <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">aistudio.google.com/apikey</a>. The key is stored only in this browser and sent only to Google. CV-Genie has no server-side AI — your CV text (or, for scanned PDFs, the PDF itself) goes directly from your browser to Google's Generative Language API and nowhere else. AI extraction also handles unusual layouts and non-English CVs.</p>
+            </div>
+        </div>
+    </div>
 </div></div>
 
 <script>
@@ -1877,7 +1974,662 @@ function parseLinkedInText(t){
   const sm=t.match(/skills?[:\s]+([^\n]+)/i);if(sm)r.skills=sm[1];
   return r;
 }
-const dz=document.getElementById('linkedInDropZone');if(dz){dz.addEventListener('dragover',e=>{e.preventDefault();dz.style.borderColor='var(--text-secondary)';});dz.addEventListener('dragleave',e=>{e.preventDefault();dz.style.borderColor='';});dz.addEventListener('drop',e=>{e.preventDefault();dz.style.borderColor='';const f=e.dataTransfer.files[0];if(f&&f.type==='application/pdf'){const dt=new DataTransfer();dt.items.add(f);document.getElementById('linkedInFile').files=dt.files;importLinkedInPDF({target:{files:dt.files}});}});}
+const dz=document.getElementById('linkedInDropZone');if(dz){dz.addEventListener('dragover',e=>{e.preventDefault();dz.style.borderColor='var(--text-secondary)';});dz.addEventListener('dragleave',e=>{e.preventDefault();dz.style.borderColor='';});dz.addEventListener('drop',e=>{e.preventDefault();e.stopPropagation();dz.style.borderColor='';const f=e.dataTransfer.files[0];if(f&&f.type==='application/pdf'){const dt=new DataTransfer();dt.items.add(f);document.getElementById('linkedInFile').files=dt.files;importLinkedInPDF({target:{files:dt.files}});}});}
+
+// ============ Universal CV Import (local parser + optional Gemini AI) ============
+const CVI_LEVELS=['','Native','A1','A2','B1','B2','C1','C2'];
+const CVI_LANG_NAMES=['English','Spanish','French','German','Italian','Portuguese','Dutch','Swedish','Polish','Arabic','Chinese','Mandarin','Cantonese','Hindi','Bengali','Urdu','Russian','Japanese','Korean','Turkish','Danish','Norwegian','Finnish','Greek','Czech','Romanian','Hungarian','Ukrainian','Vietnamese','Thai','Indonesian','Malay','Punjabi','Tamil','Telugu','Marathi','Gujarati','Kannada','Malayalam','Sinhala','Sinhalese','Nepali','Pashto','Persian','Farsi','Hebrew','Swahili','Catalan','Basque','Galician','Welsh','Irish','Bulgarian','Slovak','Croatian','Serbian','Bosnian','Slovenian','Albanian','Macedonian','Lithuanian','Latvian','Estonian','Afrikaans','Tagalog','Amharic','Somali','Kurdish','Azerbaijani','Uzbek','Kazakh','Mongolian','Burmese','Khmer','Lao','Hausa','Yoruba','Igbo','Zulu','Xhosa'];
+const CVI_ROLE_KW=/(engineer|developer|programmer|manager|consultant|analyst|designer|specialist|architect|scientist|director|coordinator|assistant|officer|accountant|teacher|lecturer|professor|researcher|intern|apprentice|trainee|nurse|doctor|physician|lawyer|attorney|paralegal|technician|administrator|executive|recruiter|advisor|associate|partner|freelance|contractor|scrum\s*master|product\s+owner|chef|bartender|barista|waiter|waitress|server|cashier|sales|marketing|writer|editor|journalist|translator|tutor|volunteer|founder|co-?founder|ceo|cto|cfo|coo|steward|operator|mechanic|electrician|plumber|driver|pilot|head|lead)/i;
+const CVI_CO_KW=/\b(inc|llc|ltd|limited|gmbh|s\.?a\.?|ag|bv|nv|plc|pty|pvt|corp|corporation|company|group|agency|technologies|technology|labs?|solutions|systems|consulting|partners|associates|studios?|media|software|digital|bank|hospital|clinic|universit|institute|college|school|academy|foundation|ministry|department|bureau|communications|networks?|industries|logistics|pharma|capital|ventures|association|organisation|organization|centre|center|council|airlines|hotel|restaurant|cafe|store|shop|retail|energy|petroleum|telecom|insurance|firm)\b/i;
+const CVI_SEC_DEFS=[
+ ['summary',/^(?:(?:personal|professional|career)\s+)?(?:profile|summary|about(?:\s+me)?|objective|personal\s+statement|career\s+overview)\s*$/i],
+ ['experience',/^(?:(?:work|professional|employment|career|relevant)\s+)?(?:experience|employment\s+history|work\s+history|professional\s+background|career\s+history|history|employment)\s*$/i],
+ ['education',/^(?:education|academics?|educational\s+background|academic\s+(?:background|history|qualifications)|qualifications?)\s*(?:\s*[&+]\s*training)?\s*$/i],
+ ['skills',/^(?:(?:technical|core|key|professional|personal|it|digital|computer|special)\s+)?(?:skills|competencies|expertise|technologies|tech\s*stack|strengths|tools)\s*(?:\s*[&+]\s*(?:abilities|tools|interests))?\s*$/i],
+ ['languages',/^(?:languages?|linguistic\s+skills?|language\s+skills?)\s*$/i],
+ ['ignore',/^(?:references|interests|hobbies|awards?|honou?rs|publications?|certificates?|certifications?|licenses?|projects?|volunteer(?:ing)?(?:\s+experience)?|achievements|courses|activities|additional\s+information|personal\s+details|personal\s+information|contact(?:\s+information)?|objective\s+statement)\s*$/i]
+];
+const CVI_MON='(?:jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\\.?';
+const CVI_DATE_PART=`(?:${CVI_MON}\\s*'?(?:19|20)\\d{2}|(?:0?[1-9]|1[0-2])\\/(?:19|20)?\\d{2}|(?:19|20)\\d{2})`;
+const CVI_RANGE_RE=new RegExp('('+CVI_DATE_PART+')\\s*(?:-|\\u2013|\\u2014|to|until|through)\\s*('+CVI_DATE_PART+'|present|current|now|today|ongoing)','i');
+const CVI_IS_BULLET=/^[▪•●◦·∙*o]\s+|^\d{1,2}[.)]\s+|^[-–]\s+/;
+const CVI_DEG_KW=/bachelor|master|ph\.?d|doctora|m\.?sc|b\.?sc|b\.?eng|b\.?tech|m\.?tech|\bba\b|\bma\b|\bmba\b|engineer(?:ing)?(?:'s|\u2019s)?\s+degree|diploma|associate(?:'s|\u2019s)?\s+degree|\bhnd\b|\bhnc\b|a[-\s]levels?|gcse|certificate|llb|llm|\bmd\b|high\s+school|secondary\s+school|lyc\u00e9e|gymnasi|honours|honors/i;
+const CVI_INST_KW=/universit|institut|college|school|academy|polytechnic|\u00e9cole|l'\u00e9cole|business\s+school|law\s+school|medical\s+school/i;
+
+function cviEsc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function cviNormalize(t){return String(t||'').replace(/\r\n?/g,'\n').replace(/\u00a0/g,' ').replace(/([a-z,;])-\n([a-z])/g,'$1$2');}
+function cviLines(t){return cviNormalize(t).split('\n').map(l=>l.replace(/\s+/g,' ').trim()).filter(l=>l&&!/^(?:page\s*)?\d{1,3}\s*(?:\/\s*\d{1,3}|of\s*\d{1,3})$/i.test(l));}
+
+/* ── text extraction: TXT / DOCX / PDF (all client-side) ── */
+async function cviExtractText(file){
+  const name=(file.name||'').toLowerCase();
+  if(name.endsWith('.doc')&&!name.endsWith('.docx'))throw new Error('Legacy .doc files are not supported — please re-save as .docx or PDF first.');
+  if(name.endsWith('.docx')||file.type==='application/vnd.openxmlformats-officedocument.wordprocessingml.document'){
+    const zip=await JSZip.loadAsync(await file.arrayBuffer());
+    const docFile=zip.file('word/document.xml');
+    if(!docFile)throw new Error('This .docx file has no readable document body.');
+    const xml=await docFile.async('string');
+    const text=xml.split(/<\/w:p>/).map(p=>{
+      const s=p.replace(/<w:tab[^>]*\/>/g,'\t').replace(/<w:br[^>]*\/>/g,'\n');
+      return [...s.matchAll(/<w:t(?:\s[^>]*)?>([\s\S]*?)<\/w:t>/g)].map(m=>m[1]).join('');
+    }).join('\n');
+    return {text:text.replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&quot;/g,'"').replace(/&apos;/g,"'").replace(/&#x?([0-9a-f]+);/gi,(m,c)=>{try{return String.fromCodePoint(parseInt(c,16))}catch(e){return m}}).replace(/&amp;/g,'&'),kind:'docx'};
+  }
+  if(name.endsWith('.pdf')||file.type==='application/pdf'){
+    const ab=await file.arrayBuffer();
+    const pdf=await pdfjsLib.getDocument({data:ab.slice(0)}).promise;
+    let text='';
+    for(let p=1;p<=pdf.numPages;p++){
+      const page=await pdf.getPage(p);
+      const tc=await page.getTextContent();
+      let lines=[],cur='',eolCount=0;
+      for(const it of tc.items){
+        if(!('str'in it))continue;
+        cur+=it.str;
+        if(it.hasEOL){lines.push(cur);cur='';eolCount++;}
+      }
+      if(cur)lines.push(cur);
+      if(eolCount<tc.items.length*0.04){ // producer didn't set EOL markers → rebuild lines by y-position
+        const rows=new Map();
+        for(const it of tc.items){
+          if(!('str'in it)||!it.str.trim())continue;
+          const y=Math.round(it.transform[5]/3);
+          if(!rows.has(y))rows.set(y,[]);
+          rows.get(y).push({x:it.transform[4],s:it.str});
+        }
+        lines=[...rows.entries()].sort((a,b)=>b[0]-a[0]).map(([,its])=>its.sort((a,b)=>a.x-b.x).map(i=>i.s).join(' ').trim()).filter(Boolean);
+      }
+      text+=lines.join('\n')+'\n';
+    }
+    return {text:text.trim(),kind:'pdf',bytes:ab};
+  }
+  const t=await file.text();
+  if(!name.endsWith('.txt')&&!name.endsWith('.md')&&/[\u0000-\u0008\u000e-\u001f]/.test(t.slice(0,2000)))throw new Error('Unsupported file type — use PDF, DOCX or a plain-text file.');
+  return {text:t,kind:'txt'};
+}
+function cviBytesToBase64(ab){const u=new Uint8Array(ab);let s='';for(let i=0;i<u.length;i+=0x8000)s+=String.fromCharCode.apply(null,u.subarray(i,i+0x8000));return btoa(s);}
+
+/* ── field heuristics ── */
+function cviHeaderType(line){
+  let l=String(line).replace(/^[\s=*_~#>▪•●◦·∙|>-]+/,'').replace(/[\s=*_~:.\u2013\u2014-]+$/,'').trim();
+  l=l.replace(/^(?:[ivxIVX]{1,4}|\d{1,2})\s*[.)]\s*/,'');
+  if(!l||l.length>38)return null;
+  for(const[k,re]of CVI_SEC_DEFS){if(re.test(l))return k;}
+  return null;
+}
+function cviFindName(lines){
+  for(let i=0;i<Math.min(lines.length,10);i++){
+    let l=lines[i].replace(CVI_IS_BULLET,'').replace(/^[|·—–\s]+/,'').trim();
+    if(!l||l.length>48)continue;
+    if(/curriculum\s+vit|resume|^cv$|@|http|linkedin|\d/i.test(l))continue;
+    if(cviHeaderType(l))continue;
+    const words=l.split(/\s+/);
+    if(words.length<2||words.length>5)continue;
+    const okTitle=words.every(w=>/^[A-Z\u00c0-\u024f'’.\u2010-]/.test(w));
+    const okUpper=l===l.toUpperCase()&&/[A-Z]{3}/.test(l)&&words.length<=4;
+    if(okTitle||okUpper){
+      if(okUpper)l=words.map(w=>w.charAt(0)+w.slice(1).toLowerCase()).join(' ');
+      return {name:l,idx:i};
+    }
+  }
+  return {name:'',idx:-1};
+}
+function cviFindTitle(lines,nameIdx){
+  const cands=[];
+  for(let i=0;i<Math.min(lines.length,12);i++){
+    if(i===nameIdx)continue;
+    const l=lines[i].replace(CVI_IS_BULLET,'').replace(/^[|·—–\s]+/,'').trim();
+    if(!l||l.length<4||l.length>64)continue;
+    if(/@|http|linkedin|\d{4}|curriculum|resume/i.test(l))continue;
+    if(cviHeaderType(l))continue;
+    if(!CVI_ROLE_KW.test(l))continue;
+    const seg=l.split(/\s+[|·]\s+|\s+[\u2013\u2014]\s+|\s+at\s+/i)[0].trim();
+    if(!seg||!CVI_ROLE_KW.test(seg)||seg.split(/\s+/).length>7)continue;
+    cands.push({i,t:seg});
+  }
+  if(!cands.length)return '';
+  cands.sort((a,b)=>Math.abs(a.i-(nameIdx+1))-Math.abs(b.i-(nameIdx+1)));
+  return cands[0].t;
+}
+function cviFindPhone(text){
+  const re=/(?:\+\d{1,3}[\s.-]?)?(?:\(\d{2,4}\)|\d{2,4})[\s.-]?(?:\d{2,4}[\s.-]?){1,3}\d{2,4}/g;
+  let m;
+  while((m=re.exec(text))){
+    const cand=(m[0]||'').trim();
+    const digits=cand.replace(/\D/g,'');
+    if(digits.length<8||digits.length>15)continue;
+    if(/(?:19|20)\d{2}\s*[-\u2013\u2014]\s*(?:19|20)\d{2}/.test(cand))continue;
+    if(/^\d{8,}$/.test(cand)&&!(cand.length>=10&&cand.length<=12&&/^0/.test(cand)))continue;
+    if(/\d{1,2}\/\d{1,2}\/\d{2,4}/.test(cand))continue;
+    if(/@/.test(text.slice(Math.max(0,m.index-1),m.index+1)))continue;
+    return cand.replace(/\s+/g,' ').trim().slice(0,25);
+  }
+  return '';
+}
+function cviFindLocation(lines,nameIdx){
+  const WORD='[A-Z][\\p{L}.\'\\u2019-]+';
+  const PLACE=WORD+'(?:\\s'+WORD+'){0,2}';
+  const re=new RegExp('^('+PLACE+'),\\s*([A-Z]{2}\\b|'+PLACE+')(?:,\\s*[A-Z]{2}\\b)?\\s*$','u');
+  const preRe=new RegExp('^('+PLACE+'),\\s*([A-Z]{2}\\b|'+PLACE+')(?=\\s*[|\\u00b7])','u');
+  const postRe=new RegExp('(?:^|\\s[|\\u00b7]\\s*)('+PLACE+'),\\s*([A-Z]{2}\\b|'+PLACE+')\\s*$','u');
+  for(let i=0;i<Math.min(lines.length,14);i++){
+    if(i===nameIdx)continue;
+    const l=lines[i].replace(CVI_IS_BULLET,'').replace(/^[|\u00b7\u2014\u2013\s]+/,'').replace(/[\s|,;]+$/,'').trim();
+    if(!l)continue;
+    if(/@|http|linkedin/i.test(l)){ // composite contact line: "City, Country | email | phone"
+      if(CVI_ROLE_KW.test(l))continue;
+      const mp=l.match(preRe);
+      if(mp)return mp[0].trim();
+      const mq=l.match(postRe);
+      if(mq)return (mq[1]+', '+mq[2]).trim();
+      continue;
+    }
+    if(!re.test(l))continue;
+    if(CVI_ROLE_KW.test(l))continue;
+    return l;
+  }
+  return '';
+}
+function cviTidyRange(s){return String(s).replace(/\s+/g,' ').replace(/\s*(?:-|to|until|through)\s*/gi,' \u2013 ').replace(/\s+/g,' ').trim().slice(0,40);}
+function cviSplitRoleCompany(s){
+  s=String(s).replace(CVI_IS_BULLET,'').replace(/^[|·:\s]+/,'').replace(/[\s|·]+$/,'').trim();
+  const m=s.match(/^(.{2,60}?)\s*(?:\bat\b|\||\b\u2014\b|\b\u2013\b|\band\s+at\b|,|\u00b7|:)\s*(.{2,60})$/i);
+  if(m){
+    let a=m[1].trim(),b=m[2].trim();
+    const aR=CVI_ROLE_KW.test(a),bR=CVI_ROLE_KW.test(b),aC=CVI_CO_KW.test(a),bC=CVI_CO_KW.test(b);
+    if(aR&&!bR)return{title:a,company:b};
+    if(bR&&!aR)return{title:b,company:a};
+    if(aC&&!bC)return{title:b,company:a};
+    if(bC&&!aC)return{title:a,company:b};
+    return{title:a,company:b};
+  }
+  return{title:s,company:''};
+}
+function cviTidyCompany(c){
+  return String(c).replace(/\s*[\u2013\u2014-]\s*[A-Z][\p{L}]+(?:,\s*[A-Z]{2}\b)?\s*$/u,'').trim().slice(0,80);
+}
+
+/* ── section parsers ── */
+function cviParseSummary(lines){
+  const txt=lines.map(l=>l.replace(CVI_IS_BULLET,'').trim()).filter(Boolean).join(' ').replace(/\s+/g,' ').trim();
+  if(!txt)return '';
+  return txt.length>1200?txt.slice(0,1197)+'\u2026':txt;
+}
+function cviParseSkills(lines){
+  const out=[],seen=new Set();
+  const add=s=>{
+    s=String(s).replace(CVI_IS_BULLET,'').trim();
+    if(!s||s.length>45)return;
+    if(s.split(/\s+/).length>6)return;
+    if(/@|http|linkedin|\d{5,}/i.test(s))return;
+    if(/^(?:a[12]|b[12]|c[12]|native|fluent|beginner|elementary|intermediate|advanced|proficient|professional)$/i.test(s))return;
+    if(/^[a-z]$/i.test(s)&&!/^[crd]$/i.test(s))return;
+    if(!/[a-zA-Z0-9\u00c0-\u024f]/.test(s))return;
+    const k=s.toLowerCase();
+    if(seen.has(k))return;
+    seen.add(k);out.push(s);
+  };
+  for(const line of lines){
+    const m=line.match(/^([^:]{2,32}):\s*(.+)$/);
+    const src=m?m[2]:line;
+    src.split(/[,;\u2022\u00b7|]+/).forEach(add);
+  }
+  return out.slice(0,40);
+}
+function cviParseExperience(lines){
+  const entries=[];let B=[];let cur=null;
+  const finalizeCur=()=>{if(cur){entries.push(cur);cur=null;}};
+  const makeEntry=(dates,preText)=>{
+    finalizeCur();
+    const cands=[...B];
+    if(preText&&preText.length<=70)cands.push(preText);
+    B=[];
+    const e={title:'',company:'',dates:dates||'',description:[]};
+    if(cands.length===1){const r=cviSplitRoleCompany(cands[0]);e.title=r.title;e.company=r.company;}
+    else if(cands.length>=2){
+      const a=cands[cands.length-2],b=cands[cands.length-1];
+      const aR=CVI_ROLE_KW.test(a),bR=CVI_ROLE_KW.test(b);
+      if(aR&&!bR){e.title=a;e.company=b;}
+      else if(bR&&!aR){e.title=b;e.company=a;}
+      else if(aR&&bR){const s=cviSplitRoleCompany(b);if(s.company){e.title=s.title||a;e.company=s.company;}else{e.title=a;e.company=b;}}
+      else{e.title=a;e.company=b;}
+      if(cands.length>2)e.description.push(...cands.slice(0,-2).filter(Boolean));
+    }
+    if(e.title&&e.title===e.company)e.company='';
+    cur=e;
+  };
+  for(let i=0;i<lines.length;i++){
+    const l=lines[i];
+    const rm=CVI_RANGE_RE.exec(l);
+    if(rm){
+      let pre=l.slice(0,rm.index).replace(/[,;|\u00b7\u2013\u2014]\s*$/,'').trim();
+      if(pre.length>70||CVI_IS_BULLET.test(pre))pre='';
+      makeEntry(cviTidyRange(rm[0]),pre);
+      const post=l.slice(rm.index+rm[0].length).replace(/^[\s,;|\u00b7\u2013\u2014-]+/,'').trim();
+      if(post&&post.length<=48&&!/^(?:full|part)[- ]time|hrs?\b|mos\b|yrs?\b|remote|hybrid|onsite/i.test(post)){
+        if(!cur.company&&CVI_CO_KW.test(post))cur.company=post;
+        else if(!cur.title&&CVI_ROLE_KW.test(post))cur.title=post;
+      }
+      continue;
+    }
+    const clean=l.replace(CVI_IS_BULLET,'').trim();
+    const isBullet=CVI_IS_BULLET.test(l);
+    const isShort=clean.length<=70&&!/[.;:]$/.test(clean);
+    if(cur&&(isBullet||!isShort)){cur.description.push(clean);continue;}
+    if(cur&&cur.title===''&&cur.company===''){const r=cviSplitRoleCompany(clean);cur.title=r.title;cur.company=r.company;continue;}
+    if(cur&&cur.title&&!cur.company&&(CVI_CO_KW.test(clean)||clean===clean.toUpperCase())&&clean.length<=45){cur.company=clean;continue;}
+    if(!cur){
+      // before the first date anchor: keep only lines that look like a role or employer
+      if(CVI_ROLE_KW.test(clean)||CVI_CO_KW.test(clean)||(clean===clean.toUpperCase()&&clean.length<=40&&/[A-Z]{3}/.test(clean)))B.push(clean);
+      continue;
+    }
+    B.push(clean);
+  }
+  finalizeCur();
+  if(B.length&&entries.length)entries[entries.length-1].description.push(...B);
+  if(!entries.length){ // fallback: role-ish lines with following bullets
+    let f=null;
+    for(const l of lines){
+      const clean=l.replace(CVI_IS_BULLET,'').trim();
+      if(!CVI_IS_BULLET.test(l)&&clean.length<=70&&CVI_ROLE_KW.test(clean)&&clean.split(/\s+/).length<=6){
+        if(f)entries.push(f);
+        const r=cviSplitRoleCompany(clean);
+        f={title:r.title,company:r.company,dates:'',description:[]};
+      }else if(f){f.description.push(clean);}
+    }
+    if(f)entries.push(f);
+  }
+  return entries.slice(0,12).map(e=>({title:(e.title||'').slice(0,80),company:cviTidyCompany(e.company),dates:(e.dates||'').slice(0,40),description:(e.description||[]).filter(Boolean).join('\n').slice(0,900)})).filter(e=>e.title||e.company||e.description);
+}
+function cviEduParts(c){
+  const s=String(c);
+  const parts=s.split(/\s*,\s*/);
+  if(parts.length<2)return [s];
+  const i=parts.findIndex(p=>CVI_INST_KW.test(p));
+  if(i<=0)return [s];
+  return [parts.slice(0,i).join(', '),parts.slice(i).join(', ')];
+}
+function cviParseEducation(lines){
+  const entries=[];let B=[];let cur=null;
+  const pushCur=()=>{if(cur&&(cur.degree||cur.institution)){entries.push(cur);}cur=null;};
+  for(const l of lines){
+    const clean=l.replace(CVI_IS_BULLET,'').trim();
+    const rm=CVI_RANGE_RE.exec(l);
+    const yr=rm?cviTidyRange(rm[0]):((clean.match(/\b(?:19|20)\d{2}\b/)||[])[0]||'');
+    const isAnchor=!!yr&&clean.length<=75;
+    if(yr&&isAnchor){
+      pushCur();
+      const cutAt=rm?rm.index:clean.indexOf(yr);
+      const pre=l.slice(0,cutAt>0?cutAt:l.length).replace(/[,;|\u00b7\u2013\u2014-]\s*$/,'').trim();
+      const cands=(pre&&pre.length<=90?[...B,pre]:[...B]).flatMap(cviEduParts);
+      B=[];
+      cur={degree:'',institution:'',year:yr.slice(0,20)};
+      for(const c of cands){
+        if(CVI_DEG_KW.test(c)&&!cur.degree)cur.degree=c;
+        else if(CVI_INST_KW.test(c)&&!cur.institution)cur.institution=c;
+        else if(!cur.degree&&c.split(/\s+/).length<=8)cur.degree=c;
+        else if(!cur.institution&&c.length<=60)cur.institution=c;
+      }
+      continue;
+    }
+    if(cur){
+      if(CVI_DEG_KW.test(clean)&&!cur.degree)cur.degree=clean;
+      else if(CVI_INST_KW.test(clean)&&!cur.institution)cur.institution=clean;
+      else if(!cur.institution&&clean.length<=60&&!/@|http/.test(clean))cur.institution=clean;
+      continue;
+    }
+    if(CVI_DEG_KW.test(clean)||CVI_INST_KW.test(clean))B.push(clean);
+  }
+  pushCur();
+  if(B.length){ // degrees without years
+    let pend=null;
+    for(const c of B){
+      if(CVI_DEG_KW.test(c)&&!entries.some(e=>e.degree===c)){pend={degree:c,institution:'',year:''};entries.push(pend);}
+      else if(pend&&CVI_INST_KW.test(c)){pend.institution=c;pend=null;}
+    }
+  }
+  return entries.slice(0,8).map(e=>({degree:(e.degree||'').slice(0,90),institution:(e.institution||'').slice(0,90),year:(e.year||'').slice(0,20)})).filter(e=>e.degree||e.institution);
+}
+function cviLevelFromText(t){
+  const s=String(t==null?'':t).trim();
+  if(CVI_LEVELS.includes(s))return s;
+  const cefr=s.match(/\b([ABC][12])\b/);if(cefr)return cefr[1].toUpperCase();
+  if(/native|mother\s*tongue|first\s*language/i.test(s))return 'Native';
+  if(/fluent|bilingual/i.test(s))return 'C2';
+  if(/advanced|professional|proficient/i.test(s))return 'C1';
+  if(/upper[\s-]?intermediate/i.test(s))return 'B2';
+  if(/intermediate|conversational/i.test(s))return 'B1';
+  if(/basic|elementary/i.test(s))return 'A2';
+  if(/beginner/i.test(s))return 'A1';
+  return '';
+}
+function cviParseLanguages(bodyText){
+  const found=new Map();
+  for(const tok of String(bodyText||'').split(/[\n,;\u2022|\u00b7]/)){
+    const t=tok.trim();
+    if(!t)continue;
+    const name=CVI_LANG_NAMES.find(L=>new RegExp('^'+L+'\\b','i').test(t));
+    if(!name)continue;
+    const level=cviLevelFromText(t);
+    if(!found.has(name.toLowerCase()))found.set(name.toLowerCase(),{language:name,level});
+  }
+  return [...found.values()].slice(0,8);
+}
+
+/* ── main entry: parse raw CV text into the app's data model ── */
+function parseCVText(rawText){
+  const text=cviNormalize(rawText||'');
+  const allLines=cviLines(text);
+  const secs={};let curKey='preamble';
+  for(const l of allLines){
+    const h=cviHeaderType(l);
+    if(h){curKey=h;if(!secs[h])secs[h]=[];continue;}
+    if(!secs[curKey])secs[curKey]=[];
+    secs[curKey].push(l);
+  }
+  const emailM=text.match(/[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/);
+  const liM=text.match(/(?:https?:\/\/)?(?:[a-z]{2,3}\.)?linkedin\.com\/in\/[A-Za-z0-9._%-]{2,60}/i);
+  const {name,idx:nameIdx}=cviFindName(allLines);
+  let experiences=cviParseExperience(secs.experience||[]);
+  let education=cviParseEducation(secs.education||[]);
+  let languages=cviParseLanguages((secs.languages||[]).join('\n'));
+  if(!languages.length){const lm=text.match(/languages?\s*[:\u2013\u2014]\s*([^\n]+)/i);if(lm)languages=cviParseLanguages(lm[1]);}
+  if(!experiences.length&&(text.match(/\b(?:19|20)\d{2}\b/g)||[]).length>=2)experiences=cviParseExperience(allLines);
+  if(!education.length)education=cviParseEducation(allLines);
+  const p={
+    name,nameIdx,
+    title:cviFindTitle(allLines,nameIdx),
+    email:emailM?emailM[0]:'',
+    phone:cviFindPhone(text),
+    linkedin:liM?('https://'+liM[0].replace(/^https?:\/\//i,'')):'',
+    location:cviFindLocation(allLines,nameIdx),
+    summary:cviParseSummary(secs.summary||[]),
+    skillsArr:cviParseSkills(secs.skills||[]),
+    experiences,education,languages
+  };
+  p.skills=p.skillsArr.join(', ');
+  return {...p,...cviScore(p)};
+}
+function cviScore(p){
+  let s=0;const notes=[];
+  if(p.name)s+=15;
+  if(p.email)s+=12;
+  if(p.phone)s+=8;
+  if(p.linkedin)s+=5;
+  if(p.location)s+=4;
+  if(p.title)s+=8;
+  if(p.summary&&p.summary.length>=80)s+=8;else if(p.summary)s+=3;
+  if(p.skillsArr.length>=3)s+=(p.skillsArr.length>=8?14:10);
+  if(p.experiences.length>=1)s+=(p.experiences.length>=2?20:15);
+  if(p.experiences.length&&p.experiences.every(e=>e.dates))s+=5;
+  if(p.education.length>=1)s+=8;
+  if(p.languages.length>=1)s+=2;
+  if(!p.experiences.length)notes.push('no work experience detected');
+  if(!p.education.length)notes.push('no education detected');
+  if(!p.skillsArr.length)notes.push('no skills detected');
+  if(!p.summary)notes.push('no summary detected');
+  const score=Math.min(100,Math.round(s));
+  return {score,level:score>=75?'high':score>=50?'medium':'low',notes};
+}
+
+/* ── Gemini AI fallback (user's own key, direct browser → Google) ── */
+const CVI_GEMINI_DEFAULT='gemini-flash-latest';
+function cviGetKey(){try{return localStorage.getItem('cvGenieGeminiKey')||''}catch(e){return''}}
+function cviSetKey(k){try{k?localStorage.setItem('cvGenieGeminiKey',k):localStorage.removeItem('cvGenieGeminiKey')}catch(e){}}
+function cviGetModel(){try{return localStorage.getItem('cvGenieGeminiModel')||CVI_GEMINI_DEFAULT}catch(e){return CVI_GEMINI_DEFAULT}}
+function cviSetModel(m){try{m&&m!==CVI_GEMINI_DEFAULT?localStorage.setItem('cvGenieGeminiModel',m):localStorage.removeItem('cvGenieGeminiModel')}catch(e){}}
+const CVI_SCHEMA={
+  type:'OBJECT',
+  properties:{
+    name:{type:'STRING',description:'Full name of the CV owner'},
+    title:{type:'STRING',description:'Current or most recent professional role'},
+    email:{type:'STRING'},phone:{type:'STRING'},
+    linkedin:{type:'STRING',description:'LinkedIn profile URL or handle'},
+    location:{type:'STRING',description:'City / country of residence'},
+    summary:{type:'STRING',description:'Professional summary or profile paragraph'},
+    skills:{type:'ARRAY',items:{type:'STRING'},description:'Flat list of individual skills and tools'},
+    experiences:{type:'ARRAY',items:{type:'OBJECT',properties:{title:{type:'STRING'},company:{type:'STRING'},dates:{type:'STRING'},description:{type:'STRING',description:'Achievements, bullet lines joined with \\n'}},required:['title','company','dates','description']}},
+    education:{type:'ARRAY',items:{type:'OBJECT',properties:{degree:{type:'STRING'},institution:{type:'STRING'},year:{type:'STRING'}},required:['degree','institution','year']}},
+    languages:{type:'ARRAY',items:{type:'OBJECT',properties:{language:{type:'STRING'},level:{type:'STRING',description:'One of: Native, A1, A2, B1, B2, C1, C2 — empty string if not stated'}},required:['language','level']}}
+  },
+  required:['name','title','email','phone','linkedin','location','summary','skills','experiences','education','languages']
+};
+function cviAiPrompt(){
+  return ['You are a precise CV/resume parsing engine. Extract structured data from the CV provided.',
+  'Rules:',
+  '- Use ONLY information present in the CV. Never invent, guess or embellish. Missing data = empty string or empty array.',
+  '- Keep the original wording (light whitespace cleanup only).',
+  '- "dates": copy date ranges exactly as written, e.g. "Jan 2020 - Present" or "2018 - 2021".',
+  '- "description": join the role\u2019s achievement bullets with newline characters, without leading bullet symbols.',
+  '- "skills": flat list of individual skills/tools, no categories and no proficiency words.',
+  '- "level": map language proficiency to "", "Native", "A1", "A2", "B1", "B2", "C1", "C2" (fluent/bilingual=C2, advanced/professional=C1, upper-intermediate=B2, intermediate/conversational=B1, basic/elementary=A2, beginner=A1).',
+  '- "title": the current or most recent professional role.',
+  '- Output valid JSON matching the schema exactly.'].join('\n');
+}
+async function cviCallGemini(key,model,parts){
+  const ctl=new AbortController();
+  const to=setTimeout(()=>ctl.abort(),90000);
+  try{
+    const res=await fetch('https://generativelanguage.googleapis.com/v1beta/models/'+encodeURIComponent(model)+':generateContent',{
+      method:'POST',signal:ctl.signal,
+      headers:{'Content-Type':'application/json','x-goog-api-key':key},
+      body:JSON.stringify({contents:[{role:'user',parts}],generationConfig:{temperature:0.1,responseMimeType:'application/json',responseSchema:CVI_SCHEMA}})
+    });
+    const j=await res.json().catch(()=>null);
+    if(!res.ok){
+      const msg=(j&&j.error&&j.error.message)||'';
+      if(res.status===400&&/api\s*key/i.test(msg))throw new Error('That API key was rejected. Double-check it in Google AI Studio.');
+      if(res.status===403)throw new Error('The key has no access to this model (or the Generative Language API is disabled for it).');
+      if(res.status===404)throw new Error('Model "'+model+'" was not found. Pick a different model.');
+      if(res.status===429)throw new Error('Gemini quota exceeded — the free tier has daily limits. Try again later.');
+      if(res.status===503)throw new Error('Gemini is overloaded right now. Try again in a moment.');
+      throw new Error(msg||('Gemini error '+res.status));
+    }
+    if(j&&j.promptFeedback&&j.promptFeedback.blockReason)throw new Error('Gemini blocked this request ('+j.promptFeedback.blockReason+').');
+    const cand=j&&j.candidates&&j.candidates[0];
+    const txt=(((cand||{}).content||{}).parts||[]).map(p=>p.text||'').join('');
+    if(!txt)throw new Error('Gemini returned an empty response.');
+    let data;
+    try{data=JSON.parse(txt);}catch(e){throw new Error('Gemini returned malformed JSON — try again.');}
+    return cviMapAi(data);
+  }finally{clearTimeout(to);}
+}
+function cviMapAi(d){
+  const cl=(v,n)=>String(v==null?'':v).replace(/\s+/g,' ').trim().slice(0,n);
+  const p={
+    name:cl(d.name,60),title:cl(d.title,80),email:cl(d.email,100),phone:cl(d.phone,25),
+    linkedin:cl(d.linkedin,120),location:cl(d.location,60),
+    summary:cl(d.summary,1500),
+    skillsArr:(Array.isArray(d.skills)?d.skills:[]).map(s=>cl(s,45)).filter(Boolean).slice(0,40),
+    experiences:(Array.isArray(d.experiences)?d.experiences:[]).map(e=>({title:cl(e.title,80),company:cl(e.company,80),dates:cl(e.dates,40),description:String(e.description==null?'':e.description).split('\n').map(x=>x.replace(/^[\s\u2022\u25aa\u25cf\u25e6\u00b7*\u2023\u2043-]+/,'').trim()).filter(Boolean).join('\n').slice(0,900)})).filter(e=>e.title||e.company).slice(0,12),
+    education:(Array.isArray(d.education)?d.education:[]).map(e=>({degree:cl(e.degree,90),institution:cl(e.institution,90),year:cl(e.year,20)})).filter(e=>e.degree||e.institution).slice(0,8),
+    languages:(Array.isArray(d.languages)?d.languages:[]).map(e=>({language:cl(e.language,40),level:cviLevelFromText(e.level)})).filter(e=>e.language).slice(0,8)
+  };
+  p.skills=p.skillsArr.join(', ');
+  return {...p,...cviScore(p)};
+}
+function cviMergeResults(base,ai){
+  const m={...ai};
+  ['name','title','email','phone','linkedin','location','summary'].forEach(k=>{if(!m[k]&&base[k])m[k]=base[k];});
+  if(!m.skillsArr.length&&base.skillsArr)m.skillsArr=base.skillsArr;
+  ['experiences','education','languages'].forEach(k=>{if(!(m[k]||[]).length&&base[k]&&base[k].length)m[k]=base[k];});
+  m.skills=m.skillsArr.join(', ');
+  return {...m,...cviScore(m)};
+}
+
+/* ── import UI wiring ── */
+let cvImportData=null;
+let cvImportSource=null;
+function openCvImport(){document.getElementById('cvImportModal').style.display='flex';cvImportReset();}
+function closeCvImport(){document.getElementById('cvImportModal').style.display='none';}
+function cvImportReset(){
+  cvImportData=null;cvImportSource=null;
+  document.getElementById('cvImportStep1').style.display='block';
+  document.getElementById('cvImportStep2').style.display='none';
+  cviHide('cvImportError');cviHide('cvImportStatus');cviHide('cvAiStatus');
+  document.getElementById('cvImportFile').value='';
+}
+function cvImportStartOver(){cvImportReset();showToast('Ready for another CV');}
+function cviShow(id,msg){const el=document.getElementById(id);if(el){el.style.display=msg?'block':'none';if(msg!==undefined)el.textContent=msg;}}
+function cviHide(id){const el=document.getElementById(id);if(el)el.style.display='none';}
+function toggleCvPaste(){const w=document.getElementById('cvImportPasteWrap');const open=w.style.display==='none';w.style.display=open?'block':'none';if(open)document.getElementById('cvImportPaste').focus();}
+function cviShowError(msg){cviHide('cvImportStatus');cviShow('cvImportError',msg);}
+async function cvImportHandleFiles(files){
+  const f=files&&files[0];
+  if(!f)return;
+  cviHide('cvImportError');
+  cviShow('cvImportStatus','Reading "'+f.name+'"…');
+  try{
+    const ex=await cviExtractText(f);
+    cvImportSource={kind:ex.kind,fileName:f.name,text:ex.text,pdfBytes:ex.bytes||null};
+    await cvImportRunParser(ex.text,f.name);
+  }catch(err){
+    cviShowError((err&&err.message)||'Could not read this file.');
+  }
+}
+function cvImportParsePasted(){
+  const t=document.getElementById('cvImportPaste').value;
+  if(t.trim().length<40){cviShowError('Paste the full text of your CV first (at least a few lines).');return;}
+  cvImportSource={kind:'txt',fileName:'pasted text',text:t,pdfBytes:null};
+  cvImportRunParser(t,'pasted text');
+}
+async function cvImportRunParser(text,fileName){
+  cviHide('cvImportError');
+  cviShow('cvImportStatus','Parsing…');
+  await new Promise(r=>setTimeout(r,30));
+  const p=parseCVText(text);
+  const stripped=(text||'').replace(/\s/g,'').length;
+  if(stripped<300)p.notes.unshift('almost no text found — this may be a scanned PDF');
+  cvImportData={...p,source:'parser',include:{
+    basics:!!(p.name||p.title||p.email||p.phone||p.linkedin||p.location),
+    summary:!!p.summary,
+    skills:p.skillsArr.length>0,
+    experience:p.experiences.length>0,
+    education:p.education.length>0,
+    languages:p.languages.length>0
+  }};
+  cviHide('cvImportStatus');
+  renderCvImportReview(fileName);
+}
+function cviGroup(key,label,count,inner){
+  const d=cvImportData;
+  return '<div class="cvi-group"><label class="cvi-g-head"><input type="checkbox" '+(d.include[key]?'checked':'')+' onchange="cvImportData.include[\''+key+'\']=this.checked"><strong>'+label+'</strong><span class="cvi-count">'+(count?count+(count===1?' item':' items'):'nothing found')+'</span><span class="cvi-badge'+(d.source==='ai'?' ai':'')+'">'+(d.source==='ai'?'Gemini AI':'Parser')+'</span></label><div class="cvi-g-body">'+inner+'</div></div>';
+}
+function renderCvImportReview(fileName){
+  const d=cvImportData,E=cviEsc;
+  document.getElementById('cvImportStep1').style.display='none';
+  const s2=document.getElementById('cvImportStep2');
+  s2.style.display='block';
+  const conf=document.getElementById('cvImportConfidence');
+  conf.className='cvi-conf '+d.level;
+  let h='<strong>'+(d.level==='high'?'High-confidence parse':'Confidence: '+d.level)+' \u2014 '+d.score+'/100.</strong> '+(d.level==='high'?'Review below, untick anything you don\u2019t want, then import.':'Check the fields below, or let Gemini AI re-extract them.');
+  if(d.notes.length)h+='<div class="cvi-notes">Heads-up: '+E(d.notes.join(' \u00b7 '))+'.</div>';
+  conf.innerHTML=h;
+  const G=[];
+  const basicRows=[['Name',d.name],['Job title',d.title],['Email',d.email],['Phone',d.phone],['LinkedIn',d.linkedin],['Location',d.location]].filter(r=>r[1]);
+  G.push(cviGroup('basics','Personal details',basicRows.length,basicRows.length?basicRows.map(r=>'<div class="cvi-row"><span class="k">'+r[0]+'</span><span class="v">'+E(r[1])+'</span></div>').join(''):'<p>Nothing detected</p>'));
+  G.push(cviGroup('summary','Summary',d.summary?1:0,d.summary?'<p>'+E(d.summary.slice(0,320))+(d.summary.length>320?'\u2026':'')+'</p>':'<p>Nothing detected</p>'));
+  G.push(cviGroup('skills','Skills',d.skillsArr.length,d.skillsArr.length?'<div class="cvi-chips">'+d.skillsArr.slice(0,18).map(s=>'<span class="cvi-chip">'+E(s)+'</span>').join('')+(d.skillsArr.length>18?'<span class="cvi-chip">+'+(d.skillsArr.length-18)+' more</span>':'')+'</div>':'<p>Nothing detected</p>'));
+  G.push(cviGroup('experience','Work experience',d.experiences.length,d.experiences.length?d.experiences.map(e=>'<div class="cvi-item"><div><strong>'+E(e.title||'\u2014')+'</strong>'+(e.company?' \u2014 '+E(e.company):'')+' <span class="cvi-dates">'+E(e.dates)+'</span></div>'+(e.description?'<p>'+E(e.description.split('\n')[0].slice(0,120))+'</p>':'')+'</div>').join(''):'<p>Nothing detected</p>'));
+  G.push(cviGroup('education','Education',d.education.length,d.education.length?d.education.map(e=>'<div class="cvi-item"><div><strong>'+E(e.degree||'\u2014')+'</strong>'+(e.institution?' \u2014 '+E(e.institution):'')+' <span class="cvi-dates">'+E(e.year)+'</span></div></div>').join(''):'<p>Nothing detected</p>'));
+  G.push(cviGroup('languages','Languages',d.languages.length,d.languages.length?'<div class="cvi-chips">'+d.languages.map(l=>'<span class="cvi-chip">'+E(l.language)+(l.level?' ('+E(l.level)+')':'')+'</span>').join('')+'</div>':'<p>Nothing detected</p>'));
+  document.getElementById('cvImportReview').innerHTML=G.join('');
+  document.getElementById('cvAiKey').value=cviGetKey();
+  document.getElementById('cvAiModel').value=cviGetModel();
+  s2.scrollTop=0;
+}
+async function runGeminiExtraction(){
+  const key=(document.getElementById('cvAiKey').value||'').trim();
+  if(!key){cviAiStatus('Paste a Gemini API key first — get a free one at aistudio.google.com/apikey.',true);return;}
+  const model=(document.getElementById('cvAiModel').value||'').trim()||CVI_GEMINI_DEFAULT;
+  cviSetKey(key);cviSetModel(model);
+  const text=(cvImportSource&&cvImportSource.text)||document.getElementById('cvImportPaste').value||'';
+  if(!text.trim()&&!(cvImportSource&&cvImportSource.pdfBytes)){cviAiStatus('Upload or paste a CV first.',true);return;}
+  const btn=document.getElementById('cvAiRunBtn');
+  btn.disabled=true;
+  cviAiStatus('Asking Gemini ('+model+')\u2026');
+  try{
+    const parts=[{text:cviAiPrompt()}];
+    const stripped=text.replace(/\s/g,'').length;
+    if(cvImportSource&&cvImportSource.kind==='pdf'&&stripped<300){
+      if(!cvImportSource.pdfBytes)throw new Error('The original PDF is needed for scanned files — upload it again.');
+      if(cvImportSource.pdfBytes.byteLength>18*1024*1024)throw new Error('This PDF is too large for AI extraction (max ~18 MB).');
+      parts.push({inline_data:{mime_type:'application/pdf',data:cviBytesToBase64(cvImportSource.pdfBytes)}});
+    }else{
+      parts.push({text:'CV CONTENT:\n'+text.slice(0,90000)});
+    }
+    let p=await cviCallGemini(key,model,parts);
+    if(cvImportData)p=cviMergeResults(cvImportData,p);
+    const prevInc=cvImportData?cvImportData.include:null;
+    const has={basics:!!(p.name||p.title||p.email||p.phone||p.linkedin||p.location),summary:!!p.summary,skills:p.skillsArr.length>0,experience:p.experiences.length>0,education:p.education.length>0,languages:p.languages.length>0};
+    const inc={};
+    Object.keys(has).forEach(k=>{inc[k]=prevInc?(prevInc[k]||has[k]):has[k];});
+    cvImportData={...p,source:'ai',include:inc};
+    renderCvImportReview(cvImportSource?cvImportSource.fileName:'pasted text');
+    cviAiStatus('AI extraction complete ('+p.score+'/100). Review and import below.');
+  }catch(err){
+    cviAiStatus((err&&err.message)||'AI extraction failed.',true);
+  }finally{
+    btn.disabled=false;
+  }
+}
+function cviAiStatus(msg,isErr){
+  const el=document.getElementById('cvAiStatus');
+  el.style.display='block';
+  el.className='cvi-ai-status'+(isErr?' err':'');
+  el.textContent=msg;
+}
+function applyCvImport(){
+  if(!cvImportData)return;
+  const d=cvImportData,inc=d.include||{};
+  const hasExisting=(document.getElementById('fullName').value.trim()||document.getElementById('summary').value.trim()||getExperiences().length||getEducation().length);
+  if(hasExisting&&!window.confirm('Importing will replace the corresponding sections of your current CV. Continue?'))return;
+  pushUndo();
+  if(inc.basics){
+    if(d.name)document.getElementById('fullName').value=d.name;
+    if(d.title)document.getElementById('title').value=d.title;
+    if(d.email)document.getElementById('email').value=d.email;
+    if(d.phone)document.getElementById('phone').value=d.phone;
+    if(d.linkedin)document.getElementById('linkedin').value=d.linkedin;
+    if(d.location)document.getElementById('location').value=d.location;
+  }
+  if(inc.summary&&d.summary)document.getElementById('summary').value=d.summary;
+  if(inc.skills&&d.skillsArr.length)document.getElementById('skills').value=d.skillsArr.join(', ');
+  if(inc.experience&&d.experiences.length){
+    document.getElementById('experienceList').innerHTML='';
+    d.experiences.forEach(e=>{addExpSilent();const is=document.querySelectorAll('#experienceList .dynamic-item');const l=is[is.length-1];if(l){l.querySelectorAll('input')[0].value=e.title||'';l.querySelectorAll('input')[1].value=e.company||'';l.querySelectorAll('input')[2].value=e.dates||'';l.querySelector('textarea').value=e.description||'';}});
+  }
+  if(inc.education&&d.education.length){
+    document.getElementById('educationList').innerHTML='';
+    d.education.forEach(e=>{addEduSilent();const is=document.querySelectorAll('#educationList .dynamic-item');const l=is[is.length-1];if(l){l.querySelectorAll('input')[0].value=e.degree||'';l.querySelectorAll('input')[1].value=e.institution||'';l.querySelectorAll('input')[2].value=e.year||'';}});
+  }
+  if(inc.languages&&d.languages.length){
+    document.getElementById('languageList').innerHTML='';
+    d.languages.forEach(e=>{addLangSilent();const is=document.querySelectorAll('#languageList .dynamic-item');const l=is[is.length-1];if(l){l.querySelector('input').value=e.language||'';l.querySelector('select').value=e.level||'';}});
+  }
+  if(!document.querySelector('#experienceList .dynamic-item'))addExpSilent();
+  if(!document.querySelector('#educationList .dynamic-item'))addEduSilent();
+  if(!document.querySelector('#languageList .dynamic-item'))addLangSilent();
+  updatePreview();initDragDrop();persistState();
+  closeCvImport();
+  showToast('CV imported \u2014 review each section');
+  switchTab('edit',null);
+  if(window.innerWidth<=900)mobileNav('edit');
+}
+const cviDz=document.getElementById('cvImportDropZone');
+if(cviDz){
+  cviDz.addEventListener('dragover',e=>{e.preventDefault();cviDz.style.borderColor='var(--text-secondary)';});
+  cviDz.addEventListener('dragleave',e=>{e.preventDefault();cviDz.style.borderColor='';});
+  cviDz.addEventListener('drop',e=>{
+    e.preventDefault();e.stopPropagation();cviDz.style.borderColor='';
+    const f=e.dataTransfer.files&&e.dataTransfer.files[0];
+    if(!f)return;
+    if(!/\.(pdf|docx|txt|md)$/i.test(f.name||'')){cviShowError('Please drop a PDF, DOCX or plain-text file.');return;}
+    const dt=new DataTransfer();dt.items.add(f);
+    document.getElementById('cvImportFile').files=dt.files;
+    cvImportHandleFiles(dt.files);
+  });
+}
 
 // ============ JSON backup / persistence ============
 function exportJSON(){const d={version:'2.0',...getState()};saveAs(new Blob([JSON.stringify(d,null,2)],{type:'application/json'}),'cv-genie-backup.json');}
