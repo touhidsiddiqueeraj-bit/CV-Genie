@@ -1,0 +1,33 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  validate:
+    name: Validate app & docs
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install js-yaml (workflow linting)
+        run: npm install --no-save js-yaml
+
+      - name: Validate index.html, template registry & README assets
+        run: node scripts/validate.js
+
+      - name: Check bundled file size
+        run: |
+          SIZE=$(stat -c%s index.html)
+          echo "index.html is $SIZE bytes"
+          if [ "$SIZE" -gt 400000 ]; then
+            echo "::warning::index.html exceeds 400 KB — consider splitting assets"
+          fi

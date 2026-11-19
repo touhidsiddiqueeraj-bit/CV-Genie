@@ -1,310 +1,275 @@
-🧞 CV Genie — Documentation
-Version 1.0
+<div align="center">
 
-CV Genie is a professional, client-side CV (Curriculum Vitae) builder designed to help users create beautiful, ATS-friendly resumes with zero friction. It features 13 distinct templates, server-rendered PDF/DOCX export, rich content assistance, deep ATS analysis, and a fully responsive mobile experience.
+# CV Genie
 
-Live at: https://touhidsiddiqueeraj-bit.github.io/CV-Genie/
+**A fast, private, minimalist CV builder — 18 templates including Europass, live ATS analysis, profile photos, and PDF / DOCX / RTF export.**
 
-Table of Contents
-Overview & Goals
+[![CI](https://github.com/touhidsiddiqueeraj-bit/CV-Genie/actions/workflows/ci.yml/badge.svg)](https://github.com/touhidsiddiqueeraj-bit/CV-Genie/actions/workflows/ci.yml)
+[![Deploy](https://github.com/touhidsiddiqueeraj-bit/CV-Genie/actions/workflows/deploy.yml/badge.svg)](https://github.com/touhidsiddiqueeraj-bit/CV-Genie/actions/workflows/deploy.yml)
+[![Release](https://github.com/touhidsiddiqueeraj-bit/CV-Genie/actions/workflows/release.yml/badge.svg)](https://github.com/touhidsiddiqueeraj-bit/CV-Genie/actions/workflows/release.yml)
 
-Architecture & Tech Stack
+[Live demo](https://touhidsiddiqueeraj-bit.github.io/CV-Genie/) · [Templates](#-templates) · [What's new](#-whats-new-in-v20) · [Documentation](#-documentation)
 
-Feature Breakdown
+</div>
 
-The Dashboard & Mobile Navigation
+---
 
-Smart Tabs (Edit, Content, Design, ATS, Tools)
+![CV Genie — app overview](docs/images/hero-light.png)
 
-CV Templates & Live Preview
+## ✦ Why CV Genie
 
-Content Management
+- **Private by default** — everything runs in your browser. No accounts, no tracking, no data leaves your device (unless you explicitly use the optional server-rendered exports).
+- **Zero friction** — no build step, no dependencies to install. One HTML file, open it and go.
+- **ATS-aware** — a built-in analyser scores your CV against role-specific keyword dictionaries and shows exactly what's missing.
+- **Serious output** — high-quality PDF, editable DOCX and RTF, plus bulk export of all 18 templates in one ZIP.
+- **Works everywhere** — responsive down to phone screens, dark mode, offline-capable (PWA service worker).
 
-Design Customisation
+## ✦ What's new in v2.0
 
-ATS Analyser & Widget
+| Area | Change |
+|---|---|
+| **UI** | Complete minimalist redesign — neutral palette, hairline borders, stroke icons, clean type scale, calmer animations. The app chrome gets out of the way of your content. |
+| **Europass CV** | New official-style Europass template with the CEFR self-assessment grid (Listening / Reading / Spoken interaction / Spoken production / Writing), mother-tongue handling, dated work & education tables and the classic "Job applied for" header. |
+| **4 more templates** | **Nordic** (Scandinavian minimalism), **Swiss** (International Typographic Style), **Academic** (conservative serif) and **Compact** (dense one-pager) — 18 templates in total. |
+| **Profile photos** | Photo shape (circle / rounded / square), photo size (S / M / L), one-tap remove, and a cleaner crop-and-rotate editor. Photos now render in *every* template. |
+| **Languages** | New Languages section with Native / A1–C2 levels. Feeds the Europass CEFR grid and renders as a styled list in other templates. Also picked up from LinkedIn imports. |
+| **Content** | 20 summary templates (was 15) and 10 skill categories (added Legal and Science & Research). |
+| **Bug fix** | Restoring state (undo/redo, versions, share links, JSON import) previously dropped the person's name — fixed. |
+| **CI/CD** | GitHub Actions for validation, Pages deployment and releases (see [CI/CD](#-cicd)). |
+| **Docs** | This README, with screenshots of every template. |
 
-Export System
+---
 
-Data Portability & Utilities
+## ✦ Features
 
-State Management & Undo/Redo
+### Live editor with instant preview
 
-Important Global Variables & Data Structures
+Every keystroke updates the A4 preview (debounced 200 ms). Sections are collapsible and reorderable by drag-and-drop; experience, education and language entries are drag-reorderable too.
 
-API Endpoints (Server-side)
+![Editor](docs/images/editor.png)
 
-Keyboard Shortcuts & Accessibility
+### Profile photos
 
-Service Worker & PWA Enhancements
+Upload a picture, crop and rotate it in-browser (Cropper.js), then choose its **shape** — circle, rounded or square — and its **size** (S / M / L). The photo flows into all 18 templates: square with a hairline border on Europass, a framed circle on Modern, a colour-backed circle on Sidebar Bold. Shape and size controls update every template instantly, and the settings travel with saves, share links and version history.
 
-Common Maintenance Tasks
+### ATS analyser
 
-Adding a new CV Template
+Type a target role and the analyser matches it against a dictionary of 80+ roles and their keywords, then scores your CV live. Click any missing keyword to inject it straight into your Skills field. The score and checklist stay pinned next to the preview.
 
-Adding a new Font Pair
+![ATS analyser](docs/images/ats.png)
 
-Updating ATS Keyword Roles
+### Template gallery
 
-Overview & Goals
-CV Genie is designed to replace complex, bloated CV builders with a fast, privacy-respecting alternative. All data stays in the browser (except when explicitly exporting via a server for high-quality rendering). The application aims to:
+Browse all 18 designs with live layout wireframes, or switch instantly from the toolbar dropdown.
 
-Provide instant visual feedback for every change.
+![Template gallery](docs/images/gallery.png)
 
-Offer serious document generation (PDF, DOCX, RTF) suitable for professional use.
+### Design controls
 
-Help users pass Applicant Tracking Systems (ATS) with built-in keyword analysis.
+Six font pairings (now properly loaded as web fonts, so exports match the preview) and eight accent colours.
 
-Work seamlessly on mobile devices, including the ability to switch between editing and previewing.
+![Design tab](docs/images/design.png)
 
-Architecture & Tech Stack
-The application is a single, self-contained HTML file (SPA). There is no build step, no framework — just vanilla JavaScript, CSS, and carefully chosen libraries loaded from CDN.
+### Export
 
-Frontend Libraries:
+Pick any combination of high-quality server PDF, instant client PDF, server DOCX and instant RTF — or export **all 18 templates** in one ZIP.
 
-html2pdf.js: Client-side PDF generation from HTML.
+![Export dialog](docs/images/export.png)
 
-SortableJS: Drag-and-drop reordering for form sections and experience/education entries.
+### Mobile & dark mode
 
-JSZip & FileSaver: Bundling multiple files (e.g., all 13 templates) into a ZIP download.
+A dedicated mobile layout with edit/preview navigation, and a full dark theme (auto-detected from your OS, manually toggleable).
 
-html2canvas: Rasterising the CV preview for client-side PDF/PNG.
+| Mobile — edit | Mobile — preview | Dark mode |
+|:---:|:---:|:---:|
+| ![Mobile edit](docs/images/mobile-edit.png) | ![Mobile preview](docs/images/mobile-preview.png) | ![Dark mode](docs/images/hero-dark.png) |
 
-pdf.js: Extracting text from LinkedIn profile PDF uploads.
+### Data portability
 
-Cropper.js: In-browser photo cropping and rotation.
+- **LinkedIn import** — upload your LinkedIn "Save to PDF" export and autofill the form (experiences, education, skills and languages).
+- **Share links** — the entire CV is LZ-compressed into a URL. Anyone with the link sees your exact CV; nothing is sent to a server.
+- **JSON backup** — full export/import of your state.
+- **Version history** — save and restore up to 10 named snapshots.
+- **Autosave** — state persists to `localStorage` every 5 minutes and when the tab is hidden.
 
-LZ-String: Compressing CV state into shareable URL strings.
+---
 
-External Server (Microservice):
+## ✦ Templates
 
-A companion Node.js server exposes two endpoints (/export-pdf and /export-docx) for generating high-quality, typographically precise files using headless Chrome and libraries like docx (on the server). The client gracefully falls back to browser-based exports if the server is unavailable.
+All 18 templates rendered with the same sample data:
 
-Browser APIs Used:
+| | | |
+|:---:|:---:|:---:|
+| [![Classic](docs/images/templates/classic.png)](docs/images/templates/classic.png) | [![Modern](docs/images/templates/modern.png)](docs/images/templates/modern.png) | [![Nordic](docs/images/templates/nordic.png)](docs/images/templates/nordic.png) |
+| **Classic** — traditional serif | **Modern** — colour header, two columns | **Nordic** — Scandinavian minimalism |
+| [![Minimal](docs/images/templates/minimal.png)](docs/images/templates/minimal.png) | [![Swiss](docs/images/templates/swiss.png)](docs/images/templates/swiss.png) | [![Executive](docs/images/templates/executive.png)](docs/images/templates/executive.png) |
+| **Minimal** — light and elegant | **Swiss** — typographic grid | **Executive** — boardroom small-caps |
+| [![Academic](docs/images/templates/academic.png)](docs/images/templates/academic.png) | [![Europass](docs/images/templates/europass.png)](docs/images/templates/europass.png) | [![Compact](docs/images/templates/compact.png)](docs/images/templates/compact.png) |
+| **Academic** — conservative, centred | **Europass** — EU format with CEFR grid | **Compact** — dense one-pager |
+| [![Sidebar Bold](docs/images/templates/sidebar-bold.png)](docs/images/templates/sidebar-bold.png) | [![Timeline](docs/images/templates/timeline.png)](docs/images/templates/timeline.png) | [![Tabular](docs/images/templates/tabular.png)](docs/images/templates/tabular.png) |
+| **Sidebar Bold** — full-colour sidebar | **Timeline** — visual career timeline | **Tabular** — structured tables |
+| [![Newspaper](docs/images/templates/newspaper.png)](docs/images/templates/newspaper.png) | [![Magazine](docs/images/templates/magazine.png)](docs/images/templates/magazine.png) | [![Infographic](docs/images/templates/infographic.png)](docs/images/templates/infographic.png) |
+| **Newspaper** — two-column density | **Magazine** — editorial masthead | **Infographic** — data cards |
+| [![Creative](docs/images/templates/creative.png)](docs/images/templates/creative.png) | [![Colorful](docs/images/templates/colorful.png)](docs/images/templates/colorful.png) | [![Corporate](docs/images/templates/corporate.png)](docs/images/templates/corporate.png) |
+| **Creative** — tag-based skills | **Colorful** — bold gradient | **Corporate** — navy frame |
 
-Service Worker: Caches the app shell for offline access.
+### About the Europass template
 
-localStorage: Saves the current CV state and version history.
+The [Europass CV](https://europa.eu/europass/en) is the European Union's standard CV format. CV Genie's implementation:
 
-Clipboard API: For copying share links.
+- Header with photo, name and **Job applied for** (uses your job title field).
+- Personal information grid (email, telephone, address, LinkedIn).
+- **Work experience** and **Education and training** as dated tables, matching the official layout.
+- **Language skills** with mother tongue(s) and the CEFR self-assessment grid:
 
-Feature Breakdown
-The Dashboard & Mobile Navigation
-The UI is split into a left-side Form Panel (the editor) and a main Preview Panel (the live CV).
+| Language | Listening | Reading | Spoken interaction | Spoken production | Writing |
+|---|---|---|---|---|---|
+| French | B2 | B2 | B2 | B2 | B2 |
 
-Desktop (≥901px): The form panel and preview panel sit side-by-side. A unified toolbar above the preview handles template switching, undo/redo, export, and design quick-access.
+Add languages in the **Languages** section of the Edit tab, choosing *Native* for your mother tongue(s) or a CEFR level (A1–C2) for others. The grid fills each skill column with the chosen level — edit the source if you need per-skill levels.
 
-Mobile (<901px): The form panel becomes a full-screen overlay. A floating "Preview" button (bottom-right) switches to the preview, where a sticky bottom nav bar lets you jump back to Edit, Preview, or Export.
+---
 
-Edit Mode: Nav bar is hidden; the form panel is shown.
+## ✦ Documentation
 
-Preview Mode: Form panel is hidden; the CV is shown full-width, and the bottom nav bar appears for quick actions.
+### Getting started
 
-Smart Tabs
-The form panel is organised into five tabs, keeping the editor clean even on small screens:
+No build step. Either open `index.html` directly, or serve the folder (recommended, so the service worker and CDN fonts behave consistently):
 
-✏️ Edit: All core CV sections (Personal Info, Summary, Skills, Experience, Education). Sections are collapsible and reorderable via drag-and-drop.
+```bash
+# any static server works
+python3 -m http.server 8080
+# or
+npx serve .
+```
 
-📚 Content: Content assistants.
+Then open http://localhost:8080. To publish your own copy, push to a GitHub repo and enable GitHub Pages — the included [deploy workflow](.github/workflows/deploy.yml) handles it automatically.
 
-Summary Templates: 15 role-specific professional summaries; click one, preview it in a confirmation dialog, and apply it to your CV.
+### Architecture
 
-Skill Cloud: Browse skills by category (Tech, Business, Creative, etc.) in a chip cloud. Select multiple and inject them into your Skills field.
+The application is a single, self-contained HTML file (SPA) — vanilla JavaScript, CSS and carefully chosen libraries loaded from CDN. There is no framework and no build step.
 
-🎨 Design: Visual settings.
+**Frontend libraries**
 
-Font Pairing: Choose from 6 typography combinations (e.g., Georgia, Inter, Playfair).
+| Library | Purpose |
+|---|---|
+| html2pdf.js / html2canvas | Client-side PDF and PNG rendering |
+| SortableJS | Drag-and-drop reordering (sections and list items) |
+| JSZip + FileSaver.js | Bulk ZIP export of all templates |
+| pdf.js | Text extraction from LinkedIn PDF uploads |
+| Cropper.js | In-browser photo cropping and rotation |
+| LZ-String | Compressing CV state into shareable URLs |
 
-Accent Color: 8 preset colours to personalise the CV theme.
+**Optional export microservice** — a companion Node.js server (`/export-pdf`, `/export-docx`) renders high-quality files with headless Chrome and the `docx` library. The client falls back to browser-based exports when it is unavailable. See [API endpoints](#api-endpoints-server-side) for the contract.
 
-🎯 ATS: A powerful built-in analyser to check your CV's compatibility with Applicant Tracking Systems.
+**Project structure**
 
-Target Role: Type a target job title (e.g., Software Engineer). The system parses this and compiles a relevant keyword list.
+```
+.
+├── index.html                  # the entire app (UI + CSS + JS)
+├── docs/images/                # screenshots used by this README
+│   └── templates/*.png         # all 18 template previews
+├── scripts/
+│   └── validate.js             # CI validation (structure, JS syntax, registry, assets)
+└── .github/workflows/
+    ├── ci.yml                  # validation on push/PR
+    ├── deploy.yml              # GitHub Pages deployment
+    └── release.yml             # tagged releases with packaged artifact
+```
 
-Custom Keywords: Manually add keywords not in the predefined lists; they are flagged with a star in the cloud.
+### Smart tabs
 
-Keyword Cloud: Shows every keyword the analyser is looking for. Present keywords are green, missing keywords are red. Clicking any missing keyword instantly adds it to your custom list and injects it into your Skills section.
+| Tab | Contents |
+|---|---|
+| **Edit** | Personal info (photo, contact), Summary, Skills, Experience, Education, Languages — all collapsible and reorderable |
+| **Content** | 20 summary templates · skill cloud (10 categories) |
+| **Design** | Font pairing (6) · accent colour (8 presets) |
+| **ATS** | Score ring, section checklist, target role, custom keywords, keyword cloud |
+| **Tools** | LinkedIn import · JSON backup · share link · version history |
 
-Score Ring: A live donut chart showing your percentage match.
+### State management & undo/redo
 
-Checklist: Quick pass/fail for essential sections (Contact, Summary, Skills, etc.).
+The whole CV is serialised by `getState()` into one plain object (template, colour, font pair, photo settings, section order, fields, experiences, education, languages, ATS keywords). Undo/redo stacks keep up to 50 snapshots; `restoreState()` rebuilds the form and preview from any snapshot. The same object powers share links, JSON backup, version history and autosave (`localStorage`, key `cvGenie_v2.0`, with migration from the v1 key).
 
-🔧 Tools: Utilities and data management.
+### API endpoints (server-side)
 
-Import LinkedIn Profile: Upload a LinkedIn "Save to PDF" export to autofill your CV.
+`POST /export-pdf`
 
-JSON Backup: Export/import your entire CV state as a JSON file for safekeeping.
-
-Share Link: Compress the entire CV state into an encoded URL parameter for easy sharing.
-
-Version History: Manually snapshot your CV to save and restore up to 10 versions.
-
-CV Templates & Live Preview
-13 professionally designed templates are available. The preview updates live with every keystroke, debounced by 200ms for performance.
-
-Template	Style Description
-Classic	Traditional serif, centered name, simple and elegant.
-Modern	Clean, colored header, two-column body.
-Tabular	Structured table-based layout for technical or data roles.
-Minimal	Light, airy, great for creative fields.
-Colorful	Bold gradient header and sidebar.
-Executive	Boardroom-ready, small caps, double-rule borders.
-Timeline	Visual timeline for career progression.
-Newspaper	Two-column layout, dense and information-rich.
-Magazine	Editorial feel with a large colored masthead.
-Infographic	Icon and card-based layout for visual impact.
-Creative	Tag-based skills display and unique contact capsule.
-Sidebar Bold	Prominent colored sidebar with contact/skills.
-Corporate	Dark navy corporate header, clean and conservative.
-The preview panel also shows an ATS Score Sidebar (desktop) / Strip (mobile) with a mini score ring and checklist, synced with the full ATS tab.
-
-Content Management
-Sections (Summary, Skills, Experience, Education) can be reordered by dragging their ⋮⋮ handles. The preview reflects the new order.
-
-Dynamic Items: Experience and Education entries are draggable to reorder within their lists. Each entry has:
-
-Drag handle (⋮⋮)
-
-A red × remove button.
-
-Fields for title, company/organisation, dates, and a description textarea.
-
-Photo: Circular profile picture upload with integrated cropping and rotation (via Cropper.js). Max 5MB. The photo appears conditionally in every template.
-
-Design Customisation
-Accent Color: The selected color (--cv-color CSS variable) is used for borders, headers, skill tags, etc., across all templates.
-
-Font Pairs: Changes --cv-font-heading and --cv-font-body CSS variables, instantly reflected in the preview and PDF exports.
-
-ATS Analyser & Widget
-The ATS (Applicant Tracking System) feature is a deep integration designed to maximise interview chances.
-
-How it scores: You provide a Target Role. The system matches it against a hardcoded dictionary of ~60+ roles → keywords. It merges these role keywords with your custom-chipped keywords. The score is the percentage of these total keywords found in your CV text.
-
-Interactive Cloud: This is the core user workflow. You see exactly which keywords are missing. A single click adds any missing keyword both to your analyser list and directly to the Skills field of your CV, instantly improving your score.
-
-System-wide sync: The score, ring, and checklist are mirrored in the persistent ATS sidebar widget visible in the Preview panel.
-
-Export System
-Exporting is handled via a single modal. Users can select any combination of formats:
-
-📕 High-Quality PDF (Server): Sends the raw HTML and computed styles of the CV preview to the server, which renders it with headless Chrome for perfect typography. Recommended for final submissions.
-
-📕 PDF (Instant): Renders the CV client-side using html2pdf.js. Works offline, suitable for quick drafts.
-
-📄 DOCX (Server): Sends structured JSON (name, experiences, etc.) to a server endpoint that assembles a native Word document using the docx npm library. Fully editable.
-
-📄 RTF (Instant): Generates a Rich Text Format file entirely in the browser. A solid fallback for lightweight, editable text documents.
-
-Bulk Export: The "Export All 13 Templates as ZIP" button iterates through every template with your current data and generates a zip file containing the selected formats for all 13 designs.
-
-Data Portability & Utilities
-JSON Backup: Full export and import of your CV state. The state structure is versioned (v: '1.0') for future compatibility.
-
-Shareable Links: Uses LZ-String to compress the entire state into a URL. Anyone with the link can load your exact CV into their browser (no data is sent to a server).
-
-Local Persistence: The app autosaves the state to localStorage under the key cvGenie_v2.0 every 30 seconds. It also migrates data from the cvGenie_v1.0 key on first load.
-
-Version History: The user can manually save named versions (up to 10) to localStorage and restore or delete them.
-
-State Management & Undo/Redo
-The entire CV state is serialised into a single JavaScript object by the getState() function. The essentials are:
-
-Undo Stack: A capped (50 items) array of state objects. Every structural change (addExperience, section reorder, manual edit) pushes the current state.
-
-Redo Stack: Cleared on any new undoable action.
-
-Restoration: restoreState() completely rebuilds the form and preview from a state object, including repopulating dynamic fields and setting all visual preferences.
-
-Important Global Variables & Data Structures
-Understanding these will help you modify the app.
-
-Variable	Type	Description
-currentTemplate	string	The active template slug (e.g., 'modern').
-currentColor	string	Hex color code for the accent (e.g., '#059669').
-currentFontPair	number	Index of the active font pair in the FONT_PAIRS array.
-photoData	string	Base64-encoded data URL of the cropped profile photo, or null.
-sectionOrder	string[]	E.g., ['summary', 'skills', 'experience', 'education'].
-customKWList	string[]	User-entered custom ATS keywords, stored in lowercase.
-versionSlots	object[]	Array of {timestamp, preview, state} objects for version history.
-exportSel	object	Boolean flags for the export modal: serverPdf, clientPdf, serverDocx, rtf.
-pendindLinkedInData	object	Parsed data from an uploaded LinkedIn PDF, awaiting user confirmation.
-TEMPLATE_META: Object keyed by template slug, storing name, icon, and desc for the UI.
-SUMMARY_TEMPLATES: Array of {label, text} for the 15 pre-written summary options.
-SKILL_CATEGORIES: Object mapping a category name to an array of skill strings.
-ROLE_KW (inside runATSAnalysis): A massive dictionary mapping role names (e.g., 'software engineer') to arrays of keywords.
-
-API Endpoints (Server-side)
-The app expects a thin server running at a configurable base URL (default set in PDF_SERVER_URL and DOCX_SERVER_URL variables). The server provides two endpoints:
-
-POST /export-pdf
-
-Request Body (JSON):
-
-json
+```json
 {
-  "html": "<div class=\"cv-preview cv-modern\">...</div>",
+  "html": "<div class=\"cv-preview cv-modern\">…</div>",
   "color": "#2563eb",
   "fontHeading": "Georgia, serif",
   "fontBody": "Georgia, serif"
 }
-Response: application/pdf binary download.
+```
 
-POST /export-docx
+Response: `application/pdf` binary.
 
-Request Body (JSON):
+`POST /export-docx`
 
-json
+```json
 {
   "name": "John Doe",
   "title": "Software Engineer",
-  "contact": "john@example.com | ...",
-  "summary": "...",
-  "skills": "...",
-  "experiences": [{ "title": "...", "company": "...", "dates": "...", "description": "..." }],
-  "education": [{ "degree": "...", "institution": "...", "year": "..." }]
+  "contact": "john@example.com | …",
+  "summary": "…",
+  "skills": "…",
+  "experiences": [{ "title": "…", "company": "…", "dates": "…", "description": "…" }],
+  "education": [{ "degree": "…", "institution": "…", "year": "…" }],
+  "languages": [{ "language": "English", "level": "Native" }]
 }
-Response: application/vnd.openxmlformats-officedocument.wordprocessingml.document binary download.
+```
 
-Both endpoints handle CORS and should return structured JSON errors ({ "error": "message" }) on failure.
+Response: `application/vnd.openxmlformats-officedocument.wordprocessingml.document` binary.
 
-Keyboard Shortcuts & Accessibility
-Ctrl+Z / Cmd+Z: Undo (only when not in a text field).
+Both endpoints should handle CORS and return `{ "error": "message" }` JSON on failure.
 
-Ctrl+Y / Cmd+Y or Ctrl+Shift+Z: Redo (only when not in a text field).
+### Keyboard shortcuts & accessibility
 
-Ctrl+S / Cmd+S: Suppressed to prevent the browser save dialog.
+- `Ctrl/Cmd+Z` — undo · `Ctrl/Cmd+Y` — redo (outside text fields)
+- `Ctrl/Cmd+S` — suppressed (prevents the browser save dialog)
+- Section headers are clickable/focusable; icon buttons carry `aria-label`s; focus-visible rings throughout; dark mode honours `prefers-color-scheme` on first visit.
 
-Tab Navigation: Form is standard HTML; Tab and Shift+Tab navigate all fields.
+### PWA
 
-Section Collapse: Headers are keyboard-focusable buttons.
+A minimal service worker (registered from a blob URL, cache `cvgenie-v2`) caches the app shell for offline use with a cache-first strategy.
 
-Color Contrast: Dark mode is fully supported and auto-detected on load via prefers-color-scheme or manual toggle.
+## ✦ CI/CD
 
-Service Worker & PWA Enhancements
-A minimal Service Worker is registered on the fly from a blob URL. It caches the root (/) under the cache name cvgenie-v1, allowing the app to load offline. The install and fetch events handle caching; skipWaiting ensures the new worker activates immediately. This is a basic "cache-first" strategy suitable for the static single-file nature of the app.
+Three GitHub Actions workflows:
 
-Common Maintenance Tasks
-Adding a new CV Template
-Add the slug string to the TEMPLATES array (e.g., 'fresh').
+| Workflow | Trigger | What it does |
+|---|---|---|
+| [ci.yml](.github/workflows/ci.yml) | push to `main`, PRs | Runs `scripts/validate.js`: HTML structure, tag balance, `node --check` on every inline script, template registry consistency (TEMPLATES ↔ TEMPLATE_META ↔ THUMB_WIRES ↔ switch cases), README image references, workflow YAML parsing, file-size guard |
+| [deploy.yml](.github/workflows/deploy.yml) | push to `main`, manual | Deploys the repo to GitHub Pages (upload artifact → deploy-pages). Enable "GitHub Actions" as the Pages source in repo settings |
+| [release.yml](.github/workflows/release.yml) | `v*` tags | Validates, packages `index.html` into a versioned ZIP (+ SHA-256) and publishes a GitHub Release with generated notes |
 
-Add its metadata to TEMPLATE_META.
+## ✦ Common maintenance tasks
 
-In the _updatePreviewNow() function's giant switch statement, add a new case 'fresh' block. Build the html string using the same helper variables ($eH, $dH, esc(), $ph, etc.).
+### Adding a new CV template
 
-If the new template needs unique CSS, add a .cv-preview.cv-fresh rule in the <style> block.
+1. Add the slug to the `TEMPLATES` array (keep `TEMPLATE_META`, `THUMB_WIRES` and the switch in sync — CI checks this).
+2. Add `{name, desc}` to `TEMPLATE_META` and a wireframe to `THUMB_WIRES` (tiny div-based layout sketch shown in the gallery).
+3. Add a `case 'slug':` to the switch in `_updatePreviewNow()`, building HTML from the shared helpers (`esc()`, `eH`, `dH`, `langLines`, `ph`, `skillList`, `contactLines`).
+4. Add any template-specific CSS under `.cv-preview.cv-slug { … }`.
 
-Adding a new Font Pair
-Add an object to the FONT_PAIRS array: {name:'New Pair', heading:'...', body:'...'}.
+### Adding a font pair
 
-You may need to import the font in the <style> tag (e.g., an @import statement for Google Fonts) if it's not already loaded by the user's OS.
+Append `{name, heading, body}` to `FONT_PAIRS` and add the families to the Google Fonts `<link>` in `<head>` so the preview and exports render them.
 
-The new pair will automatically appear in the Design tab and Preview toolbar.
+### Updating ATS keyword roles
 
-Updating ATS Keyword Roles
-Locate the ROLE_KW variable inside the runATSAnalysis() function. The targetRole input is matched (longest-match-wins) against the keys of this object. The matching is flexible: the user's typed role can contain the key, or the key can contain the typed role.
+Edit the `ROLE_KW` dictionary inside `runATSAnalysis()`. Target roles are matched longest-first and case-insensitively.
 
-To add a role: Add a new key (e.g., 'architect') with an array of relevant keywords.
+### Regenerating README screenshots
 
-To tune keywords: Simply edit the arrays. Remember all matching is case-insensitive.
+Serve the repo, then use Playwright against `restoreState()` with sample data and `changeTemplate(t)` — screenshot `#cvScaleOuter` per template into `docs/images/templates/`.
 
+---
+
+<div align="center">
+
+**[Live demo](https://touhidsiddiqueeraj-bit.github.io/CV-Genie/)** · Built with vanilla HTML, CSS and JavaScript.
+
+</div>

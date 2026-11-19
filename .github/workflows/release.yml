@@ -1,0 +1,41 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Create release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Validate
+        run: |
+          npm install --no-save js-yaml
+          node scripts/validate.js
+
+      - name: Package app
+        run: |
+          mkdir -p dist
+          zip -j "dist/cv-genie-${{ github.ref_name }}.zip" index.html
+          sha256sum index.html | tee "dist/cv-genie-${{ github.ref_name }}.sha256"
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist/*.zip
+            dist/*.sha256
+          generate_release_notes: true
