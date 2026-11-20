@@ -2,7 +2,7 @@
 
 # CV Genie
 
-**A fast, private, minimalist CV builder — 18 templates including Europass, a matching cover letter builder, a 7-category ATS engine with job-description matching and an optional Gemini AI coach, profile photos, and PDF / DOCX / RTF / Markdown / TXT export.**
+**A fast, private, minimalist CV builder — 18 templates including Europass, a matching cover letter builder with Gemini AI writing, a 7-category ATS engine with job-description matching and an optional Gemini AI coach, profile photos, and PDF / DOCX / RTF / Markdown / TXT export.**
 
 [![CI](https://github.com/touhidsiddiqueeraj-bit/CV-Genie/actions/workflows/ci.yml/badge.svg)](https://github.com/touhidsiddiqueeraj-bit/CV-Genie/actions/workflows/ci.yml)
 [![Deploy](https://github.com/touhidsiddiqueeraj-bit/CV-Genie/actions/workflows/deploy.yml/badge.svg)](https://github.com/touhidsiddiqueeraj-bit/CV-Genie/actions/workflows/deploy.yml)
@@ -38,7 +38,7 @@
 
 | Area | Change |
 |---|---|
-| **Cover letter builder** | A full letter editor with a one-click draft generated from your CV. The letter shares your CV's accent colour and fonts, so the pair reads as a matching set. Export as PDF (server or instant), RTF, Markdown or plain text. |
+| **Cover letter builder** | A full letter editor with a one-click draft generated from your CV, or full AI writing via Gemini (your own key): four tailored paragraphs in your chosen tone, grounded strictly in your CV and the pasted job description. The letter shares your CV's accent colour and fonts, so the pair reads as a matching set. Export as PDF (server or instant), RTF, Markdown or plain text. |
 | **Job description match** | Paste a real posting and CV Genie extracts its keywords (multi-word phrases included), scores your CV against them, and shows exactly what's missing — click any missing keyword to add it, or add all missing at once. |
 | **"What the ATS sees"** | An honest plain-text extraction of your CV in parse order, plus parse checks (email/phone detection, word count, sections, dates). See what a parser gets, not what a marketing score claims. |
 | **Markdown & TXT export** | For GitHub profiles, web posting and online forms — works for both CV and cover letter. |
@@ -93,13 +93,18 @@ The analyser scores your CV across **seven weighted categories** — contact det
 
 ### Cover letter builder
 
-A **Letter** tab beside the editor builds a cover letter that matches your CV — same accent colour, same fonts — from shared contact details. Fill in the company, hiring manager and role, pick a tone (formal / direct / warm), and press **Draft from my CV** to generate all four paragraphs from your own experience, skills and most recent role. No AI, no data leaving the browser — just your content, structured. Toggle **CV / Letter** above the preview to switch documents; exports (PDF, RTF, Markdown, TXT) follow whichever is active. Letter content travels with saves, share links and version history like everything else.
+A **Letter** tab beside the editor builds a cover letter that matches your CV — same accent colour, same fonts — from shared contact details. Fill in the company, hiring manager and role, pick a tone (formal / direct / warm), then either:
+
+- **Draft from my CV** — a one-click offline draft from your own experience, skills and most recent role. No AI, no data leaving the browser.
+- **Write with Gemini** — the AI writer drafts all four paragraphs (opening, why this company, evidence, closing) from your CV, the target role, your tone choice and the job description you pasted in the ATS tab. It uses only facts from your CV — unknown metrics come back as `[placeholder]` — and reuses the same free API key and model-fallback engine as the ATS coach. The letter lands in the editable fields and the preview switches to it instantly.
+
+Toggle **CV / Letter** above the preview to switch documents; exports (PDF, RTF, Markdown, TXT) follow whichever is active. Letter content travels with saves, share links and version history like everything else.
 
 ![Cover letter](docs/images/letter.png)
 
-### Template gallery
+### Template gallery — 3D carousel
 
-Browse all 18 designs with live layout wireframes, or switch instantly from the toolbar dropdown.
+The gallery is a **cover-flow style 3D carousel**: your selected design sits large at the centre, the neighbouring designs flank it on both sides at an angle, and two more peek from the edges. Every page is a **live render of your own CV** in that design — not a static wireframe — in your current colour and fonts. Drag or swipe, use the arrow keys, click a side page to rotate it to the centre, then click the centre page (or **Use this template**) to apply it. The counter shows where you are (e.g. *3 / 18*), and the ring wraps around, so you can spin through all 18 designs endlessly. For a quick switch, the toolbar dropdown still works.
 
 ![Template gallery](docs/images/gallery.png)
 
@@ -239,7 +244,8 @@ The application is a single, self-contained HTML file (SPA) — vanilla JavaScri
 |---|---|
 | **Edit** | Personal info (photo, contact), Summary, Skills, Experience, Education, Languages — all collapsible and reorderable |
 | **Content** | 20 summary templates · skill cloud (10 categories) |
-| **Design** | Font pairing (6) · accent colour (8 presets) |
+| **Design** | Font pairing (6) · accent colour (8 presets) · 3D template carousel (live-rendered pages) |
+| **Letter** | Company / hiring manager / role / tone · offline one-click draft · **Gemini AI writer** (own key) · four editable paragraphs |
 | **ATS** | Score ring + letter grade · 7-category breakdown · ~25 checks with fixes · target role & custom keywords · keyword cloud · job-description match · AI Coach (Gemini, own key) |
 | **Tools** | LinkedIn import · JSON backup · share link · version history |
 
@@ -306,8 +312,8 @@ Three GitHub Actions workflows:
 ### Adding a new CV template
 
 1. Add the slug to the `TEMPLATES` array (keep `TEMPLATE_META`, `THUMB_WIRES` and the switch in sync — CI checks this).
-2. Add `{name, desc}` to `TEMPLATE_META` and a wireframe to `THUMB_WIRES` (tiny div-based layout sketch shown in the gallery).
-3. Add a `case 'slug':` to the switch in `_updatePreviewNow()`, building HTML from the shared helpers (`esc()`, `eH`, `dH`, `langLines`, `ph`, `skillList`, `contactLines`).
+2. Add `{name, desc}` to `TEMPLATE_META` and a wireframe to `THUMB_WIRES` (tiny div-based layout sketch — shown as the carousel card's fallback if the live render fails).
+3. Add a `case 'slug':` to the switch in `templateHtml(t, D)` (built on the data from `collectPreviewData()`; shared helpers: `esc()`, `eH`, `dH`, `langLines`, `ph`, `skillList`, `contactLines`). The main preview and every 3D carousel card render through this one function, so the new design appears in the gallery automatically.
 4. Add any template-specific CSS under `.cv-preview.cv-slug { … }`.
 
 ### Adding a font pair

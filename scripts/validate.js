@@ -74,7 +74,10 @@ else {
     if (!new RegExp(`THUMB_WIRES=\\{[\\s\\S]*?${q.replace(/[-]/g, '\\-')}:`).test(html)) fail(`template "${t}" missing in THUMB_WIRES`);
   });
   if (failures === 0) ok(`all ${templates.length} templates have meta, wireframe and renderer`);
-  const metaCount = (html.match(/['a-z-]+:\{name:/g) || []).length;
+  /* count entries inside the TEMPLATE_META block itself — a global /x:{name:/ regex
+     false-positives on unrelated objects elsewhere in the app (letter payloads etc.) */
+  const metaBlock = html.match(/const TEMPLATE_META=\{[\s\S]*?\n\};/);
+  const metaCount = metaBlock ? (metaBlock[0].match(/['a-z-]+:\{name:/g) || []).length : 0;
   if (metaCount !== templates.length) fail(`TEMPLATE_META has ${metaCount} entries but TEMPLATES has ${templates.length}`);
 }
 

@@ -492,18 +492,42 @@ html.dark .cv-preview{box-shadow:0 1px 3px rgba(0,0,0,0.4),0 8px 32px rgba(0,0,0
 .confirm-dialog p{font-size:12.5px;color:var(--text-secondary);margin-bottom:1rem;line-height:1.55;}
 .confirm-dialog .confirm-actions{display:flex;gap:0.5rem;justify-content:center;}
 
-/* ── Template gallery + wireframe thumbs ────────────────── */
-.template-gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:0.6rem;}
-.template-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;cursor:pointer;text-align:left;padding:0;transition:border-color .15s,transform .15s;position:relative;}
-.template-card:hover{border-color:var(--border-strong);transform:translateY(-2px);}
-.template-card.active{border-color:var(--text);box-shadow:0 0 0 1px var(--text);}
-.template-card .thumb{height:104px;background:var(--surface-3);display:flex;align-items:center;justify-content:center;border-bottom:1px solid var(--border);}
-.template-card .card-info{padding:0.5rem 0.6rem;}
-.template-card .card-info strong{display:block;font-size:12.5px;}
-.template-card .card-info small{color:var(--text-secondary);font-size:10.5px;}
-.template-card .active-badge{position:absolute;top:6px;right:6px;background:var(--accent);color:var(--accent-contrast);padding:2px 7px;border-radius:99px;font-size:9px;font-weight:700;display:none;align-items:center;gap:3px;}
-.template-card .active-badge svg{width:9px;height:9px;}
-.template-card.active .active-badge{display:inline-flex;}
+/* ── 3D template carousel (live-rendered pages) ─────────── */
+.tpl3d-stage{position:relative;height:400px;margin:0.15rem 0 0;perspective:1400px;perspective-origin:50% 42%;user-select:none;-webkit-user-select:none;touch-action:pan-y;overflow:hidden;}
+.tpl3d-track{position:absolute;inset:0;transform-style:preserve-3d;}
+.tpl3d-card{position:absolute;left:50%;top:16px;width:var(--tpl-w,224px);height:var(--tpl-h,316px);margin-left:calc(var(--tpl-w,224px)/-2);transform-style:preserve-3d;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:transform .55s cubic-bezier(.25,.8,.3,1),opacity .45s ease,filter .45s ease;}
+.tpl3d-card.tpl3d-off{pointer-events:none;}
+.tpl3d-page{width:100%;height:100%;border-radius:7px;overflow:hidden;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.14),0 16px 40px rgba(0,0,0,.20);position:relative;outline:1px solid rgba(0,0,0,.05);transition:box-shadow .3s ease;}
+.tpl3d-card:hover .tpl3d-page{box-shadow:0 2px 8px rgba(0,0,0,.16),0 22px 52px rgba(0,0,0,.26);}
+.tpl3d-card.is-active .tpl3d-page{box-shadow:0 0 0 2.5px var(--accent),0 16px 40px rgba(0,0,0,.22);}
+.tpl3d-scale{width:var(--page-width);transform:scale(var(--tpl-s,0.28));transform-origin:top left;pointer-events:none;}
+.tpl3d-scale .cv-preview{box-shadow:none;min-height:var(--page-height);}
+.tpl3d-wire{display:flex;align-items:center;justify-content:center;min-height:var(--page-height);background:var(--surface-3);}
+.tpl3d-badge{position:absolute;bottom:10px;left:10px;z-index:3;background:var(--accent);color:var(--accent-contrast);padding:3px 10px;border-radius:99px;font-size:9.5px;font-weight:700;display:none;align-items:center;gap:4px;box-shadow:0 2px 10px rgba(0,0,0,.28);letter-spacing:.03em;}
+.tpl3d-badge svg{width:9px;height:9px;}
+.tpl3d-card.is-active .tpl3d-badge{display:inline-flex;}
+.tpl3d-nav{position:absolute;top:50%;transform:translateY(-50%);z-index:30;width:38px;height:38px;border-radius:50%;border:1px solid var(--border);background:var(--surface);color:var(--text);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background .15s,border-color .15s,transform .15s;box-shadow:0 2px 10px rgba(0,0,0,.10);}
+.tpl3d-nav svg{width:17px;height:17px;}
+.tpl3d-nav:hover{border-color:var(--border-strong);transform:translateY(-50%) scale(1.08);}
+.tpl3d-nav:active{transform:translateY(-50%) scale(.94);}
+.tpl3d-nav.prev{left:2px;}
+.tpl3d-nav.next{right:2px;}
+.tpl3d-info{display:flex;align-items:center;justify-content:space-between;gap:0.7rem;flex-wrap:wrap;margin-top:0.15rem;padding-top:0.65rem;border-top:1px solid var(--border);}
+.tpl3d-meta{display:flex;flex-direction:column;gap:1px;min-width:0;}
+.tpl3d-count{font-size:10px;font-weight:700;color:var(--accent);letter-spacing:.08em;}
+.tpl3d-name-row{display:flex;align-items:baseline;gap:0.45rem;}
+.tpl3d-name{font-size:15px;font-weight:700;}
+.tpl3d-desc{font-size:11px;color:var(--text-secondary);}
+.tpl3d-hint{font-size:10.5px;color:var(--text-tertiary);text-align:center;margin-top:0.6rem;}
+@media (prefers-reduced-motion:reduce){.tpl3d-card{transition:none;}}
+@media (max-width:640px){
+  .tpl3d-nav{width:32px;height:32px;}
+  .tpl3d-nav.prev{left:2px;}
+  .tpl3d-nav.next{right:2px;}
+  .tpl3d-info{flex-direction:column;align-items:stretch;text-align:center;}
+  .tpl3d-name-row{justify-content:center;}
+  .tpl3d-info .btn{justify-content:center;display:flex;}
+}
 .tw{width:52px;height:68px;background:#fff;border:1px solid var(--border);border-radius:3px;padding:5px 5px;display:flex;flex-direction:column;gap:3px;overflow:hidden;}
 .tw .r{height:3px;background:#d4d4d8;border-radius:1px;}
 .tw .r.dark{background:#71717a;}
@@ -847,7 +871,7 @@ html.dark .hint a,html.dark .cvi-ai-note a,html.dark .ats-ai-status a{color:#93b
 
         <div id="tab-letter" class="tab-content" style="display:none">
             <div style="display:flex;flex-direction:column;gap:0.75rem;">
-                <div class="jd-note" style="margin:0">A matching cover letter, styled with the same colour and fonts as your CV. Toggle <strong>CV / Letter</strong> above the preview to switch documents — exports follow the active one.</div>
+                <div class="jd-note" style="margin:0">A matching cover letter, styled with the same colour and fonts as your CV. Write it yourself, instantly draft it from your CV, or let Gemini write it for you. Toggle <strong>CV / Letter</strong> above the preview to switch documents — exports follow the active one.</div>
                 <div class="form-group" style="margin:0">
                     <label for="clCompany">Company</label>
                     <input type="text" id="clCompany" oninput="sanitizeInput(this);updateLetterPreview()" placeholder="Acme Corp">
@@ -868,7 +892,19 @@ html.dark .hint a,html.dark .cvi-ai-note a,html.dark .ats-ai-status a{color:#93b
                         <option value="warm">Warm — personable, human</option>
                     </select>
                 </div>
-                <button class="btn btn-sm" onclick="draftLetter()" style="align-self:flex-start"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;vertical-align:-2px"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/></svg>Draft from my CV</button>
+                <div class="ai-coach-box">
+                    <div class="ai-coach-head"><strong>AI writer</strong> — Gemini writes all four paragraphs from your CV, this role, this tone, and the job description you pasted in the ATS tab (if any). Uses your own free API key, stored only in this browser.</div>
+                    <div class="form-group" style="margin:0 0 0.5rem">
+                        <label for="clAiKey">Gemini API key</label>
+                        <input type="password" id="clAiKey" placeholder="AIza…" autocomplete="off" spellcheck="false" style="width:100%">
+                        <small class="hint">Same key as the ATS AI coach and CV import — free at <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">aistudio.google.com/apikey</a>. Your CV text and job description go directly from your browser to Google and nowhere else.</small>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap">
+                        <button class="btn btn-primary btn-sm" id="clAiBtn" onclick="runLetterAi()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;vertical-align:-2px"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/><path d="M20 3v4"/><path d="M22 5h-4"/></svg> Write with Gemini</button>
+                        <button class="btn btn-sm" onclick="draftLetter()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;vertical-align:-2px"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/></svg>Draft from my CV</button>
+                    </div>
+                    <span id="clAiStatus" class="ats-ai-status"></span>
+                </div>
                 <div class="form-group" style="margin:0">
                     <label for="clP1">Opening paragraph</label>
                     <textarea id="clP1" rows="3" oninput="sanitizeInput(this);updateLetterPreview()" placeholder="Why you're writing and the role you want…"></textarea>
@@ -1075,7 +1111,7 @@ html.dark .hint a,html.dark .cvi-ai-note a,html.dark .ats-ai-status a{color:#93b
 
 <div id="confirmDialog" class="confirm-overlay" style="display:none"><div class="confirm-dialog"><h3>Apply summary template?</h3><p id="confirmPreview"></p><div class="confirm-actions"><button class="btn btn-sm" onclick="closeConfirmDialog()">Cancel</button><button class="btn btn-primary btn-sm" id="confirmApplyBtn">Apply</button></div></div></div>
 
-<div id="templateGalleryModal" class="modal-overlay" style="display:none" onclick="if(event.target===this)closeTemplateGallery()"><div class="modal wide"><h2>Templates <span class="count" id="templateCount"></span><button class="modal-close" onclick="closeTemplateGallery()" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></h2><div class="template-gallery" id="templateGalleryGrid"></div></div></div>
+<div id="templateGalleryModal" class="modal-overlay" style="display:none" onclick="if(event.target===this)closeTemplateGallery()"><div class="modal wide"><h2>Templates <span class="count" id="templateCount"></span><button class="modal-close" onclick="closeTemplateGallery()" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></h2><div class="tpl3d-stage" id="tpl3dStage"><button class="tpl3d-nav prev" onclick="tpl3dPrev()" aria-label="Previous template"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button><div class="tpl3d-track" id="tpl3dTrack"></div><button class="tpl3d-nav next" onclick="tpl3dNext()" aria-label="Next template"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button></div><div class="tpl3d-info"><div class="tpl3d-meta"><span class="tpl3d-count" id="tpl3dCount"></span><div class="tpl3d-name-row"><span class="tpl3d-name" id="tpl3dName"></span><span class="tpl3d-desc" id="tpl3dDesc"></span></div></div><button class="btn btn-primary btn-sm" id="tpl3dUseBtn" onclick="tpl3dApply()">Use this template</button></div><div class="tpl3d-hint">Live preview of your CV in every design — drag or swipe, use the arrow keys, click a side page to rotate or the centre page to apply.</div></div></div>
 
 <div id="photoCropperModal" class="modal-overlay" style="display:none"><div class="modal" style="max-width:480px"><h2>Edit photo<button class="modal-close" onclick="closePhotoEditor()" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></h2><div style="max-height:300px"><img id="cropperImage" style="max-width:100%;display:none" alt="Crop"></div><div class="cropper-actions"><button class="btn btn-sm" onclick="document.getElementById('photoInput').click()">New image</button><button class="btn btn-sm" onclick="rotatePhoto(-90)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>Rotate</button><button class="btn btn-primary btn-sm" onclick="applyCrop()" style="margin-left:auto">Apply crop</button></div></div></div>
 
@@ -1328,7 +1364,7 @@ function setColor(c,el){currentColor=c;document.querySelectorAll('.color-dot').f
 function changeTemplate(t){currentTemplate=t;document.getElementById('cvPreview').className='cv-preview cv-'+t;document.getElementById('templateSelect').value=t;_updatePreviewNow();updateTemplateGallerySelection();}
 function updatePreview(){if(debounceTimer)clearTimeout(debounceTimer);debounceTimer=setTimeout(_updatePreviewNow,200);}
 
-function _updatePreviewNow(){
+function collectPreviewData(){
     const name=document.getElementById('fullName')?.value||'Your Name';
     const title=document.getElementById('title')?.value||'';
     const email=document.getElementById('email')?.value||'';
@@ -1354,8 +1390,12 @@ function _updatePreviewNow(){
     if(edu.length>0)sec.education=`<div class="cv-section"><h2>Education</h2>${dH}</div>`;
     if(langLines)sec.languages=lH;
     const orderedContent=sectionOrder.filter(k=>sec[k]).map(k=>sec[k]).join('');
+    return{name,title,email,phone,linkedin,location,cs,summary,skills,exp,edu,langs,ph,esc,eH,dH,langLines,lH,skillList,contactLines,orderedContent};
+}
+function templateHtml(t,D){ /* D = collectPreviewData() — pure so the 3D gallery can render every design */
+    const{name,title,email,phone,linkedin,location,cs,summary,skills,exp,edu,langs,ph,esc,eH,dH,langLines,lH,skillList,contactLines,orderedContent}=D;
     let html='';
-    switch(currentTemplate){
+    switch(t){
         case'classic':html=`${photoData?`<div style="text-align:center;margin-bottom:2mm">${ph}</div>`:''}<div class="cv-name">${esc(name)}</div><div class="cv-title">${esc(title)}</div><div class="cv-contact">${esc(cs)}</div>${orderedContent}`;break;
         case'modern':html=`<div class="cv-header-modern"><div style="display:flex;align-items:center;gap:4mm">${ph}<div><div class="cv-name">${esc(name)}</div><div class="cv-title">${esc(title)}</div></div></div></div><div class="cv-body"><div class="cv-sidebar">${cs?`<div class="cv-section"><h2>Contact</h2><p>${esc(cs).replace(/\|/g,'<br>')}</p></div>`:''}${skills.trim()?`<div class="cv-section"><h2>Skills</h2><p>${esc(skills)}</p></div>`:''}${langLines?`<div class="cv-section"><h2>Languages</h2>${langLines}</div>`:''}</div><div class="cv-main">${summary.trim()?`<div class="cv-section"><h2>Summary</h2><p>${esc(summary)}</p></div>`:''}${exp.length?`<div class="cv-section"><h2>Experience</h2>${eH}</div>`:''}${edu.length?`<div class="cv-section"><h2>Education</h2>${dH}</div>`:''}</div></div>`;break;
         case'tabular':html=`<div style="display:flex;align-items:center;gap:4mm;justify-content:center;margin-bottom:2mm">${ph}<div><div class="cv-name" style="margin:0">${esc(name)}</div><div style="font-size:9pt;color:#555">${esc(title)}</div></div></div><div style="text-align:center;margin-bottom:3mm;font-size:8pt;color:#666">${esc(cs)}</div>${summary.trim()?`<p style="margin-bottom:2.5mm;font-style:italic">${esc(summary)}</p>`:''}${exp.length?`<table><tr><th colspan="3">Experience</th></tr>${exp.map(e=>`<tr><td><strong>${esc(e.title)}</strong><br>${esc(e.description)}</td><td>${esc(e.company)}</td><td>${esc(e.dates)}</td></tr>`).join('')}</table>`:''}${edu.length?`<table><tr><th colspan="3">Education</th></tr>${edu.map(e=>`<tr><td>${esc(e.degree)}</td><td>${esc(e.institution)}</td><td>${esc(e.year)}</td></tr>`).join('')}</table>`:''}${langLines?`<table><tr><th>Languages</th></tr><tr><td>${langLines.replace(/<div class="cv-lang-line">/g,'<div>').replace(/<span class="lvl">/g,'<span style="color:#666">')}</td></tr></table>`:''}${skills.trim()?`<table><tr><th>Skills</th></tr><tr><td>${esc(skills)}</td></tr></table>`:''}`;break;
@@ -1432,7 +1472,11 @@ function _updatePreviewNow(){
             break;}
         default:html=`<div class="cv-name">${esc(name)}</div><p>${esc(title)} | ${esc(cs)}</p>${orderedContent}`;
     }
-    document.getElementById('cvPreview').innerHTML=html;
+    return html;
+}
+function _updatePreviewNow(){
+    updateCharCount();
+    document.getElementById('cvPreview').innerHTML=templateHtml(currentTemplate,collectPreviewData());
     renderLetter();
     document.documentElement.style.setProperty('--cv-color',currentColor);
     scaleCVToFit();
@@ -1447,12 +1491,122 @@ function closePhotoEditor(){document.getElementById('photoCropperModal').style.d
 function rotatePhoto(deg){if(cropperInstance)cropperInstance.rotate(deg);}
 function applyCrop(){if(!cropperInstance)return;const c=cropperInstance.getCroppedCanvas({width:400,height:400});photoData=c.toDataURL('image/jpeg',0.9);document.getElementById('photoPreview').src=photoData;document.getElementById('photoPreview').style.display='block';document.getElementById('photoPlaceholder').style.display='none';closePhotoEditor();renderPhotoControls();updatePreview();}
 
-/* ── Template gallery ── */
-function templateCardHtml(t){return `<button class="template-card${t===currentTemplate?' active':''}" onclick="selectTemplateFromGallery('${t}')"><span class="active-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Active</span><span class="thumb"><span class="tw">${THUMB_WIRES[t]}</span></span><span class="card-info"><strong>${TEMPLATE_META[t].name}</strong><small>${TEMPLATE_META[t].desc}</small></span></button>`;}
-function openTemplateGallery(){document.getElementById('templateGalleryModal').style.display='flex';document.getElementById('templateGalleryGrid').innerHTML=TEMPLATES.map(templateCardHtml).join('');}
+/* ── Template gallery: 3D carousel with live-rendered pages ──
+   The selected design sits at the centre; neighbours flank it on both sides.
+   Cards are real renders of the user's own CV via templateHtml(), so every
+   design is previewed with live data (wireframe fallback if a render throws). */
+let tpl3dIndex=0;
+function tpl3dGalleryOpen(){const m=document.getElementById('templateGalleryModal');return !!m&&m.style.display==='flex';}
+function openTemplateGallery(){
+  document.getElementById('templateGalleryModal').style.display='flex';
+  tpl3dBuild(true);
+}
 function closeTemplateGallery(){document.getElementById('templateGalleryModal').style.display='none';}
-function selectTemplateFromGallery(t){changeTemplate(t);openTemplateGallery();setTimeout(closeTemplateGallery,350);}
-function updateTemplateGallerySelection(){if(document.getElementById('templateGalleryModal').style.display==='flex')document.getElementById('templateGalleryGrid').innerHTML=TEMPLATES.map(templateCardHtml).join('');}
+function tpl3dBuild(rebuildHtml){
+  const track=document.getElementById('tpl3dTrack');
+  if(!track)return;
+  if(rebuildHtml||!track.children.length){
+    const D=collectPreviewData();
+    track.innerHTML=TEMPLATES.map(t=>{
+      let page;
+      try{page=`<div class="tpl3d-scale"><div class="cv-preview cv-${t}">${templateHtml(t,D)}</div></div>`;}
+      catch(e){page=`<div class="tpl3d-scale tpl3d-wire"><div class="tw">${THUMB_WIRES[t]}</div></div>`;}
+      return `<div class="tpl3d-card" data-tpl="${t}" onclick="tpl3dCardClick(this)"><span class="tpl3d-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Active</span><div class="tpl3d-page">${page}</div></div>`;
+    }).join('');
+  }
+  const i=TEMPLATES.indexOf(currentTemplate);
+  tpl3dIndex=i<0?0:i;
+  tpl3dLayout(true);
+}
+function tpl3dLayout(instant){
+  const stage=document.getElementById('tpl3dStage');
+  if(!stage)return;
+  const n=TEMPLATES.length,half=Math.floor(n/2);
+  const W=stage.clientWidth||600;
+  const w=Math.round(Math.max(146,Math.min(230,W*0.30)));
+  const h=Math.round(w*297/210);
+  stage.style.setProperty('--tpl-w',w+'px');
+  stage.style.setProperty('--tpl-h',h+'px');
+  stage.style.setProperty('--tpl-s',(w/794).toFixed(4));
+  stage.style.height=(h+38)+'px';
+  const cards=document.getElementById('tpl3dTrack').children;
+  for(let i=0;i<cards.length;i++){
+    let off=i-tpl3dIndex;
+    if(off>half)off-=n;else if(off<-half)off+=n; /* circular ring */
+    const card=cards[i],a=Math.abs(off);
+    card.classList.toggle('is-active',TEMPLATES[i]===currentTemplate);
+    card.classList.toggle('tpl3d-off',a>2);
+    if(instant){card.style.transition='none';requestAnimationFrame(()=>{card.style.transition='';});}
+    if(a>2){card.style.opacity='0';card.style.visibility='hidden';card.style.zIndex='1';continue;}
+    card.style.visibility='visible';
+    card.style.zIndex=String(10-a);
+    if(off===0){
+      card.style.transform='translateX(0px) translateZ(70px) rotateY(0deg) scale(1)';
+      card.style.opacity='1';
+      card.style.filter='none';
+    }else{
+      const dir=off<0?-1:1;
+      const x=dir*(a===1?w*0.98:w*1.45);
+      const z=a===1?-150:-330;
+      const rot=dir*(a===1?42:52)*-1;
+      const sc=a===1?0.82:0.60;
+      card.style.transform=`translateX(${x}px) translateZ(${z}px) rotateY(${rot}deg) scale(${sc})`;
+      card.style.opacity=a===1?'0.92':'0.55';
+      card.style.filter=a===1?'brightness(0.93)':'brightness(0.88)';
+    }
+  }
+  const t=TEMPLATES[tpl3dIndex];
+  const meta=TEMPLATE_META[t]||{name:t,desc:''};
+  const cnt=document.getElementById('tpl3dCount');
+  if(cnt)cnt.textContent=(tpl3dIndex+1)+' / '+n;
+  const nm=document.getElementById('tpl3dName');
+  if(nm)nm.textContent=meta.name;
+  const ds=document.getElementById('tpl3dDesc');
+  if(ds)ds.textContent=meta.desc;
+  const use=document.getElementById('tpl3dUseBtn');
+  if(use)use.textContent=t===currentTemplate?'Close — already active':'Use this template';
+}
+function tpl3dPrev(){const n=TEMPLATES.length;tpl3dIndex=(tpl3dIndex-1+n)%n;tpl3dLayout(false);}
+function tpl3dNext(){tpl3dIndex=(tpl3dIndex+1)%TEMPLATES.length;tpl3dLayout(false);}
+function tpl3dCardClick(card){
+  const idx=TEMPLATES.indexOf(card.dataset.tpl);
+  if(idx<0)return;
+  if(idx===tpl3dIndex){tpl3dApply();return;}
+  tpl3dIndex=idx;tpl3dLayout(false);
+}
+function tpl3dApply(){
+  const t=TEMPLATES[tpl3dIndex];
+  if(!t)return;
+  if(t!==currentTemplate){changeTemplate(t);showToast(TEMPLATE_META[t].name+' applied to your CV');}
+  else showToast('Already using '+TEMPLATE_META[t].name);
+  closeTemplateGallery();
+}
+function updateTemplateGallerySelection(){if(tpl3dGalleryOpen())tpl3dLayout(false);}
+/* swipe / drag + keyboard */
+(function(){
+  let sx=null,moved=false;
+  const stage=document.getElementById('tpl3dStage');
+  if(!stage)return;
+  stage.addEventListener('pointerdown',e=>{if(e.target.closest('.tpl3d-nav'))return;sx=e.clientX;moved=false;});
+  stage.addEventListener('pointermove',e=>{if(sx===null)return;if(Math.abs(e.clientX-sx)>8)moved=true;});
+  const end=e=>{
+    if(sx===null)return;
+    const dx=e.clientX-sx;sx=null;
+    if(!moved||Math.abs(dx)<36)return;
+    if(dx<0)tpl3dNext();else tpl3dPrev();
+  };
+  stage.addEventListener('pointerup',end);
+  stage.addEventListener('pointercancel',()=>{sx=null;});
+  window.addEventListener('resize',()=>{if(tpl3dGalleryOpen())tpl3dLayout(false);});
+  document.addEventListener('keydown',e=>{
+    if(!tpl3dGalleryOpen())return;
+    const tag=document.activeElement&&document.activeElement.tagName;
+    if(tag==='INPUT'||tag==='TEXTAREA'||tag==='SELECT')return;
+    if(e.key==='ArrowLeft'){e.preventDefault();tpl3dPrev();}
+    else if(e.key==='ArrowRight'){e.preventDefault();tpl3dNext();}
+    else if(e.key==='Escape'){e.preventDefault();closeTemplateGallery();}
+  });
+})();
 
 // ============ EXPORT ============
 async function executeExport(){
@@ -1560,6 +1714,78 @@ function draftLetter(){
     if((f.p1+f.p2+f.p3+f.p4).trim()&&!confirm('Replace your current letter text with a fresh draft?'))return;
     document.getElementById('clP1').value=p1;document.getElementById('clP2').value=p2;document.getElementById('clP3').value=p3;document.getElementById('clP4').value=p4;
     renderLetter();scaleCVToFit();showToast('Letter drafted from your CV');
+}
+/* ── AI cover letter writer (Gemini, user's own key — same engine as the ATS coach) ── */
+const LETTER_AI_SCHEMA={
+  type:'OBJECT',
+  properties:{
+    p1:{type:'STRING',description:'Opening paragraph — the role applied for and a one-line statement of fit'},
+    p2:{type:'STRING',description:'Why this company — a specific, grounded connection'},
+    p3:{type:'STRING',description:'Evidence — the 1-2 most relevant achievements from the CV, stated concretely'},
+    p4:{type:'STRING',description:'Closing — a brief, confident call to action'}
+  },
+  required:['p1','p2','p3','p4']
+};
+function letterAiTone(t){return t==='direct'?'direct — confident and concise, zero fluff':t==='warm'?'warm — personable and human, still professional':'formal — classic professional business register';}
+function letterAiParts(){
+  const f=getLetterFields();
+  const D=collectPreviewData();
+  const targetRole=(document.getElementById('targetRole')?.value||'').trim();
+  const jd=(document.getElementById('jdText')?.value||'').trim();
+  const inst=['You are an expert cover-letter writer who sounds like a real person, not a template.',
+  'You receive: the candidate\u2019s CV data, the letter context (role, company, hiring manager, tone), and optionally a job description.',
+  'Rules:',
+  '- Use ONLY facts present in the CV (roles, employers, skills, achievements). Never invent employers, dates, numbers or skills.',
+  '- Where a number would strengthen a claim but is unknown, write a short [placeholder like this] the candidate can fill in.',
+  '- p1 (opening): name the exact role and give a one-line reason this candidate fits it. Do NOT open with a greeting like "Dear ..." — the salutation line is generated separately by the app.',
+  '- p2 (why this company): use the job description and company field if provided. Be specific about the work or mission, never hollow flattery.',
+  '- p3 (evidence): pick the 1-2 most relevant achievements from the CV for THIS role and state them concretely — what was done and the measurable result.',
+  '- p4 (closing): two or three sentences at most — availability and a clear, low-pressure call to action.',
+  '- Tone: '+letterAiTone(f.tone)+'.',
+  '- Length: 2-4 sentences per paragraph, whole letter 180-320 words. Plain sentences only — no markdown, no bullet points, no clichés ("team player", "perfect candidate", "leverage my skills").',
+  '- Complement the CV, don\u2019t repeat it line by line. No salutation and no sign-off inside the paragraphs — the app renders those itself.',
+  '- Output valid JSON matching the schema exactly.'].join('\n');
+  const payload={
+    candidate:{name:D.name,title:D.title,summary:D.summary,skills:D.skillList,experiences:D.exp,education:D.edu,languages:D.langs,targetRole},
+    letterContext:{role:f.role||targetRole||'',company:f.company||'',hiringManager:f.hiringManager||'',tone:f.tone},
+    jobDescription:jd?jd.slice(0,4000):''
+  };
+  return [{text:inst},{text:'CV AND CONTEXT DATA:\n'+JSON.stringify(payload)}];
+}
+async function runLetterAi(){
+  const keyEl=document.getElementById('clAiKey');
+  const key=(keyEl?keyEl.value:'').trim()||cviGetKey();
+  if(keyEl&&key)keyEl.value=key;
+  const st=document.getElementById('clAiStatus');
+  const btn=document.getElementById('clAiBtn');
+  if(!key){if(st){st.textContent='Paste a Gemini API key first \u2014 get a free one at aistudio.google.com/apikey.';st.className='ats-ai-status err';}return;}
+  const f=getLetterFields();
+  const D=collectPreviewData();
+  const hasCv=D.name!=='Your Name'&&((D.summary&&D.summary.trim())||D.skillList.length||D.exp.length);
+  if(!hasCv){if(st){st.textContent='Fill in your CV first \u2014 there is nothing to write from yet.';st.className='ats-ai-status err';}return;}
+  if(!f.role.trim()&&!(document.getElementById('targetRole')?.value||'').trim()){if(st){st.textContent='Add the role you\u2019re applying for (or a target role in the ATS tab) so the letter can be tailored.';st.className='ats-ai-status err';}return;}
+  if((f.p1+f.p2+f.p3+f.p4).trim()&&!confirm('Replace your current letter text with a fresh AI draft?'))return;
+  cviSetKey(key);
+  if(btn)btn.disabled=true;
+  if(st){st.textContent='Asking Gemini\u2026';st.className='ats-ai-status';}
+  try{
+    const {data,model}=await cviCallGemini(key,cviGetModel(),letterAiParts(),m=>{if(st)st.textContent=m;},{schema:LETTER_AI_SCHEMA,temperature:0.7,maxOutputTokens:1400});
+    const p1=String(data.p1||'').trim(),p2=String(data.p2||'').trim(),p3=String(data.p3||'').trim(),p4=String(data.p4||'').trim();
+    if(!p1&&!p2&&!p3&&!p4)throw new Error('Gemini returned an empty letter \u2014 try again.');
+    document.getElementById('clP1').value=p1;
+    document.getElementById('clP2').value=p2;
+    document.getElementById('clP3').value=p3;
+    document.getElementById('clP4').value=p4;
+    renderLetter();
+    setActiveDoc('letter');
+    scaleCVToFit();
+    showToast('Cover letter drafted \u2014 tweak any [placeholders]');
+    if(st){st.textContent='Written with '+model+' \u2014 edit freely below, it\u2019s your letter.';st.className='ats-ai-status ok';}
+  }catch(e){
+    if(st){st.textContent=(e&&e.message)||'Gemini request failed \u2014 try again in a minute.';st.className='ats-ai-status err';}
+  }finally{
+    if(btn)btn.disabled=false;
+  }
 }
 function buildLetterRTF(){
     const f=getLetterFields(),name=document.getElementById('fullName')?.value||'Your Name';
@@ -3225,6 +3451,8 @@ document.addEventListener('keydown',e=>{const tag=document.activeElement?.tagNam
 updateDarkBtn();
 renderPhotoControls();
 loadSaved();
+/* prefill the Gemini key inputs from storage (same key powers import, ATS coach and letter writer) */
+try{const _gk=cviGetKey();if(_gk){const _ak=document.getElementById('atsAiKey');if(_ak&&!_ak.value)_ak.value=_gk;const _lk=document.getElementById('clAiKey');if(_lk&&!_lk.value)_lk.value=_gk;}}catch(e){}
 try{const vs=localStorage.getItem('cvGenieVersions');if(vs)versionSlots=JSON.parse(vs)||[];}catch(e){}
 /* On mobile, start in Edit mode — form visible, nav hidden */
 if(window.innerWidth<=900){
