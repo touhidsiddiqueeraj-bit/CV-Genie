@@ -8,6 +8,7 @@
  *   4. Every template in TEMPLATES has metadata, a wireframe thumb and a switch case
  *   5. All images referenced in README.md exist
  *   6. GitHub workflow files parse as YAML (via js-yaml if available, skipped otherwise)
+ *   7. PWA assets: manifest parses, icons exist, sw.js + apk-driver.js parse, assetlinks valid
  * Exit code 0 = all good, 1 = failures.
  */
 const fs = require('fs');
@@ -110,6 +111,56 @@ if (fs.existsSync(wfDir)) {
     }
   }
 } else console.log('  (no workflows directory)');
+
+/* ── 7. PWA + Android assets ───────────────────────────── */
+console.log('\n[7/7] PWA & Android assets');
+const manifestPath = path.join(ROOT, 'manifest.webmanifest');
+if (!fs.existsSync(manifestPath)) fail('manifest.webmanifest missing');
+else {
+  try {
+    const mf = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+    if (!mf.name || !mf.short_name) fail('manifest missing name/short_name');
+    if (mf.display !== 'standalone') fail('manifest display should be standalone');
+    if (!Array.isArray(mf.icons) || mf.icons.length < 4) fail('manifest needs any + maskable icons');
+    mf.icons.forEach((i) => {
+      if (!fs.existsSync(path.join(ROOT, i.src))) fail('manifest icon missing: ' + i.src);
+    });
+    if (failures === 0) ok('manifest.webmanifest valid (' + mf.icons.length + ' icons on disk)');
+  } catch (e) { fail('manifest.webmanifest is not valid JSON: ' + e.message); }
+}
+if (!/<link rel="manifest"[^>]*manifest\.webmanifest/.test(html)) fail('index.html does not link the manifest');
+else ok('index.html links the manifest');
+const swPath = path.join(ROOT, 'sw.js');
+if (!fs.existsSync(swPath)) fail('sw.js missing');
+else {
+  try { execFileSync('node', ['--check', swPath], { stdio: 'pipe' }); ok('sw.js parses'); }
+  catch (e) { fail('sw.js syntax error'); }
+}
+const appleIcon = path.join(ROOT, 'icons', 'apple-touch-icon.png');
+if (!fs.existsSync(appleIcon)) fail('icons/apple-touch-icon.png missing');
+else ok('apple-touch-icon present');
+const assetLinks = path.join(ROOT, '.well-known', 'assetlinks.json');
+if (!fs.existsSync(assetLinks)) fail('.well-known/assetlinks.json missing');
+else {
+  try {
+    const al = JSON.parse(fs.readFileSync(assetLinks, 'utf8'));
+    const t = al[0] && al[0].target;
+    if (!t || !t.package_name || !Array.isArray(t.sha256_cert_fingerprints) || !t.sha256_cert_fingerprints[0]) fail('assetlinks.json malformed');
+    else ok('assetlinks.json valid (' + t.package_name + ')');
+  } catch (e) { fail('assetlinks.json is not valid JSON: ' + e.message); }
+}
+const keystore = path.join(ROOT, 'android-signing', 'cv-genie.keystore');
+if (!fs.existsSync(keystore)) fail('android-signing/cv-genie.keystore missing');
+else ok('TWA signing keystore present');
+const apkDriver = path.join(ROOT, 'scripts', 'apk-driver.js');
+if (!fs.existsSync(apkDriver)) fail('scripts/apk-driver.js missing');
+else {
+  try { execFileSync('node', ['--check', apkDriver], { stdio: 'pipe' }); ok('apk-driver.js parses'); }
+  catch (e) { fail('apk-driver.js syntax error'); }
+}
+/* no export-server references may creep back in */
+if (/onrender\.com|PDF_SERVER_URL|DOCX_SERVER_URL/.test(html)) fail('index.html still references an export server');
+else ok('no export-server references in index.html');
 
 console.log('\n' + (failures === 0 ? '✔ All checks passed.' : '✘ ' + failures + ' check(s) failed.'));
 process.exit(failures === 0 ? 0 : 1);

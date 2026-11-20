@@ -1,0 +1,114 @@
+name: Build Android APK
+
+# Wraps the deployed PWA into a Trusted Web Activity (TWA) Android app with
+# Bubblewrap — a real, installable APK signed and ready to sideload.
+#   - Runs on demand (Actions → "Build Android APK" → Run workflow) and on
+#     version tags (v*), attaching the APK + AAB to the GitHub release.
+#   - Requires the PWA to be live first (init fetches the manifest + icons),
+#     so the manifest URL is polled with retries before building.
+#   - Signing uses android-signing/cv-genie.keystore committed in this repo —
+#     see android-signing/README.md. If the ANDROID_KEYSTORE_B64 secret is
+#     configured, it takes precedence over the committed keystore.
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  apk:
+    name: TWA APK (Bubblewrap)
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Setup JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Install exact Android SDK components
+        run: |
+          SDK="${ANDROID_SDK_ROOT:-/usr/local/lib/android/sdk}"
+          yes | "$SDK/cmdline-tools/latest/bin/sdkmanager" --licenses > /dev/null || true
+          "$SDK/cmdline-tools/latest/bin/sdkmanager" --install "build-tools;36.1.0" "platforms;android-36" > /dev/null
+          # bubblewrap validates the SDK path by looking for a legacy tools/ or bin/ folder
+          [ -d "$SDK/tools" ] || mkdir -p "$SDK/bin"
+          echo "SDK ready: $(ls "$SDK/build-tools" | tr '\n' ' ') | platforms: $(ls "$SDK/platforms" | tr '\n' ' ')"
+
+      - name: Detect app version
+        run: |
+          VERSION=$(grep -o 'brand-tag">v[0-9.]*' index.html | grep -o '[0-9.]*$')
+          if [ -z "$VERSION" ]; then VERSION="2.3"; fi
+          echo "APK_VERSION_NAME=$VERSION" >> "$GITHUB_ENV"
+          echo "Building version $VERSION"
+
+      - name: Wait for the deployed PWA manifest
+        run: |
+          URL="https://touhidsiddiqueeraj-bit.github.io/CV-Genie/manifest.webmanifest"
+          for i in $(seq 1 30); do
+            code=$(curl -s -o /dev/null -w "%{http_code}" "$URL" || echo 000)
+            if [ "$code" = "200" ]; then echo "manifest is live"; exit 0; fi
+            echo "manifest not ready ($code) — retrying in 20s ($i/30)…"
+            sleep 20
+          done
+          echo "::error::PWA manifest never became reachable at $URL"
+          exit 1
+
+      - name: Install Bubblewrap
+        run: npm install --no-fund --no-audit --prefix "$HOME/.bubblewrap-deps" @bubblewrap/cli@1.27.0
+
+      - name: Select signing key (secret takes precedence over committed keystore)
+        run: |
+          if [ -n "${{ secrets.ANDROID_KEYSTORE_B64 }}" ]; then
+            echo "${{ secrets.ANDROID_KEYSTORE_B64 }}" | base64 -d > android-signing/cv-genie.keystore
+            echo "KS_PASS=${{ secrets.ANDROID_KEYSTORE_PASSWORD }}" >> "$GITHUB_ENV"
+            echo "KS_ALIAS=${{ secrets.ANDROID_KEY_ALIAS }}" >> "$GITHUB_ENV"
+            echo "Using keystore from repository secret"
+          else
+            echo "KS_PASS=CvGenie-Twa-2026!x7q" >> "$GITHUB_ENV"
+            echo "KS_ALIAS=cvgenie" >> "$GITHUB_ENV"
+            echo "Using committed wrapper keystore (see android-signing/README.md)"
+          fi
+
+      - name: Build TWA (APK + AAB)
+        env:
+          PWA_MANIFEST_URL: https://touhidsiddiqueeraj-bit.github.io/CV-Genie/manifest.webmanifest
+          BUBBLEWRAP_KEYSTORE_PASSWORD: ${{ env.KS_PASS }}
+          BUBBLEWRAP_KEY_PASSWORD: ${{ env.KS_PASS }}
+          ANDROID_KEY_ALIAS: ${{ env.KS_ALIAS }}
+        run: |
+          export NODE_PATH="$HOME/.bubblewrap-deps/node_modules"
+          node scripts/apk-driver.js
+
+      - name: Collect build outputs
+        run: |
+          mkdir -p dist
+          cp twa/app-release-signed.apk "dist/cv-genie-${APK_VERSION_NAME}.apk"
+          cp twa/app-release-bundle.aab "dist/cv-genie-${APK_VERSION_NAME}.aab"
+          ls -la dist/
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: cv-genie-android
+          path: dist/*
+          if-no-files-found: error
+
+      - name: Attach to release (tag builds)
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: dist/*

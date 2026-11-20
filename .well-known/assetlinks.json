@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "io.github.touhidsiddiqueerajbit.cvgenie",
+      "sha256_cert_fingerprints": [
+        "A3:D8:7C:6E:02:BD:F3:B8:AA:59:2C:9C:53:14:D6:8A:A0:56:0D:70:59:6B:76:C7:85:9F:1D:58:12:F4:AF:F7"
+      ]
+    }
+  }
+]

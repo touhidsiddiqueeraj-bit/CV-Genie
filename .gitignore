@@ -1,0 +1,5 @@
+# generated locally by scripts/apk-driver.js (CI builds it fresh every run)
+twa/
+# local junk
+*.log
+.DS_Store

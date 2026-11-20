@@ -3,13 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
-<title>CV Genie — v2.2</title>
-<meta name="description" content="CV Genie — a fast, private, minimalist CV builder. 18 templates including Europass, a 7-category ATS engine with job-description matching and an optional Gemini AI coach, profile photos and PDF/DOCX/RTF export.">
+<title>CV Genie — v2.3</title>
+<meta name="description" content="CV Genie — a fast, private, offline-capable CV builder. 18 templates including Europass, a 7-category ATS engine with job-description matching, deterministic + Gemini cover letters, PDF/DOCX/RTF export — all generated locally in your browser.">
 <meta name="theme-color" content="#18181b">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="CV Genie">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%238b5cf6'/%3E%3Cstop offset='1' stop-color='%233b82f6'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='48' height='48' rx='12' fill='url(%23g)'/%3E%3Cpath d='M17.5 8.5h11l8.5 8.5v20a3 3 0 0 1-3 3h-16.5a3 3 0 0 1-3-3v-25.5a3 3 0 0 1 3-3z' fill='%23fff'/%3E%3Crect x='18' y='25' width='13' height='2.8' rx='1.4' fill='%238478f2'/%3E%3Crect x='18' y='31.5' width='8' height='2.8' rx='1.4' fill='%238478f2'/%3E%3Cpath d='M39 1.8l1.4 3.8 3.8 1.4-3.8 1.4-1.4 3.8-1.4-3.8-3.8-1.4 3.8-1.4z' fill='%23fff'/%3E%3C/svg%3E">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Lora:ital,wght@0,400;0,600;1,400&family=Roboto:wght@300;400;500;700&family=Montserrat:wght@400;600;700;800&family=Merriweather:wght@300;400;700&family=Playfair+Display:wght@400;600;700&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -578,18 +580,21 @@ html.dark .cv-preview{box-shadow:0 1px 3px rgba(0,0,0,0.4),0 8px 32px rgba(0,0,0
 .kw-chip.kw-click{cursor:pointer;border-color:currentColor;border-style:dashed;}
 .kw-chip.kw-click:hover{filter:brightness(0.96);}
 
-/* ── Print ──────────────────────────────────────────────── */
+/* ── Print — “PDF (print dialog)” export: the page becomes just the active
+   document (CV or letter); pick “Save as PDF” for crisp vector text ── */
 @media print{
   body{background:#fff;}
-  .app-header,.form-panel,.mobile-nav,.ats-sidebar,.preview-toolbar,.edit-back-btn,.tpl3d-main{display:none!important;}
+  .app-header,.form-panel,.mobile-nav,.ats-sidebar,.preview-toolbar,.edit-back-btn,.tpl3d-main,.modal-overlay,.toast,.tpl3d-nav{display:none!important;}
   .preview-panel{padding:0;background:#fff;overflow:visible!important;flex-direction:column;}
   .preview-panel-inner{width:100%;max-width:100%;flex:none;}
   .tpl3d-stage{flex:none;}
   .cv-scale-outer{height:auto!important;overflow:visible;}
   .cv-scale-inner{transform:none!important;width:100%!important;}
-  .cv-preview{box-shadow:none;margin:0;padding:0;font-size:9.5pt;width:100%!important;}
+  .cv-preview,.cl-preview{box-shadow:none;margin:0;padding:0;font-size:9.5pt;width:100%!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  .cv-preview *{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
   .cv-wrapper{max-width:100%;padding:0;}
   .preview-panel.show-gallery .cv-wrapper{display:block!important;}
+  @page{margin:10mm;}
 }
 
 /* ── Mobile ─────────────────────────────────────────────── */
@@ -723,12 +728,13 @@ html.dark .ats-ai-status.warn{color:#fbbf24;}
     <div class="brand">
         <div class="brand-mark"><svg viewBox="0 0 48 48" aria-hidden="true"><defs><linearGradient id="cgBg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#8b5cf6"/><stop offset="1" stop-color="#3b82f6"/></linearGradient></defs><rect width="48" height="48" rx="12" fill="url(#cgBg)"/><path d="M17.5 8.5h11l8.5 8.5v20a3 3 0 0 1-3 3h-16.5a3 3 0 0 1-3-3v-25.5a3 3 0 0 1 3-3z" fill="#fff"/><rect x="18" y="25" width="13" height="2.8" rx="1.4" fill="#8478f2"/><rect x="18" y="31.5" width="8" height="2.8" rx="1.4" fill="#8478f2"/><path d="M39 1.8l1.4 3.8 3.8 1.4-3.8 1.4-1.4 3.8-1.4-3.8-3.8-1.4 3.8-1.4z" fill="#fff"/></svg></div>
         <span class="brand-name">CV Genie</span>
-        <span class="brand-tag">v2.2</span>
+        <span class="brand-tag">v2.3</span>
     </div>
     <div class="header-actions">
         <button class="btn-icon" onclick="undo()" id="undoBtn" disabled title="Undo (Ctrl+Z)" aria-label="Undo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7v6h6"/><path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"/></svg></button>
         <button class="btn-icon" onclick="redo()" id="redoBtn" disabled title="Redo (Ctrl+Y)" aria-label="Redo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 7v6h-6"/><path d="M3 17a9 9 0 0 1 9-9 9 9 0 0 1 6 2.3L21 13"/></svg></button>
         <button class="btn-icon" onclick="toggleDarkMode()" id="darkBtn" title="Toggle theme" aria-label="Toggle dark mode"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></button>
+        <button class="btn-icon" onclick="installApp()" id="installBtn" style="display:none" title="Install CV Genie (works offline)" aria-label="Install app"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></button>
         <button class="btn btn-primary" onclick="openExportModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Export</button>
     </div>
 </header>
@@ -1147,9 +1153,9 @@ html.dark .ats-ai-status.warn{color:#fbbf24;}
 </div></div>
 
 <div id="exportModal" class="modal-overlay" style="display:none" onclick="if(event.target===this)closeExportModal()"><div class="modal"><h2 id="exportModalTitle">Export CV<button class="modal-close" onclick="closeExportModal()" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></h2>
-    <div class="export-option recommended"><input type="checkbox" checked onchange="exportSel.serverPdf=this.checked" id="chkServerPdf"><label for="chkServerPdf"><strong>High-quality PDF (server)</strong><small>Rendered with Chrome typography — best for submissions</small></label></div>
-    <div class="export-option"><input type="checkbox" onchange="exportSel.clientPdf=this.checked" id="chkClientPdf"><label for="chkClientPdf"><strong>PDF (instant)</strong><small>Works offline — good for quick drafts</small></label></div>
-    <div class="export-option"><input type="checkbox" checked onchange="exportSel.serverDocx=this.checked" id="chkServerDocx"><label for="chkServerDocx"><strong>DOCX (server)</strong><small>Fully editable Word document</small></label></div>
+    <div class="export-option recommended"><input type="checkbox" checked onchange="exportSel.printPdf=this.checked" id="chkPrintPdf"><label for="chkPrintPdf"><strong>PDF (print dialog)</strong><small>Crisp vector text — choose “Save as PDF” in your browser’s print dialog</small></label></div>
+    <div class="export-option"><input type="checkbox" onchange="exportSel.clientPdf=this.checked" id="chkClientPdf"><label for="chkClientPdf"><strong>PDF (instant)</strong><small>One click, no dialog — good for quick drafts</small></label></div>
+    <div class="export-option"><input type="checkbox" checked onchange="exportSel.docx=this.checked" id="chkDocx"><label for="chkDocx"><strong>DOCX</strong><small>Fully editable Word document — generated locally, no server involved</small></label></div>
     <div class="export-option"><input type="checkbox" onchange="exportSel.rtf=this.checked" id="chkRtf"><label for="chkRtf"><strong>RTF (instant)</strong><small>Lightweight editable text format</small></label></div>
     <div class="export-option"><input type="checkbox" onchange="exportSel.markdown=this.checked" id="chkMarkdown"><label for="chkMarkdown"><strong>Markdown (instant)</strong><small>For GitHub profiles, READMEs and web posting</small></label></div>
     <div class="export-option"><input type="checkbox" onchange="exportSel.txt=this.checked" id="chkTxt"><label for="chkTxt"><strong>Plain text (instant)</strong><small>Stripped-down .txt for forms and pasting</small></label></div>
@@ -1200,8 +1206,8 @@ html.dark .ats-ai-status.warn{color:#fbbf24;}
 <script>
 pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
-const PDF_SERVER_URL = 'https://cv-genie-server.onrender.com/export-pdf';
-const DOCX_SERVER_URL = 'https://cv-genie-server.onrender.com/export-docx';
+/* PDF + DOCX are generated entirely in the browser — CV Genie has no export server.
+   (Constants kept for reference/documentation only.) */
 
 const COLORS=['#2563eb','#059669','#dc2626','#7c3aed','#ea580c','#0891b2','#be185d','#1e293b'];
 const TEMPLATES=['classic','modern','nordic','minimal','swiss','executive','academic','europass','compact','sidebar-bold','timeline','tabular','newspaper','magazine','infographic','creative','colorful','corporate'];
@@ -1265,7 +1271,7 @@ const LANG_LEVELS=['','Native','A1','A2','B1','B2','C1','C2'];
 let currentTemplate='classic',currentColor='#2563eb',photoData=null,expCounter=0,eduCounter=0,langCounter=0;
 let photoShape='circle',photoSize='md';
 let undoStack=[],redoStack=[],currentTab='edit',currentFontPair=0,pendingSummaryIdx=-1;
-let exportSel={serverPdf:true,clientPdf:false,serverDocx:true,rtf:false,markdown:false,txt:false},cropperInstance=null,versionSlots=[],selectedSkills=new Set();
+let exportSel={printPdf:true,clientPdf:false,docx:true,rtf:false,markdown:false,txt:false},cropperInstance=null,versionSlots=[],selectedSkills=new Set();
 let activeDoc='cv';/* 'cv' | 'letter' — which document the preview & exports target */
 let sectionOrder=['summary','skills','experience','education','languages'],debounceTimer=null,pendingLinkedInData=null;
 
@@ -1675,24 +1681,24 @@ function updateTemplateGallerySelection(){
 async function executeExport(){
     const s=document.getElementById('exportStatus');s.style.display='block';
     try{
-        if(exportSel.serverPdf){s.textContent='Rendering server PDF…';await exportServerPDF();}
+        if(exportSel.printPdf){s.textContent='Opening print dialog…';await exportPrintPDF();}
         if(exportSel.clientPdf){s.textContent='Rendering browser PDF…';await exportClientPDF();}
-        if(exportSel.serverDocx&&activeDoc==='cv'){s.textContent='Rendering DOCX…';await exportServerDOCX();}
+        if(exportSel.docx){s.textContent='Building DOCX…';await exportDocx();}
         if(exportSel.rtf){s.textContent='Building RTF…';exportRTF();}
         if(exportSel.markdown){s.textContent='Building Markdown…';exportMarkdown();}
         if(exportSel.txt){s.textContent='Building plain text…';exportTXT();}
         s.textContent='Done — check your downloads.';setTimeout(()=>s.style.display='none',2000);
     }catch(e){s.textContent='Export failed: '+e.message;setTimeout(()=>s.style.display='none',5000);}
 }
-async function exportServerPDF(){
-    const preview=activeDoc==='letter'?document.getElementById('clPreview'):document.getElementById('cvPreview');
-    const computedStyle=getComputedStyle(document.documentElement);
-    const cvColor=computedStyle.getPropertyValue('--cv-color').trim()||'#2563eb';
-    const fontHeading=computedStyle.getPropertyValue('--cv-font-heading').trim()||'Georgia, serif';
-    const fontBody=computedStyle.getPropertyValue('--cv-font-body').trim()||'Georgia, serif';
-    const r=await fetch(PDF_SERVER_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({html:preview.outerHTML,color:cvColor,fontHeading,fontBody})});
-    if(!r.ok){const e=await r.json().catch(()=>({error:'Server error'}));throw new Error(e.error);}
-    const b=await r.blob();if(b.size<1000)throw new Error('PDF too small');saveAs(b,'cv-genie-'+(activeDoc==='letter'?'cover-letter':currentTemplate)+'.pdf');
+function exportPrintPDF(){
+    /* The print stylesheet turns the page into just the active document — pick
+       “Save as PDF” as the printer and you get crisp, selectable vector text. */
+    closeExportModal();
+    return new Promise(res=>setTimeout(()=>{
+        try{window.print();}catch(e){/* printing unsupported (headless test env) */}
+        const s=document.getElementById('exportStatus');s.style.display='none';
+        res();
+    },300));
 }
 async function exportClientPDF(){
     /* the carousel can hide the document — force it visible for the capture, then restore */
@@ -1708,13 +1714,108 @@ async function exportClientPDF(){
       if(forced)panel.classList.add('show-gallery');
     }
 }
-function docxPayload(){
-    return{name:document.getElementById('fullName')?.value||'Your Name',title:document.getElementById('title')?.value||'',contact:[document.getElementById('email')?.value,document.getElementById('phone')?.value,document.getElementById('linkedin')?.value,document.getElementById('location')?.value].filter(Boolean).join(' | '),summary:document.getElementById('summary')?.value||'',skills:document.getElementById('skills')?.value||'',experiences:getExperiences(),education:getEducation(),languages:getLanguages()};
+/* ── Client-side DOCX writer — the app's own Word generator, no server, no network.
+   Builds a minimal, valid OOXML package (WordprocessingML) with JSZip, which the app
+   already bundles. Content order mirrors buildRTF() so every instant format agrees,
+   and the accent colour / font pair follow the Design tab. Works for the CV and the
+   cover letter alike. ── */
+function docxEsc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function docxHex(hex,fallback){const c=String(hex||'').replace('#','').trim();return /^[0-9a-fA-F]{6}$/.test(c)?c.toUpperCase():(fallback||'2563EB');}
+function docxFonts(){
+    const cs=getComputedStyle(document.documentElement);
+    const pick=v=>{const f=String(v||'').split(',')[0].replace(/["']/g,'').trim();return f&&/^[A-Za-z][A-Za-z0-9 .-]*$/.test(f)?f:null;};
+    return{head:pick(cs.getPropertyValue('--cv-font-heading'))||'Georgia',body:pick(cs.getPropertyValue('--cv-font-body'))||'Calibri'};
 }
-async function exportServerDOCX(){
-    const r=await fetch(DOCX_SERVER_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(docxPayload())});
-    if(!r.ok){const e=await r.json().catch(()=>({error:'Server error'}));throw new Error(e.error);}
-    const b=await r.blob();if(b.size<1000)throw new Error('DOCX too small');saveAs(b,'cv-genie-'+currentTemplate+'.docx');
+function docxP(runs,o){
+    /* runs: [{t,b,i,sz,color,font}]  |  o: {align,before,after,indent,style,border} */
+    o=o||{};
+    const pPr=[];
+    if(o.style)pPr.push('<w:pStyle w:val="'+o.style+'"/>');
+    if(o.border)pPr.push('<w:pBdr><w:bottom w:val="single" w:sz="8" w:space="2" w:color="'+o.border+'"/></w:pBdr>');
+    const sp=[];if(o.before!=null)sp.push('w:before="'+o.before+'"');if(o.after!=null)sp.push('w:after="'+o.after+'"');
+    if(o.line!=null)sp.push('w:line="'+o.line+'" w:lineRule="auto"');
+    if(sp.length)pPr.push('<w:spacing '+sp.join(' ')+'/>');
+    if(o.indent!=null)pPr.push('<w:ind w:left="'+o.indent+'"/>');
+    if(o.align)pPr.push('<w:jc w:val="'+o.align+'"/>');
+    const xml=runs.filter(r=>r&&r.t&&String(r.t).length).map(r=>{
+        const rp=[];if(r.b)rp.push('<w:b/>');if(r.i)rp.push('<w:i/>');
+        if(r.font)rp.push('<w:rFonts w:ascii="'+r.font+'" w:hAnsi="'+r.font+'"/>');
+        if(r.color)rp.push('<w:color w:val="'+r.color+'"/>');
+        if(r.sz)rp.push('<w:sz w:val="'+r.sz+'"/><w:szCs w:val="'+r.sz+'"/>');
+        return '<w:r>'+(rp.length?'<w:rPr>'+rp.join('')+'</w:rPr>':'')+'<w:t xml:space="preserve">'+docxEsc(r.t)+'</w:t></w:r>';
+    }).join('');
+    return '<w:p>'+(pPr.length?'<w:pPr>'+pPr.join('')+'</w:pPr>':'')+xml+'</w:p>';
+}
+function docxSection(parts,label,accent){parts.push(docxP([{t:label.toUpperCase(),b:1,sz:22,color:accent}],{before:280,after:80,border:accent}));}
+function docxCvParts(){
+    const accent=docxHex(currentColor),grey='6B7280',dark='111827';
+    const name=document.getElementById('fullName')?.value||'Your Name',title=document.getElementById('title')?.value||'';
+    const contact=[document.getElementById('email')?.value,document.getElementById('phone')?.value,document.getElementById('linkedin')?.value,document.getElementById('location')?.value].filter(Boolean).join(' | ');
+    const summary=document.getElementById('summary')?.value||'',skills=document.getElementById('skills')?.value||'';
+    const exp=getExperiences(),edu=getEducation(),langs=getLanguages();
+    const out=[];
+    out.push(docxP([{t:name,b:1,sz:40,color:accent}],{align:'center',after:40}));
+    if(title)out.push(docxP([{t:title,sz:24,color:grey}],{align:'center',after:60}));
+    if(contact)out.push(docxP([{t:contact,sz:18,color:grey}],{align:'center',after:160}));
+    if(summary.trim()){docxSection(out,'Professional Summary',accent);String(summary).split('\n').filter(l=>l.trim()).forEach(l=>out.push(docxP([{t:l.trim(),sz:21,color:dark}],{after:60,line:264})));}
+    if(exp.length){docxSection(out,'Experience',accent);exp.forEach(x=>{
+        out.push(docxP([{t:x.title||'',b:1,sz:22,color:dark}],{before:120,after:20}));
+        if(x.company||x.dates)out.push(docxP([{t:[x.company,x.dates].filter(Boolean).join(' — '),sz:20,color:grey}],{after:40}));
+        String(x.description||'').split('\n').filter(l=>l.trim()).forEach(l=>out.push(docxP([{t:'•  '+l.trim(),sz:21,color:dark}],{indent:280,after:40,line:264})));
+    });}
+    if(edu.length){docxSection(out,'Education',accent);edu.forEach(x=>{
+        out.push(docxP([{t:x.degree||'',b:1,sz:22,color:dark}],{before:100,after:20}));
+        if(x.institution||x.year)out.push(docxP([{t:[x.institution,x.year].filter(Boolean).join(' — '),sz:20,color:grey}],{after:40}));
+    });}
+    if(langs.length){docxSection(out,'Languages',accent);langs.forEach(x=>out.push(docxP([{t:[x.language,x.level].filter(Boolean).join(' — '),sz:21,color:dark}],{after:30})));}
+    if(skills.trim()){docxSection(out,'Skills',accent);out.push(docxP([{t:skills,sz:21,color:dark}],{after:60,line:264}));}
+    return out.join('');
+}
+function docxLetterParts(){
+    const accent=docxHex(currentColor),grey='6B7280',dark='111827';
+    const f=getLetterFields(),name=document.getElementById('fullName')?.value||'Your Name',title=document.getElementById('title')?.value||'';
+    const email=document.getElementById('email')?.value||'',phone=document.getElementById('phone')?.value||'',loc=document.getElementById('location')?.value||'',li=document.getElementById('linkedin')?.value||'';
+    const contacts=[email,phone,loc,li].filter(Boolean).join(' | ');
+    const hm=f.hiringManager.trim(),salutation=hm?'Dear '+hm+',':(f.company.trim()?'Dear Hiring Team,':'Dear Sir or Madam,');
+    const subject=f.role.trim()?'Re: Application for '+f.role.trim():'Re: Application';
+    const dateStr=new Date().toLocaleDateString(undefined,{year:'numeric',month:'long',day:'numeric'});
+    const out=[];
+    out.push(docxP([{t:name,b:1,sz:30,color:accent}],{after:20}));
+    if(title)out.push(docxP([{t:title,sz:21,color:grey}],{after:20}));
+    if(contacts)out.push(docxP([{t:contacts,sz:18,color:grey}],{after:200}));
+    out.push(docxP([{t:dateStr,sz:21,color:dark}],{after:200}));
+    if(f.company.trim())out.push(docxP([{t:(hm?hm+'\n':'')+f.company.trim(),sz:21,color:dark}],{after:200}));
+    out.push(docxP([{t:subject,b:1,sz:22,color:dark}],{after:200}));
+    out.push(docxP([{t:salutation,sz:21,color:dark}],{after:160}));
+    [f.p1,f.p2,f.p3,f.p4].forEach(p=>{String(p||'').split('\n').filter(l=>l.trim()).forEach(l=>out.push(docxP([{t:l.trim(),sz:21,color:dark}],{after:160,line:288})));});
+    out.push(docxP([{t:f.signoff,sz:21,color:dark}],{before:120,after:240}));
+    out.push(docxP([{t:name,b:1,sz:21,color:dark}],{after:0}));
+    return out.join('');
+}
+async function buildDocx(){
+    const f=docxFonts(),accent=docxHex(currentColor);
+    const name=document.getElementById('fullName')?.value||'Your Name';
+    const bodyXml=activeDoc==='letter'?docxLetterParts():docxCvParts();
+    const documentXml='<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:body>'+bodyXml+'<w:sectPr><w:pgSz w:w="11906" w:h="16838"/><w:pgMar w:top="1021" w:right="1021" w:bottom="1021" w:left="1021" w:header="0" w:footer="0" w:gutter="0"/></w:sectPr></w:body></w:document>';
+    const styles='<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<w:styles xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:docDefaults><w:rPrDefault><w:rPr><w:rFonts w:ascii="'+f.body+'" w:hAnsi="'+f.body+'"/><w:color w:val="111827"/><w:sz w:val="21"/><w:szCs w:val="21"/></w:rPr></w:rPrDefault><w:pPrDefault><w:pPr><w:spacing w:after="60"/></w:pPr></w:pPrDefault></w:docDefaults><w:style w:type="paragraph" w:default="1" w:styleId="Normal"><w:name w:val="Normal"/></w:style></w:styles>';
+    const contentTypes='<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/><Override PartName="/word/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml"/><Override PartName="/docProps/core.xml" ContentType="application/vnd.openxmlformats-package.core-properties+xml"/><Override PartName="/docProps/app.xml" ContentType="application/vnd.openxmlformats-officedocument.extended-properties+xml"/></Types>';
+    const rels='<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/package/2006/relationships/metadata/core-properties" Target="docProps/core.xml"/><Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/extended-properties" Target="docProps/app.xml"/></Relationships>';
+    const docRels='<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>';
+    const core='<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<cp:coreProperties xmlns:cp="http://schemas.openxmlformats.org/package/2006/metadata/core-properties" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><dc:title>'+(activeDoc==='letter'?'Cover letter':'Curriculum Vitae')+'</dc:title><dc:creator>'+docxEsc(name)+'</dc:creator><cp:lastModifiedBy>CV Genie</cp:lastModifiedBy><dcterms:created xsi:type="dcterms:W3CDTF">'+new Date().toISOString()+'</dcterms:created><dcterms:modified xsi:type="dcterms:W3CDTF">'+new Date().toISOString()+'</dcterms:modified></cp:coreProperties>';
+    const app='<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n<Properties xmlns="http://schemas.openxmlformats.org/officeDocument/2006/extended-properties" xmlns:vt="http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes"><Application>CV Genie</Application></Properties>';
+    const zip=new JSZip();
+    zip.file('[Content_Types].xml',contentTypes);
+    zip.folder('_rels').file('.rels',rels);
+    zip.folder('docProps').file('core.xml',core).file('app.xml',app);
+    const w=zip.folder('word');
+    w.file('document.xml',documentXml);w.file('styles.xml',styles);
+    zip.folder('word/_rels').file('document.xml.rels',docRels);
+    return zip.generateAsync({type:'blob',mimeType:'application/vnd.openxmlformats-officedocument.wordprocessingml.document',compression:'DEFLATE'});
+}
+async function exportDocx(){
+    const b=await buildDocx();
+    if(b.size<1000)throw new Error('DOCX too small');
+    saveAs(b,'cv-genie-'+(activeDoc==='letter'?'cover-letter':currentTemplate)+'.docx');
 }
 function buildRTF(){
     const name=document.getElementById('fullName')?.value||'Your Name',title=document.getElementById('title')?.value||'';
@@ -2197,15 +2298,15 @@ function copyAtsText(){navigator.clipboard.writeText(buildAtsPlainText()).then((
 // Export all templates as ZIP — uses whichever formats the user has selected
 async function exportAllTemplates(){
     const formats=[];
-    if(exportSel.serverPdf)formats.push('server-pdf');
-    if(exportSel.clientPdf)formats.push('client-pdf');
-    if(exportSel.serverDocx)formats.push('docx');
+    if(exportSel.printPdf||exportSel.clientPdf)formats.push('client-pdf'); /* ZIP mode can't open 18 print dialogs */
+    if(exportSel.docx)formats.push('docx');
     if(exportSel.rtf)formats.push('rtf');
     if(formats.length===0)formats.push('png');
     const orig=currentTemplate,zip=new JSZip(),s=document.getElementById('exportStatus');
     s.style.display='block';
     let successCount=0;
     const total=TEMPLATES.length*formats.length;
+    const docxBlob=formats.includes('docx')?await buildDocx():null; /* content-only: identical across templates */
     for(const t of TEMPLATES){
         const tIdx=TEMPLATES.indexOf(t)+1;
         changeTemplate(t);
@@ -2221,14 +2322,8 @@ async function exportAllTemplates(){
                     const pdfBlob=await html2pdf().set({margin:[8,8],filename:'cv-genie-'+t+'.pdf',image:{type:'jpeg',quality:0.95},html2canvas:{scale:2,useCORS:true},jsPDF:{unit:'mm',format:'a4',orientation:'portrait'}}).from(document.getElementById('cvPreview')).outputPdf('blob');
                     zip.file('cv-genie-'+t+'.pdf',pdfBlob);
                     successCount++;
-                } else if(fmt==='server-pdf'){
-                    const preview=document.getElementById('cvPreview');
-                    const cs=getComputedStyle(document.documentElement);
-                    const r=await fetch(PDF_SERVER_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({html:preview.outerHTML,color:cs.getPropertyValue('--cv-color').trim()||'#2563eb',fontHeading:cs.getPropertyValue('--cv-font-heading').trim()||'Georgia, serif',fontBody:cs.getPropertyValue('--cv-font-body').trim()||'Georgia, serif'})});
-                    if(r.ok){const b=await r.blob();if(b.size>=1000){zip.file('cv-genie-'+t+'-hq.pdf',b);successCount++;}}
                 } else if(fmt==='docx'){
-                    const r=await fetch(DOCX_SERVER_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(docxPayload())});
-                    if(r.ok){const b=await r.blob();if(b.size>=1000){zip.file('cv-genie-'+t+'.docx',b);successCount++;}}
+                    if(docxBlob&&docxBlob.size>=1000){zip.file('cv-genie-'+t+'.docx',docxBlob);successCount++;}
                 } else if(fmt==='rtf'){
                     zip.file('cv-genie-'+t+'.rtf',buildRTF());
                     successCount++;
@@ -2254,9 +2349,7 @@ function openExportModal(){
   const m=document.getElementById('exportModal');
   const isLetter=activeDoc==='letter';
   document.getElementById('exportModalTitle').childNodes[0].textContent=isLetter?'Export cover letter':'Export CV';
-  document.getElementById('chkServerDocx').closest('.export-option').style.display=isLetter?'none':'';
   document.getElementById('exportAllBtn').style.display=isLetter?'none':'';
-  if(isLetter){document.getElementById('chkServerDocx').checked=false;exportSel.serverDocx=false;}
   m.style.display='flex';
 }
 function closeExportModal(){document.getElementById('exportModal').style.display='none';}
@@ -3726,6 +3819,31 @@ if(window.innerWidth<=900){
   mobileNav('edit');
 }
 applyPreviewMode();
+
+/* ── PWA: install prompt + service worker (offline app) ───────────── */
+let deferredInstallPrompt=null;
+window.addEventListener('beforeinstallprompt',e=>{
+  e.preventDefault();deferredInstallPrompt=e;
+  const b=document.getElementById('installBtn');if(b)b.style.display='';
+});
+window.addEventListener('appinstalled',()=>{
+  deferredInstallPrompt=null;
+  const b=document.getElementById('installBtn');if(b)b.style.display='none';
+  showToast('CV Genie installed — it now works offline');
+});
+function installApp(){
+  if(!deferredInstallPrompt)return;
+  deferredInstallPrompt.prompt();
+  deferredInstallPrompt.userChoice.then(()=>{
+    deferredInstallPrompt=null;
+    const b=document.getElementById('installBtn');if(b)b.style.display='none';
+  }).catch(()=>{});
+}
+/* Register the service worker on secure contexts (GitHub Pages / localhost).
+   127.0.0.1 is included so local dev gets the same offline behaviour. */
+if('serviceWorker' in navigator&&(location.protocol==='https:'||location.hostname==='127.0.0.1'||location.hostname==='localhost')){
+  window.addEventListener('load',()=>{navigator.serviceWorker.register('sw.js').catch(()=>{});});
+}
 </script>
 </body>
 </html>

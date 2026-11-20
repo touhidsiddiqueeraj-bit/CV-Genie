@@ -2,13 +2,14 @@
 
 # CV Genie
 
-**A fast, private, minimalist CV builder — 18 templates including Europass, a matching cover letter builder with Gemini AI writing, a 7-category ATS engine with job-description matching and an optional Gemini AI coach, profile photos, and PDF / DOCX / RTF / Markdown / TXT export.**
+**A fast, private, offline-capable CV builder — 18 templates including Europass, a matching cover letter builder (deterministic + Gemini AI), a 7-category ATS engine with job-description matching, profile photos, and fully local PDF / DOCX / RTF / Markdown / TXT export. Installable as a PWA and as an Android APK built by CI.**
 
 [![CI](https://github.com/touhidsiddiqueeraj-bit/CV-Genie/actions/workflows/ci.yml/badge.svg)](https://github.com/touhidsiddiqueeraj-bit/CV-Genie/actions/workflows/ci.yml)
 [![Deploy](https://github.com/touhidsiddiqueeraj-bit/CV-Genie/actions/workflows/deploy.yml/badge.svg)](https://github.com/touhidsiddiqueeraj-bit/CV-Genie/actions/workflows/deploy.yml)
 [![Release](https://github.com/touhidsiddiqueeraj-bit/CV-Genie/actions/workflows/release.yml/badge.svg)](https://github.com/touhidsiddiqueeraj-bit/CV-Genie/actions/workflows/release.yml)
+[![APK](https://github.com/touhidsiddiqueeraj-bit/CV-Genie/actions/workflows/apk.yml/badge.svg)](https://github.com/touhidsiddiqueeraj-bit/CV-Genie/actions/workflows/apk.yml)
 
-[Live demo](https://touhidsiddiqueeraj-bit.github.io/CV-Genie/) · [Templates](#-templates) · [What's new](#-whats-new-in-v22) · [Documentation](#-documentation)
+[Live demo](https://touhidsiddiqueeraj-bit.github.io/CV-Genie/) · [Templates](#-templates) · [What's new](#-whats-new-in-v23) · [Documentation](#-documentation)
 
 </div>
 
@@ -18,12 +19,23 @@
 
 ## ✦ Why CV Genie
 
-- **Private by default** — everything runs in your browser. No accounts, no tracking, no data leaves your device (unless you explicitly use the optional server-rendered exports).
+- **Private by default** — everything runs in your browser. No accounts, no tracking, no export server: PDF, DOCX, every format is generated on your device (the only optional network calls are to Google's Gemini, with your own key, for AI features).
 - **No paywall at the download button** — every template, every export format, the cover letter, the matcher: free, forever. Most builders let you build for free, then charge $25/month to export.
 - **Zero friction** — no build step, no dependencies to install. One HTML file, open it and go.
+- **Installable & fully offline** — a real PWA: install it from the browser (the download icon in the header), and the service worker warms the app shell, the CDN libraries and the web fonts so CV Genie keeps working with no connection at all.
 - **ATS-aware** — a 7-category engine with ~25 concrete checks (plus job-description matching and an optional Gemini AI coach) scores your CV on every keystroke and shows exactly what to fix.
-- **Serious output** — high-quality PDF, editable DOCX and RTF, plus bulk export of all 18 templates in one ZIP.
-- **Works everywhere** — responsive down to phone screens, dark mode, offline-capable (PWA service worker).
+- **Serious output** — vector PDF through the print dialog, an editable DOCX generated entirely in-browser, RTF, Markdown, plain text, plus bulk export of all 18 templates in one ZIP.
+- **Works everywhere** — responsive down to phone screens, dark mode, and an installable Android APK built by CI.
+
+## ✦ What's new in v2.3
+
+| Area | Change |
+|---|---|
+| **100% serverless exports** | The Render export microservice is gone. **DOCX is now generated in your browser** — a from-scratch WordprocessingML writer built on the bundled JSZip, producing a complete OOXML package (document, styles, doc properties) with your accent colour and font pairing, for the CV *and* the cover letter. No network, no cold starts, nothing to maintain. |
+| **Vector PDF** | “High-quality PDF (server)” is replaced by **PDF (print dialog)**: a dedicated print stylesheet reduces the page to just the active document, and your browser's *Save as PDF* produces crisp, selectable vector text — better than the old server render, with zero infrastructure. The one-click html2pdf export stays for quick drafts. |
+| **Installable PWA** | Web app manifest, a real `sw.js` service worker (app shell precached; CDN libraries and web fonts warmed at activation; network-first navigations so updates land on refresh), generated icon set (any + maskable + apple-touch), and an **Install** button in the header. Once installed, CV Genie works completely offline — editing, templates, ATS, deterministic cover letters and every export format. |
+| **Android APK from CI** | A new [GitHub Actions workflow](.github/workflows/apk.yml) wraps the deployed PWA into a signed **Trusted Web Activity APK** (and AAB) using Bubblewrap — run it on demand or let it attach the APK to version releases. See [Android app](#-android-app-twa-apk). |
+| **Verified** | New Playwright suites: `test-export-docx.js` (16 assertions — package structure, well-formed XML, content, letter mode, LibreOffice round-trip) and `test-pwa.js` (22 assertions — manifest, icons, SW lifecycle, cache warm-up, full offline boot, Gemini never cached). |
 
 ## ✦ What's new in v2.2
 
@@ -38,7 +50,7 @@
 
 | Area | Change |
 |---|---|
-| **Cover letter builder** | A full letter editor with a one-click draft generated from your CV, or full AI writing via Gemini (your own key): four tailored paragraphs in your chosen tone, grounded strictly in your CV and the pasted job description. The letter shares your CV's accent colour and fonts, so the pair reads as a matching set. Export as PDF (server or instant), RTF, Markdown or plain text. |
+| **Cover letter builder** | A full letter editor with a one-click draft generated deterministically from your CV, or full AI writing via Gemini (your own key): four tailored paragraphs in your chosen tone, grounded strictly in your CV and the pasted job description. The letter shares your CV's accent colour and fonts, so the pair reads as a matching set. Export as PDF, DOCX, RTF, Markdown or plain text. |
 | **Job description match** | Paste a real posting and CV Genie extracts its keywords (multi-word phrases included), scores your CV against them, and shows exactly what's missing — click any missing keyword to add it, or add all missing at once. |
 | **"What the ATS sees"** | An honest plain-text extraction of your CV in parse order, plus parse checks (email/phone detection, word count, sections, dates). See what a parser gets, not what a marketing score claims. |
 | **Markdown & TXT export** | For GitHub profiles, web posting and online forms — works for both CV and cover letter. |
@@ -114,11 +126,24 @@ Six font pairings (now properly loaded as web fonts, so exports match the previe
 
 ![Design tab](docs/images/design.png)
 
-### Export
+### Export — all local, all the time
 
-Pick any combination of high-quality server PDF, instant client PDF, server DOCX, instant RTF, **Markdown** and **plain text** — or export **all 18 templates** in one ZIP. The export dialog follows the active document: cover letters export as PDF / RTF / Markdown / TXT.
+Pick any combination of **PDF (print dialog)** — the page collapses to just the active document and your browser's *Save as PDF* produces crisp vector text — **PDF (instant)** for one-click raster drafts, **DOCX** generated entirely in-browser, instant **RTF**, **Markdown** and **plain text** — or export **all 18 templates** in one ZIP. The export dialog follows the active document: cover letters export as PDF / DOCX / RTF / Markdown / TXT. No format touches a server; DOCX is a complete OOXML package (Word, LibreOffice and Google Docs all open it) carrying your accent colour and font pairing.
 
 ![Export dialog](docs/images/export.png)
+
+### Install it — offline forever
+
+CV Genie is a real installable PWA. Click the **install icon** in the header (Chrome/Edge desktop, or *Add to Home Screen* on mobile) and it runs in its own window, launches instantly, and — because the service worker precaches the app shell and warms the CDN libraries and web fonts — **keeps working with no connection at all**: editing, all 18 templates, the ATS engine, deterministic cover letters and every export format. Navigations are network-first, so a deploy lands the next time you're online and refresh. The only thing that needs the network is the optional Gemini AI.
+
+### Android app (TWA APK)
+
+The same PWA is packaged as an Android app by CI. The [apk workflow](.github/workflows/apk.yml) uses [Bubblewrap](https://github.com/GoogleChromeLabs/bubblewrap) to wrap the deployed PWA into a **Trusted Web Activity** — a real, signed APK (plus an AAB for Play Store uploads) that shows CV Genie fullscreen on Android:
+
+- **Get the APK** — run the workflow manually (Actions → *Build Android APK* → *Run workflow*), or grab `cv-genie-<version>.apk` from the artifacts of any run / attached to a `v*` release.
+- **Install** — enable *install unknown apps* for your browser/file manager, then open the APK. It updates over itself as long as the signing key stays the same.
+- **Signing** — the wrapper key is committed at [`android-signing/`](android-signing/README.md) so builds are fully automated; read that note before publishing to Google Play (it explains rotating to a private key via the `ANDROID_KEYSTORE_B64` secret, which the workflow prefers automatically).
+- **Fullscreen verification** — for the TWA to open without a browser address bar, Android verifies the signing key against a [Digital Asset Links](https://developers.google.com/digital-asset-links/v1/getting-started) statement on the site's host root. The statement is committed at `.well-known/assetlinks.json` and served by this repo's Pages. Because GitHub Pages project sites live under a shared `*.github.io` host, the statement must also be reachable at `https://touhidsiddiqueeraj-bit.github.io/.well-known/assetlinks.json` — copy the file into the **root of the `touhidsiddiqueeraj-bit.github.io` repository** (the user-site repo) once. Without it the app still runs, just with a URL bar on first launch.
 
 ### Mobile & dark mode
 
@@ -208,33 +233,43 @@ Then open http://localhost:8080. To publish your own copy, push to a GitHub repo
 
 ### Architecture
 
-The application is a single, self-contained HTML file (SPA) — vanilla JavaScript, CSS and carefully chosen libraries loaded from CDN. There is no framework and no build step.
+The application is a single, self-contained HTML file (SPA) — vanilla JavaScript, CSS and carefully chosen libraries loaded from CDN. There is no framework and no build step. Around it sit the PWA assets (manifest, service worker, icons) that make it installable and offline-capable, and the CI pipeline that deploys it and builds the Android wrapper.
 
 **Frontend libraries**
 
 | Library | Purpose |
 |---|---|
 | html2pdf.js / html2canvas | Client-side PDF and PNG rendering |
+| JSZip + FileSaver.js | The in-browser DOCX writer, bulk ZIP export, DOCX import parsing |
 | SortableJS | Drag-and-drop reordering (sections and list items) |
-| JSZip + FileSaver.js | Bulk ZIP export of all templates |
 | pdf.js | Text extraction from LinkedIn PDF uploads |
 | Cropper.js | In-browser photo cropping and rotation |
 | LZ-String | Compressing CV state into shareable URLs |
 
-**Optional export microservice** — a companion Node.js server (`/export-pdf`, `/export-docx`) renders high-quality files with headless Chrome and the `docx` library. The client falls back to browser-based exports when it is unavailable. See [API endpoints](#api-endpoints-server-side) for the contract.
+**No backend.** PDF export uses the browser's own print-to-PDF (vector), DOCX is assembled client-side as an OOXML package, and the only optional network calls are direct browser → Google Gemini requests using the API key you paste in. There is no export microservice anymore.
 
 **Project structure**
 
 ```
 .
 ├── index.html                  # the entire app (UI + CSS + JS)
+├── manifest.webmanifest        # PWA manifest (name, icons, display, colours)
+├── sw.js                       # service worker — offline app shell + CDN warm
+├── icons/                      # generated PWA icons (any / maskable / apple)
+├── .well-known/assetlinks.json# Android TWA site association
+├── android-signing/            # committed TWA wrapper keystore (+ rotation notes)
 ├── docs/images/                # screenshots used by this README
 │   └── templates/*.png         # all 18 template previews
 ├── scripts/
-│   └── validate.js             # CI validation (structure, JS syntax, registry, assets)
+│   ├── validate.js             # CI validation (structure, JS syntax, registry, PWA assets)
+│   ├── apk-driver.js           # non-interactive Bubblewrap runner for the APK workflow
+│   ├── make-icons.js           # regenerates icons/ from the brand SVG
+│   ├── test-*.js / shoot-*.js  # Playwright E2E suites and screenshot generators
+│   └── make-cv-fixtures.py     # sample CVs for the import-parser suite
 └── .github/workflows/
     ├── ci.yml                  # validation on push/PR
     ├── deploy.yml              # GitHub Pages deployment
+    ├── apk.yml                 # Bubblewrap TWA → signed APK/AAB
     └── release.yml             # tagged releases with packaged artifact
 ```
 
@@ -253,39 +288,13 @@ The application is a single, self-contained HTML file (SPA) — vanilla JavaScri
 
 The whole CV is serialised by `getState()` into one plain object (template, colour, font pair, photo settings, section order, fields, experiences, education, languages, ATS keywords). Undo/redo stacks keep up to 50 snapshots; `restoreState()` rebuilds the form and preview from any snapshot. The same object powers share links, JSON backup, version history and autosave (`localStorage`, key `cvGenie_v2.0`, with migration from the v1 key).
 
-### API endpoints (server-side)
+### The in-browser DOCX writer
 
-`POST /export-pdf`
+`buildDocx()` assembles a complete Office Open XML package with the JSZip the app already bundles — no external library, no server. It writes `[Content_Types].xml`, the package relationships, `docProps` (title, creator, timestamps), `word/styles.xml` (document defaults in your font pairing) and `word/document.xml` (A4 page, your accent colour on the name and section rules, the same content order as the RTF builder). Both documents are covered: `docxCvParts()` for the CV and `docxLetterParts()` for the cover letter. The suite `scripts/test-export-docx.js` downloads real exports through the UI and validates the ZIP structure, XML well-formedness and content with Python's zipfile + minidom, then round-trips the file through LibreOffice.
 
-```json
-{
-  "html": "<div class=\"cv-preview cv-modern\">…</div>",
-  "color": "#2563eb",
-  "fontHeading": "Georgia, serif",
-  "fontBody": "Georgia, serif"
-}
-```
+### The service worker
 
-Response: `application/pdf` binary.
-
-`POST /export-docx`
-
-```json
-{
-  "name": "John Doe",
-  "title": "Software Engineer",
-  "contact": "john@example.com | …",
-  "summary": "…",
-  "skills": "…",
-  "experiences": [{ "title": "…", "company": "…", "dates": "…", "description": "…" }],
-  "education": [{ "degree": "…", "institution": "…", "year": "…" }],
-  "languages": [{ "language": "English", "level": "Native" }]
-}
-```
-
-Response: `application/vnd.openxmlformats-officedocument.wordprocessingml.document` binary.
-
-Both endpoints should handle CORS and return `{ "error": "message" }` JSON on failure.
+`sw.js` precaches the app shell at install (`./`, `index.html`, manifest, icons), warms the exact CDN libraries and web fonts (woff2 URLs parsed out of the Google Fonts CSS) right after activation so the **first** visit already survives going offline, serves assets cache-first, and handles navigations network-first with a cached fallback so deploys land on the next refresh. The Gemini API is deliberately never cached — AI features simply wait for a connection. The cache name is versioned (`cv-genie-v2.3`); bump it when you want every install to refresh its cache.
 
 ### Keyboard shortcuts & accessibility
 
@@ -293,18 +302,19 @@ Both endpoints should handle CORS and return `{ "error": "message" }` JSON on fa
 - `Ctrl/Cmd+S` — suppressed (prevents the browser save dialog)
 - Section headers are clickable/focusable; icon buttons carry `aria-label`s; focus-visible rings throughout; dark mode honours `prefers-color-scheme` on first visit.
 
-### PWA
+### PWA internals
 
-A minimal service worker (registered from a blob URL, cache `cvgenie-v2`) caches the app shell for offline use with a cache-first strategy.
+The manifest lives at `manifest.webmanifest` (standalone display, theme `#18181b`, `any` + `maskable` icons generated by `scripts/make-icons.js` from the brand SVG). The service worker is `sw.js`, registered on secure contexts (GitHub Pages and localhost). See [Architecture](#architecture) for the caching strategy.
 
 ## ✦ CI/CD
 
-Three GitHub Actions workflows:
+Four GitHub Actions workflows:
 
 | Workflow | Trigger | What it does |
 |---|---|---|
-| [ci.yml](.github/workflows/ci.yml) | push to `main`, PRs | Runs `scripts/validate.js`: HTML structure, tag balance, `node --check` on every inline script, template registry consistency (TEMPLATES ↔ TEMPLATE_META ↔ THUMB_WIRES ↔ switch cases), README image references, workflow YAML parsing, file-size guard |
+| [ci.yml](.github/workflows/ci.yml) | push to `main`, PRs | Runs `scripts/validate.js`: HTML structure, tag balance, `node --check` on every inline script, template registry consistency (TEMPLATES ↔ TEMPLATE_META ↔ THUMB_WIRES ↔ switch cases), README image references, workflow YAML parsing, PWA asset checks (manifest, icons, sw.js, assetlinks, keystore, apk-driver) and a no-export-server guard |
 | [deploy.yml](.github/workflows/deploy.yml) | push to `main`, manual | Deploys the repo to GitHub Pages (upload artifact → deploy-pages). Enable "GitHub Actions" as the Pages source in repo settings |
+| [apk.yml](.github/workflows/apk.yml) | manual, `v*` tags | Waits for the deployed manifest, then runs `scripts/apk-driver.js` (Bubblewrap TWA, non-interactive) → signed APK + AAB, uploaded as artifacts and attached to releases |
 | [release.yml](.github/workflows/release.yml) | `v*` tags | Validates, packages `index.html` into a versioned ZIP (+ SHA-256) and publishes a GitHub Release with generated notes |
 
 ## ✦ Common maintenance tasks
@@ -345,9 +355,20 @@ NODE_PATH="$(npm root -g)" node scripts/test-ats-v2.js
 
 `scripts/shoot-ats.js` regenerates the three ATS screenshots above the same way.
 
+### Testing exports and the PWA
+
+Two more Playwright suites cover the v2.3 work:
+
+```bash
+NODE_PATH="$(npm root -g)" node scripts/test-export-docx.js   # 16 checks — DOCX packages, letter mode, LibreOffice round-trip
+NODE_PATH="$(npm root -g)" node scripts/test-pwa.js            # 22 checks — manifest, SW lifecycle, offline boot, cache warm
+```
+
+`test-export-docx.js` drives the real export buttons, saves the downloads, then validates the ZIP/OOXML structure and content with Python's `zipfile` + `minidom` and converts one file with headless LibreOffice to prove it opens. `test-pwa.js` runs the service worker on `127.0.0.1` (a secure context) and asserts the full offline story — including that the Gemini API is never cached.
+
 ### Regenerating README screenshots
 
-Serve the repo, then use Playwright against `restoreState()` with sample data and `changeTemplate(t)` — screenshot `#cvScaleOuter` per template into `docs/images/templates/`.
+Serve the repo, then use Playwright against `restoreState()` with sample data and `changeTemplate(t)` — screenshot `#cvScaleOuter` per template into `docs/images/templates/`. `scripts/shoot-export.js` refreshes the export-dialog screenshot, `scripts/make-icons.js` regenerates the PWA icon set.
 
 ---
 
