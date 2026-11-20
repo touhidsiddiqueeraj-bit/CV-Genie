@@ -9,7 +9,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="CV Genie">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='6' fill='%2318181b'/%3E%3Cpath d='M12 4.5l1.7 5.3 5.3 1.7-5.3 1.7L12 18.5l-1.7-5.3L5 11.5l5.3-1.7z' fill='%23fff'/%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%238b5cf6'/%3E%3Cstop offset='1' stop-color='%233b82f6'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='48' height='48' rx='12' fill='url(%23g)'/%3E%3Cpath d='M17.5 8.5h11l8.5 8.5v20a3 3 0 0 1-3 3h-16.5a3 3 0 0 1-3-3v-25.5a3 3 0 0 1 3-3z' fill='%23fff'/%3E%3Crect x='18' y='25' width='13' height='2.8' rx='1.4' fill='%238478f2'/%3E%3Crect x='18' y='31.5' width='8' height='2.8' rx='1.4' fill='%238478f2'/%3E%3Cpath d='M39 1.8l1.4 3.8 3.8 1.4-3.8 1.4-1.4 3.8-1.4-3.8-3.8-1.4 3.8-1.4z' fill='%23fff'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Lora:ital,wght@0,400;0,600;1,400&family=Roboto:wght@300;400;500;700&family=Montserrat:wght@400;600;700;800&family=Merriweather:wght@300;400;700&family=Playfair+Display:wght@400;600;700&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -28,7 +28,7 @@
   if(saved==='true'){document.documentElement.classList.add('dark');}
   else if(saved===null&&window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches){document.documentElement.classList.add('dark');}
 })();
-if('serviceWorker' in navigator){window.addEventListener('load',function(){var swCode='const CACHE="cvgenie-v2";self.addEventListener("install",e=>{e.waitUntil(caches.open(CACHE).then(c=>c.addAll(["/"])).then(()=>self.skipWaiting()));});self.addEventListener("fetch",e=>{e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request)));});';var blob=new Blob([swCode],{type:'application/javascript'});navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(function(){});});}
+if('serviceWorker' in navigator){window.addEventListener('load',function(){var swCode='const CACHE="cvgenie-v3";self.addEventListener("install",e=>{e.waitUntil(caches.open(CACHE).then(c=>c.addAll(["/"])).then(()=>self.skipWaiting()));});self.addEventListener("activate",e=>{e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim()));});self.addEventListener("fetch",e=>{e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request)));});';var blob=new Blob([swCode],{type:'application/javascript'});navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(function(){});});}
 </script>
 <style>
 /* ============================================================
@@ -69,8 +69,8 @@ input,textarea,select{font-family:inherit;}
 /* ── Header ─────────────────────────────────────────────── */
 .app-header{background:var(--surface);border-bottom:1px solid var(--border);height:var(--header-height);padding:0 1rem;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:110;gap:0.5rem;}
 .brand{display:flex;align-items:center;gap:0.5rem;min-width:0;}
-.brand-mark{width:26px;height:26px;border-radius:7px;background:var(--accent);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.brand-mark svg{width:14px;height:14px;}
+.brand-mark{width:26px;height:26px;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
+.brand-mark svg{width:100%;height:100%;display:block;}
 .brand-name{font-size:15px;font-weight:700;letter-spacing:-0.01em;white-space:nowrap;}
 .brand-tag{font-size:10px;font-weight:600;color:var(--text-secondary);border:1px solid var(--border);border-radius:99px;padding:1px 7px;white-space:nowrap;}
 .header-actions{display:flex;gap:0.25rem;align-items:center;}
@@ -621,7 +621,9 @@ html.dark .cv-preview{box-shadow:0 1px 3px rgba(0,0,0,0.4),0 8px 32px rgba(0,0,0
 .cl-signoff{margin-top:4mm;margin-bottom:1mm;}
 .cl-sig{font-family:var(--cv-font-heading);font-weight:700;font-size:11.5pt;color:var(--cv-color);}
 /* ── Job description matcher ── */
-.jd-box textarea{width:100%;min-height:110px;resize:vertical;}
+.jd-box textarea{width:100%;min-height:110px;resize:vertical;padding:0.5rem 0.65rem;border:1px solid var(--border);border-radius:var(--radius);font-size:13.5px;line-height:1.5;background:var(--surface);color:var(--text);transition:border-color .15s,box-shadow .15s;}
+.jd-box textarea::placeholder{color:var(--text-tertiary);}
+.jd-box textarea:focus{outline:none;border-color:var(--text-secondary);box-shadow:0 0 0 3px var(--focus);}
 .jd-results{margin-top:0.55rem;}
 .jd-score-row{display:flex;align-items:center;gap:0.6rem;margin-bottom:0.5rem;}
 .jd-score-bar{flex:1;height:8px;border-radius:6px;background:var(--surface-3);overflow:hidden;}
@@ -650,6 +652,8 @@ html.dark .cv-preview{box-shadow:0 1px 3px rgba(0,0,0,0.4),0 8px 32px rgba(0,0,0
 .ats-chk.warn .dot{background:#d97706;}
 /* AI coach */
 .ai-coach-box{border:1px solid var(--border);border-radius:var(--radius);padding:0.75rem;background:var(--surface);}
+.hint a,.cvi-ai-note a,.ats-ai-status a{color:#3b82f6;}
+html.dark .hint a,html.dark .cvi-ai-note a,html.dark .ats-ai-status a{color:#93b4ff;}
 .ai-coach-box .hint{display:block;font-size:10.5px;color:var(--text-tertiary);line-height:1.45;margin-top:0.25rem;}
 .ai-coach-head{font-size:12px;color:var(--text-secondary);margin-bottom:0.55rem;line-height:1.5;}
 .ai-card{border:1px solid var(--border);border-radius:10px;padding:0.6rem 0.65rem;margin-top:0.45rem;background:var(--surface-2);}
@@ -674,7 +678,7 @@ html.dark .cv-preview{box-shadow:0 1px 3px rgba(0,0,0,0.4),0 8px 32px rgba(0,0,0
 
 <header class="app-header">
     <div class="brand">
-        <div class="brand-mark"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3l1.9 6.1L20 11l-6.1 1.9L12 19l-1.9-6.1L4 11l6.1-1.9L12 3z" fill="currentColor" style="color:#fff"/></svg></div>
+        <div class="brand-mark"><svg viewBox="0 0 48 48" aria-hidden="true"><defs><linearGradient id="cgBg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#8b5cf6"/><stop offset="1" stop-color="#3b82f6"/></linearGradient></defs><rect width="48" height="48" rx="12" fill="url(#cgBg)"/><path d="M17.5 8.5h11l8.5 8.5v20a3 3 0 0 1-3 3h-16.5a3 3 0 0 1-3-3v-25.5a3 3 0 0 1 3-3z" fill="#fff"/><rect x="18" y="25" width="13" height="2.8" rx="1.4" fill="#8478f2"/><rect x="18" y="31.5" width="8" height="2.8" rx="1.4" fill="#8478f2"/><path d="M39 1.8l1.4 3.8 3.8 1.4-3.8 1.4-1.4 3.8-1.4-3.8-3.8-1.4 3.8-1.4z" fill="#fff"/></svg></div>
         <span class="brand-name">CV Genie</span>
         <span class="brand-tag">v2.2</span>
     </div>
@@ -939,8 +943,11 @@ html.dark .cv-preview{box-shadow:0 1px 3px rgba(0,0,0,0.4),0 8px 32px rgba(0,0,0
                     <div class="ai-coach-head"><strong>AI Coach</strong> — Gemini reviews your CV against these checks and suggests concrete rewrites. Uses your own free API key, stored only in this browser.</div>
                     <div class="form-group" style="margin:0 0 0.5rem">
                         <label for="atsAiKey">Gemini API key</label>
-                        <input type="password" id="atsAiKey" placeholder="AIza…" autocomplete="off" spellcheck="false">
-                        <small class="hint">Same key as CV import — get a free one at <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">aistudio.google.com/apikey</a>. Your CV text and job description go directly from your browser to Google and nowhere else.</small>
+                        <div style="display:flex;gap:0.35rem">
+                            <input type="password" id="atsAiKey" placeholder="AIza…" autocomplete="off" spellcheck="false" style="flex:1">
+                            <button class="btn btn-sm" onclick="testGeminiKey()" style="white-space:nowrap" title="Send a tiny test request and report exactly what works">Test</button>
+                        </div>
+                        <small class="hint">Same key as CV import — get a free one at <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">aistudio.google.com/apikey</a>. Your CV text and job description go directly from your browser to Google and nowhere else. If a request fails, hit <strong>Test</strong> — it pinpoints the exact problem.</small>
                     </div>
                     <div style="display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap">
                         <button class="btn btn-primary btn-sm" id="atsAiBtn" onclick="runAtsAiCoach()">Review my CV with Gemini</button>
@@ -1123,7 +1130,7 @@ html.dark .cv-preview{box-shadow:0 1px 3px rgba(0,0,0,0.4),0 8px 32px rgba(0,0,0
             <div class="cvi-ai-head"><strong>Results look off?</strong> Let Gemini AI re-extract it — free with your own API key.</div>
             <div class="cvi-ai-panel">
                 <div class="form-group"><label for="cvAiKey">Gemini API key</label><input type="password" id="cvAiKey" placeholder="AIza…" autocomplete="off" spellcheck="false"></div>
-                <div class="form-group"><label for="cvAiModel">Model</label><input type="text" id="cvAiModel" list="cviModelList" placeholder="gemini-flash-latest" spellcheck="false"><datalist id="cviModelList"><option value="gemini-flash-latest">latest fast model (recommended)</option><option value="gemini-flash-lite-latest">latest lite model (budget)</option></datalist><small class="hint" id="cvAiModelHint">Auto-falls back to flash-lite-latest and other available models if one is busy.</small></div>
+                <div class="form-group"><label for="cvAiModel">Model</label><input type="text" id="cvAiModel" list="cviModelList" placeholder="gemini-flash-latest" spellcheck="false"><datalist id="cviModelList"><option value="gemini-flash-latest">latest fast model (recommended)</option><option value="gemini-3.5-flash-lite">most reliable stable model</option><option value="gemini-flash-lite-latest">latest lite model (budget)</option></datalist><small class="hint" id="cvAiModelHint">If a model is busy (503) the app automatically retries and falls back through flash-lite, 3.5/3.6/3.8 flash and other available models.</small></div>
                 <button class="btn btn-primary btn-sm" id="cvAiRunBtn" onclick="runGeminiExtraction()">Run AI extraction</button>
                 <div id="cvAiStatus" class="cvi-ai-status" style="display:none"></div>
                 <p class="cvi-ai-note">Get a free key at <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">aistudio.google.com/apikey</a>. The key is stored only in this browser and sent only to Google. CV-Genie has no server-side AI — your CV text and, for PDFs, the file itself go directly from your browser to Google's Generative Language API and nowhere else. If a model is busy or discontinued, CV-Genie automatically retries and falls back to other available models. AI extraction also handles unusual layouts and non-English CVs.</p>
@@ -2148,13 +2155,28 @@ async function runAtsAiCoach(){
   if(btn)btn.disabled=true;
   if(st){st.textContent='Asking Gemini\u2026';st.className='ats-ai-status';}
   try{
-    const {data,model}=await cviCallGemini(key,cviGetModel(),atsAiParts(cv,atsLastReport),m=>{if(st)st.textContent=m;});
+    const {data,model}=await cviCallGemini(key,cviGetModel(),atsAiParts(cv,atsLastReport),m=>{if(st)st.textContent=m;},{schema:ATS_AI_SCHEMA});
     atsRenderAi(data);
     if(st){st.textContent='Reviewed with '+model+' \u2014 re-run the analysis after applying changes.';st.className='ats-ai-status ok';}
   }catch(e){
     if(st){st.textContent=e&&e.message?e.message:'Gemini request failed \u2014 try again in a minute.';st.className='ats-ai-status err';}
   }finally{
     if(btn)btn.disabled=false;
+  }
+}
+async function testGeminiKey(){ /* tiny ping through the same fallback engine — pinpoints key/model/region problems in the UI */
+  const keyEl=document.getElementById('atsAiKey');
+  const key=(keyEl?keyEl.value:'').trim()||cviGetKey();
+  const st=document.getElementById('atsAiStatus');
+  if(!key){if(st){st.textContent='Paste a Gemini API key first \u2014 get a free one at aistudio.google.com/apikey.';st.className='ats-ai-status err';}return;}
+  if(keyEl)keyEl.value=key;
+  cviSetKey(key);
+  if(st){st.textContent='Testing connection\u2026';st.className='ats-ai-status';}
+  try{
+    const {data,model}=await cviCallGemini(key,cviGetModel(),[{text:'Connection test. Reply with exactly: OK'}],m=>{if(st)st.textContent=m;},{temperature:0,timeout:30000});
+    if(st){st.textContent='Connection OK \u2014 answered via '+model+'. The AI coach and CV import will work.';st.className='ats-ai-status ok';}
+  }catch(e){
+    if(st){st.textContent=(e&&e.message)||'Connection failed.';st.className='ats-ai-status err';}
   }
 }
 function atsRenderAi(d){
@@ -2846,8 +2868,8 @@ function cviScore(p){
 /* ── Gemini AI fallback (user's own key, direct browser → Google) ── */
 const CVI_GEMINI_DEFAULT='gemini-flash-latest';
 const CVI_GEMINI_BASE='https://generativelanguage.googleapis.com/v1beta';
-const CVI_GEMINI_FALLBACKS=['gemini-flash-latest','gemini-flash-lite-latest'];
-const CVI_RETRYABLE=new Set([429,500,503]);
+const CVI_GEMINI_FALLBACKS=['gemini-flash-latest','gemini-flash-lite-latest','gemini-3.5-flash-lite','gemini-3.6-flash','gemini-3.8-flash','gemini-3.1-flash-lite'];
+const CVI_RETRYABLE=new Set([408,429,500,503]);
 let cviModelCache={ts:0,list:null};
 function cviSleep(ms){return new Promise(r=>setTimeout(r,ms));}
 async function cviDiscoverModels(key){
@@ -2861,7 +2883,7 @@ async function cviDiscoverModels(key){
     if(!res.ok||!j||!Array.isArray(j.models))return [];
     const list=j.models.filter(m=>(m.supportedGenerationMethods||[]).includes('generateContent'))
       .map(m=>(m.name||'').replace(/^models\//,''))
-      .filter(n=>/^(gemini|gemma)/i.test(n)&&!/embedding|aqa|imagen|tts|image|veo|live|learnlm|robotics|computer-use|native-audio|thinking/i.test(n));
+      .filter(n=>/^(gemini|gemma)/i.test(n)&&!/embedding|aqa|imagen|tts|image|veo|live|learnlm|robotics|computer-use|native-audio|thinking|transcribe|decision|lyria|genie|omni|banana|deep-research|antigravity/i.test(n));
     cviModelCache={ts:now,list};
     try{
       const dl=document.getElementById('cviModelList');
@@ -2871,14 +2893,18 @@ async function cviDiscoverModels(key){
   }catch(e){return [];}
   finally{clearTimeout(to);}
 }
-function cviModelScore(n){
+function cviModelScore(n){ /* lower = try first; Nov 2026 lineup: 4-series frontier, 3.8/3.6 flash, 3.5/3.1 flash-lite */
   const l=String(n||'').toLowerCase();
   if(l==='gemini-flash-latest')return 0;
   if(l==='gemini-flash-lite-latest')return 1;
-  if(/flash/.test(l)&&!/lite/.test(l))return 2;
-  if(/flash/.test(l))return 3;
-  if(/pro/.test(l))return 6;
-  return 4;
+  if(l==='gemini-3.5-flash-lite')return 2;
+  if(/^gemini-3\.\d+-flash$/.test(l))return 3;
+  if(/^gemini-3\.\d+-flash-lite$/.test(l))return 4;
+  if(/flash/.test(l)&&!/lite/.test(l))return 5;
+  if(/flash/.test(l))return 6;
+  if(/^gemini-4/.test(l))return 7;
+  if(/pro/.test(l))return 8;
+  return 9;
 }
 function cviGetKey(){try{return localStorage.getItem('cvGenieGeminiKey')||''}catch(e){return''}}
 function cviSetKey(k){try{k?localStorage.setItem('cvGenieGeminiKey',k):localStorage.removeItem('cvGenieGeminiKey')}catch(e){}}
@@ -2913,14 +2939,18 @@ function cviAiPrompt(){
   '- The CV may arrive twice: as the original PDF and as pre-extracted text where "|" separates side-by-side columns of the layout — reconcile them and prefer the richer reading.',
   '- Output valid JSON matching the schema exactly.'].join('\n');
 }
-async function cviGeminiOnce(key,model,parts){
+async function cviGeminiOnce(key,model,parts,opts){ /* opts: {schema, maxOutputTokens, temperature, timeout} — no schema = plain-text mode */
+  opts=opts||{};
   const ctl=new AbortController();
-  const to=setTimeout(()=>ctl.abort(),90000);
+  const to=setTimeout(()=>ctl.abort(),opts.timeout||90000);
   try{
+    const gc={temperature:opts.temperature!=null?opts.temperature:0.1};
+    if(opts.maxOutputTokens)gc.maxOutputTokens=opts.maxOutputTokens;
+    if(opts.schema){gc.responseMimeType='application/json';gc.responseSchema=opts.schema;}
     const res=await fetch(CVI_GEMINI_BASE+'/models/'+encodeURIComponent(model)+':generateContent',{
       method:'POST',signal:ctl.signal,
       headers:{'Content-Type':'application/json','x-goog-api-key':key},
-      body:JSON.stringify({contents:[{role:'user',parts}],generationConfig:{temperature:0.1,responseMimeType:'application/json',responseSchema:CVI_SCHEMA}})
+      body:JSON.stringify({contents:[{role:'user',parts}],generationConfig:gc})
     });
     const j=await res.json().catch(()=>null);
     if(res.ok){
@@ -2928,6 +2958,7 @@ async function cviGeminiOnce(key,model,parts){
       const cand=j&&j.candidates&&j.candidates[0];
       const txt=(((cand||{}).content||{}).parts||[]).map(p=>p.text||'').join('');
       if(!txt)throw new Error('Gemini returned an empty response.');
+      if(!opts.schema)return {data:txt,model};
       let data;
       try{data=JSON.parse(txt);}catch(e){throw new Error('Gemini returned malformed JSON — try again.');}
       return {data,model};
@@ -2941,30 +2972,39 @@ async function cviGeminiOnce(key,model,parts){
     throw err;
   }finally{clearTimeout(to);}
 }
-async function cviCallGemini(key,preferred,parts,onStatus){ /* tries preferred → flash-latest → flash-lite-latest → discovered models, with auto-retry on 429/500/503 */
-  const models=[...(preferred?[preferred]:[]),...CVI_GEMINI_FALLBACKS];
+function cviBackoff(a){return Math.round(Math.pow(2,a)*1000*(0.8+Math.random()*0.4));} /* ~1s, 2s, 4s with jitter, per Google's retry guidance */
+async function cviCallGemini(key,preferred,parts,onStatus,opts){ /* preferred → fallbacks → discovered models; exponential backoff on 408/429/5xx; one patient second pass if Google looks congested */
+  const queue=[...(preferred?[preferred]:[]),...CVI_GEMINI_FALLBACKS];
   let discovered=[];
   try{discovered=await cviDiscoverModels(key);}catch(e){}
   discovered.sort((a,b)=>cviModelScore(a)-cviModelScore(b));
-  discovered.forEach(d=>{if(!models.includes(d))models.push(d);});
-  const queue=[...new Set(models.filter(Boolean))];
+  discovered.forEach(d=>{if(!queue.includes(d))queue.push(d);});
+  const models=[...new Set(queue.filter(Boolean))].slice(0,8);
   const failures=[];
-  for(const model of queue){
-    for(let attempt=0;attempt<2;attempt++){
-      if(onStatus)onStatus('Asking '+model+(attempt?' — retry '+(attempt+1):'')+'…');
+  const tryModel=async(model,attempts)=>{
+    for(let a=0;a<attempts;a++){
+      if(onStatus)onStatus('Asking '+model+(a?' — retry '+(a+1):'')+'…');
       try{
-        return await cviGeminiOnce(key,model,parts);
+        return await cviGeminiOnce(key,model,parts,opts);
       }catch(err){
         if(err&&err.fatal==='key')throw new Error('That API key was rejected. Double-check it in Google AI Studio.');
         if(err&&err.fatal==='location')throw new Error('The Gemini API is not available in your region (Google restriction).');
         if(err&&err.fatal==='access')throw new Error('The key has no access to this model (or the Generative Language API is disabled for it).');
         failures.push(model+' ('+(err&&err.status?err.status:'network')+')');
-        if(err&&err.status&&CVI_RETRYABLE.has(err.status)&&attempt===0){await cviSleep(900+Math.random()*600);continue;}
+        if(err&&err.status&&CVI_RETRYABLE.has(err.status)&&a<attempts-1){await cviSleep(cviBackoff(a));continue;}
         break;
       }
     }
+    return null;
+  };
+  for(const model of models){const r=await tryModel(model,2);if(r)return r;}
+  const allBusy=failures.length>0&&failures.every(f=>/\((408|429|500|503|network)\)$/.test(f));
+  if(allBusy){ /* 503-everywhere = free-tier congestion; cool down, then try the best models once more */
+    if(onStatus)onStatus('Google\u2019s servers look busy — waiting a few seconds before a final retry…');
+    await cviSleep(6000+Math.random()*3000);
+    for(const model of models.slice(0,3)){const r=await tryModel(model,1);if(r)return r;}
   }
-  throw new Error('Gemini could not answer right now — tried '+failures.slice(0,4).join(', ')+'. The free tier gets busy; try again in a minute.');
+  throw new Error('Gemini could not answer right now — tried '+failures.slice(0,4).join(', ')+'. Google\u2019s free tier gets congested at peak times; wait a minute and try again.');
 }
 function cviMapAi(d){
   const cl=(v,n)=>String(v==null?'':v).replace(/\s+/g,' ').trim().slice(0,n);
@@ -3087,7 +3127,7 @@ async function runGeminiExtraction(){
       parts.push({inline_data:{mime_type:'application/pdf',data:cviBytesToBase64(bytes)}});
     }
     if(text.trim())parts.push({text:'CV TEXT (pre-extracted; "|" separates side-by-side columns from the PDF layout):\n'+text.slice(0,90000)});
-    const {data,model}=await cviCallGemini(key,modelIn||null,parts,m=>cviAiStatus(m));
+    const {data,model}=await cviCallGemini(key,modelIn||null,parts,m=>cviAiStatus(m),{schema:CVI_SCHEMA});
     let p=cviMapAi(data);
     if(cvImportData)p=cviMergeResults(cvImportData,p);
     const prevInc=cvImportData?cvImportData.include:null;
