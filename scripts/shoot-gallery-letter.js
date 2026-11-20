@@ -77,14 +77,13 @@ const LETTER_MOCK = {
   }, CV);
   await page.waitForTimeout(600);
 
-  /* 1. 3D carousel — open, then rotate once so flanking pages are visible mid-motion state */
-  await page.evaluate(() => openTemplateGallery());
+  /* 1. 3D carousel — it is the default CV view; rotate once so flanking pages show */
+  await page.evaluate(() => setPreviewMode('gallery'));
   await page.waitForTimeout(900);
   await page.evaluate(() => tpl3dNext());
   await page.waitForTimeout(800);
-  await page.locator('#templateGalleryModal .modal').screenshot({ path: 'docs/images/gallery.png' });
+  await page.locator('#previewPanel').screenshot({ path: 'docs/images/gallery.png' });
   console.log('  ✓ docs/images/gallery.png');
-  await page.evaluate(() => closeTemplateGallery());
 
   /* 2. Letter tab with AI writer (mocked Gemini write already applied) */
   await page.evaluate(() => {

@@ -102,11 +102,11 @@ Toggle **CV / Letter** above the preview to switch documents; exports (PDF, RTF,
 
 ![Cover letter](docs/images/letter.png)
 
-### Template gallery — 3D carousel
+### Template carousel — the default CV view
 
-The gallery is a **cover-flow style 3D carousel**: your selected design sits large at the centre, the neighbouring designs flank it on both sides at an angle, and two more peek from the edges. Every page is a **live render of your own CV** in that design — not a static wireframe — in your current colour and fonts. Drag or swipe, use the arrow keys, click a side page to rotate it to the centre, then click the centre page (or **Use this template**) to apply it. The counter shows where you are (e.g. *3 / 18*), and the ring wraps around, so you can spin through all 18 designs endlessly. For a quick switch, the toolbar dropdown still works.
+The CV preview **is** a **cover-flow style 3D carousel** — no gallery to open: your selected design sits large at the centre, the neighbouring designs flank it on both sides at an angle, and two more peek from the edges. Every page is a **live render of your own CV** in that design — not a static wireframe — in your current colour and fonts, updating as you edit. Drag or swipe, use the arrow keys, or click a side page to rotate it to the centre — **the design you centre on is applied automatically** (the counter shows where you are, e.g. *3 / 18*, and the ring wraps around, so you can spin through all 18 designs endlessly). Click the centre page or **Full view** (or the first toolbar button) to zoom into the full-page document view and back. For a quick switch, the toolbar dropdown still works. On mobile, the carousel is the viewpoint behind the floating **Preview** button.
 
-![Template gallery](docs/images/gallery.png)
+![Template carousel](docs/images/gallery.png)
 
 ### Design controls
 

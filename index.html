@@ -492,20 +492,23 @@ html.dark .cv-preview{box-shadow:0 1px 3px rgba(0,0,0,0.4),0 8px 32px rgba(0,0,0
 .confirm-dialog p{font-size:12.5px;color:var(--text-secondary);margin-bottom:1rem;line-height:1.55;}
 .confirm-dialog .confirm-actions{display:flex;gap:0.5rem;justify-content:center;}
 
-/* ── 3D template carousel (live-rendered pages) ─────────── */
-.tpl3d-stage{position:relative;height:400px;margin:0.15rem 0 0;perspective:1400px;perspective-origin:50% 42%;user-select:none;-webkit-user-select:none;touch-action:pan-y;overflow:hidden;}
+/* ── 3D template carousel (live-rendered pages) — default CV view ── */
+.tpl3d-main{display:none;flex-direction:column;align-items:center;flex:1;min-width:0;width:100%;}
+.preview-panel.show-gallery .cv-wrapper{display:none;}
+.preview-panel.show-gallery .tpl3d-main{display:flex;}
+.tpl3d-stage{position:relative;height:400px;margin:0.15rem 0 0;perspective:1400px;perspective-origin:50% 42%;user-select:none;-webkit-user-select:none;touch-action:pan-y;overflow:hidden;width:100%;max-width:900px;}
 .tpl3d-track{position:absolute;inset:0;transform-style:preserve-3d;}
 .tpl3d-card{position:absolute;left:50%;top:16px;width:var(--tpl-w,224px);height:var(--tpl-h,316px);margin-left:calc(var(--tpl-w,224px)/-2);transform-style:preserve-3d;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:transform .55s cubic-bezier(.25,.8,.3,1),opacity .45s ease,filter .45s ease;}
 .tpl3d-card.tpl3d-off{pointer-events:none;}
 .tpl3d-page{width:100%;height:100%;border-radius:7px;overflow:hidden;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.14),0 16px 40px rgba(0,0,0,.20);position:relative;outline:1px solid rgba(0,0,0,.05);transition:box-shadow .3s ease;}
 .tpl3d-card:hover .tpl3d-page{box-shadow:0 2px 8px rgba(0,0,0,.16),0 22px 52px rgba(0,0,0,.26);}
-.tpl3d-card.is-active .tpl3d-page{box-shadow:0 0 0 2.5px var(--accent),0 16px 40px rgba(0,0,0,.22);}
+.tpl3d-card.is-center .tpl3d-page{box-shadow:0 0 0 2.5px var(--accent),0 16px 40px rgba(0,0,0,.22);}
 .tpl3d-scale{width:var(--page-width);transform:scale(var(--tpl-s,0.28));transform-origin:top left;pointer-events:none;}
 .tpl3d-scale .cv-preview{box-shadow:none;min-height:var(--page-height);}
 .tpl3d-wire{display:flex;align-items:center;justify-content:center;min-height:var(--page-height);background:var(--surface-3);}
 .tpl3d-badge{position:absolute;bottom:10px;left:10px;z-index:3;background:var(--accent);color:var(--accent-contrast);padding:3px 10px;border-radius:99px;font-size:9.5px;font-weight:700;display:none;align-items:center;gap:4px;box-shadow:0 2px 10px rgba(0,0,0,.28);letter-spacing:.03em;}
 .tpl3d-badge svg{width:9px;height:9px;}
-.tpl3d-card.is-active .tpl3d-badge{display:inline-flex;}
+.tpl3d-card.is-center.is-applied .tpl3d-badge{display:inline-flex;}
 .tpl3d-nav{position:absolute;top:50%;transform:translateY(-50%);z-index:30;width:38px;height:38px;border-radius:50%;border:1px solid var(--border);background:var(--surface);color:var(--text);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background .15s,border-color .15s,transform .15s;box-shadow:0 2px 10px rgba(0,0,0,.10);}
 .tpl3d-nav svg{width:17px;height:17px;}
 .tpl3d-nav:hover{border-color:var(--border-strong);transform:translateY(-50%) scale(1.08);}
@@ -519,6 +522,9 @@ html.dark .cv-preview{box-shadow:0 1px 3px rgba(0,0,0,0.4),0 8px 32px rgba(0,0,0
 .tpl3d-name{font-size:15px;font-weight:700;}
 .tpl3d-desc{font-size:11px;color:var(--text-secondary);}
 .tpl3d-hint{font-size:10.5px;color:var(--text-tertiary);text-align:center;margin-top:0.6rem;}
+.tpl3d-info .btn svg{width:13px;height:13px;}
+.btn-icon.mode-on{background:var(--accent);color:var(--accent-contrast);}
+.btn-icon.mode-on:hover{background:var(--accent);color:var(--accent-contrast);opacity:.9;}
 @media (prefers-reduced-motion:reduce){.tpl3d-card{transition:none;}}
 @media (max-width:640px){
   .tpl3d-nav{width:32px;height:32px;}
@@ -571,13 +577,14 @@ html.dark .cv-preview{box-shadow:0 1px 3px rgba(0,0,0,0.4),0 8px 32px rgba(0,0,0
 /* ── Print ──────────────────────────────────────────────── */
 @media print{
   body{background:#fff;}
-  .app-header,.form-panel,.mobile-nav,.ats-sidebar,.preview-toolbar,.edit-back-btn{display:none!important;}
+  .app-header,.form-panel,.mobile-nav,.ats-sidebar,.preview-toolbar,.edit-back-btn,.tpl3d-main{display:none!important;}
   .preview-panel{padding:0;background:#fff;overflow:visible;flex-direction:column;}
   .preview-panel-inner{width:100%;max-width:100%;}
   .cv-scale-outer{height:auto!important;overflow:visible;}
   .cv-scale-inner{transform:none!important;width:100%!important;}
   .cv-preview{box-shadow:none;margin:0;padding:0;font-size:9.5pt;width:100%!important;}
   .cv-wrapper{max-width:100%;padding:0;}
+  .preview-panel.show-gallery .cv-wrapper{display:block!important;}
 }
 
 /* ── Mobile ─────────────────────────────────────────────── */
@@ -618,6 +625,8 @@ html.dark .cv-preview{box-shadow:0 1px 3px rgba(0,0,0,0.4),0 8px 32px rgba(0,0,0
   .cv-preview.cv-compact .cv-cols{flex-direction:column;}
   .preview-toolbar{display:none;}
   .preview-toolbar.visible{display:flex;}
+  .tpl3d-stage{max-width:100%;}
+  .tpl3d-info .btn{min-height:34px;}
   .modal-overlay{align-items:flex-end;}
   .modal{width:100%;max-width:100%;border-radius:16px 16px 0 0;margin:0;max-height:88vh;border-bottom:none;}
   .edit-back-btn.show{display:inline-flex;}
@@ -1066,7 +1075,7 @@ html.dark .hint a,html.dark .cvi-ai-note a,html.dark .ats-ai-status a{color:#93b
 
     <main class="preview-panel" id="previewPanel">
         <div class="preview-toolbar" id="previewToolbar">
-            <button class="btn-icon" onclick="openTemplateGallery()" title="Template gallery" aria-label="Template gallery"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg></button>
+            <button class="btn-icon" id="previewModeBtn" onclick="togglePreviewMode()" title="Show full document view" aria-label="Toggle between template carousel and full document view"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg></button>
             <div class="doc-toggle" role="tablist" aria-label="Active document">
                 <button id="docToggleCv" class="active" onclick="setActiveDoc('cv')" type="button">CV</button>
                 <button id="docToggleLetter" onclick="setActiveDoc('letter')" type="button">Letter</button>
@@ -1085,7 +1094,12 @@ html.dark .hint a,html.dark .cvi-ai-note a,html.dark .ats-ai-status a{color:#93b
             </div>
         </div>
         <div class="preview-panel-inner">
-            <div class="cv-wrapper"><div class="cv-scale-outer" id="cvScaleOuter"><div class="cv-scale-inner" id="cvScaleInner"><div class="cv-preview cv-classic" id="cvPreview"></div><div class="cv-preview cl-letter" id="clPreview" style="display:none"></div></div></div></div>
+            <div class="cv-wrapper" id="cvWrapper"><div class="cv-scale-outer" id="cvScaleOuter"><div class="cv-scale-inner" id="cvScaleInner"><div class="cv-preview cv-classic" id="cvPreview"></div><div class="cv-preview cl-letter" id="clPreview" style="display:none"></div></div></div></div>
+            <div class="tpl3d-main" id="tpl3dMain">
+                <div class="tpl3d-stage" id="tpl3dStage"><button class="tpl3d-nav prev" onclick="tpl3dPrev()" aria-label="Previous template"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button><div class="tpl3d-track" id="tpl3dTrack"></div><button class="tpl3d-nav next" onclick="tpl3dNext()" aria-label="Next template"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button></div>
+                <div class="tpl3d-info"><div class="tpl3d-meta"><span class="tpl3d-count" id="tpl3dCount"></span><div class="tpl3d-name-row"><span class="tpl3d-name" id="tpl3dName"></span><span class="tpl3d-desc" id="tpl3dDesc"></span></div></div><button class="btn btn-primary btn-sm" id="tpl3dUseBtn" onclick="setPreviewMode('document')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>Full view</button></div>
+                <div class="tpl3d-hint">Live preview of your CV in every design — swipe or drag, use the arrow keys, click a side page to rotate. The design you centre on is applied automatically.</div>
+            </div>
             <aside class="ats-sidebar" id="atsPreviewWidget">
                 <div class="ats-sidebar-title">ATS Score</div>
                 <div class="ats-sidebar-ring">
@@ -1110,8 +1124,6 @@ html.dark .hint a,html.dark .cvi-ai-note a,html.dark .ats-ai-status a{color:#93b
 <button class="edit-back-btn" id="editBackBtn" onclick="mobileNav('preview')" aria-label="Back to preview"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>Preview</button>
 
 <div id="confirmDialog" class="confirm-overlay" style="display:none"><div class="confirm-dialog"><h3>Apply summary template?</h3><p id="confirmPreview"></p><div class="confirm-actions"><button class="btn btn-sm" onclick="closeConfirmDialog()">Cancel</button><button class="btn btn-primary btn-sm" id="confirmApplyBtn">Apply</button></div></div></div>
-
-<div id="templateGalleryModal" class="modal-overlay" style="display:none" onclick="if(event.target===this)closeTemplateGallery()"><div class="modal wide"><h2>Templates <span class="count" id="templateCount"></span><button class="modal-close" onclick="closeTemplateGallery()" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></h2><div class="tpl3d-stage" id="tpl3dStage"><button class="tpl3d-nav prev" onclick="tpl3dPrev()" aria-label="Previous template"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button><div class="tpl3d-track" id="tpl3dTrack"></div><button class="tpl3d-nav next" onclick="tpl3dNext()" aria-label="Next template"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button></div><div class="tpl3d-info"><div class="tpl3d-meta"><span class="tpl3d-count" id="tpl3dCount"></span><div class="tpl3d-name-row"><span class="tpl3d-name" id="tpl3dName"></span><span class="tpl3d-desc" id="tpl3dDesc"></span></div></div><button class="btn btn-primary btn-sm" id="tpl3dUseBtn" onclick="tpl3dApply()">Use this template</button></div><div class="tpl3d-hint">Live preview of your CV in every design — drag or swipe, use the arrow keys, click a side page to rotate or the centre page to apply.</div></div></div>
 
 <div id="photoCropperModal" class="modal-overlay" style="display:none"><div class="modal" style="max-width:480px"><h2>Edit photo<button class="modal-close" onclick="closePhotoEditor()" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></h2><div style="max-height:300px"><img id="cropperImage" style="max-width:100%;display:none" alt="Crop"></div><div class="cropper-actions"><button class="btn btn-sm" onclick="document.getElementById('photoInput').click()">New image</button><button class="btn btn-sm" onclick="rotatePhoto(-90)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>Rotate</button><button class="btn btn-primary btn-sm" onclick="applyCrop()" style="margin-left:auto">Apply crop</button></div></div></div>
 
@@ -1285,8 +1297,6 @@ function buildAll(){
     document.getElementById('summaryLibrary').innerHTML=SUMMARY_TEMPLATES.map((st,i)=>`<button class="summary-template-btn" onclick="showSummaryConfirm(${i})">${st.label}</button>`).join('');
     const catSel=document.getElementById('skillCategory');
     if(catSel&&!catSel.options.length)catSel.innerHTML=Object.entries(SKILL_CATEGORIES).map(([k,v])=>`<option value="${k}">${v.label}</option>`).join('');
-    const tc=document.getElementById('templateCount');
-    if(tc)tc.textContent=TEMPLATES.length+' designs';
 }
 function showSummaryConfirm(idx){pendingSummaryIdx=idx;document.getElementById('confirmPreview').textContent='"'+SUMMARY_TEMPLATES[idx].text.substring(0,80)+'…" will replace your current summary.';document.getElementById('confirmDialog').style.display='flex';}
 function closeConfirmDialog(){document.getElementById('confirmDialog').style.display='none';pendingSummaryIdx=-1;}
@@ -1313,6 +1323,7 @@ function mobileNav(mode){
     if(backBtn)backBtn.classList.remove('show');
     if(ptb)ptb.classList.add('visible');
     document.getElementById('mnav-preview').classList.add('active');
+    applyPreviewMode();
     requestAnimationFrame(scaleCVToFit);
     setTimeout(scaleCVToFit,150);
   } else {
@@ -1320,6 +1331,7 @@ function mobileNav(mode){
     nav.classList.add('nav-hidden');
     if(backBtn)backBtn.classList.add('show');
     if(ptb)ptb.classList.remove('visible');
+    applyPreviewMode();
     switchTab('edit',null);
     document.getElementById('mnav-edit').classList.add('active');
   }
@@ -1346,7 +1358,7 @@ function pushUndo(){undoStack.push(getState());if(undoStack.length>50)undoStack.
 function undo(){if(!undoStack.length)return;redoStack.push(getState());restoreState(undoStack.pop());document.getElementById('redoBtn').disabled=false;if(!redoStack.length)document.getElementById('redoBtn').disabled=true;}
 function redo(){if(!redoStack.length)return;undoStack.push(getState());restoreState(redoStack.pop());document.getElementById('undoBtn').disabled=false;if(!redoStack.length)document.getElementById('redoBtn').disabled=true;}
 function getState(){return{template:currentTemplate,color:currentColor,fontPair:currentFontPair,sectionOrder:[...sectionOrder],photoShape,photoSize,name:document.getElementById('fullName')?.value||'',title:document.getElementById('title')?.value||'',email:document.getElementById('email')?.value||'',phone:document.getElementById('phone')?.value||'',linkedin:document.getElementById('linkedin')?.value||'',location:document.getElementById('location')?.value||'',summary:document.getElementById('summary')?.value||'',skills:document.getElementById('skills')?.value||'',targetRole:document.getElementById('targetRole')?.value||'',customKWList:[...customKWList],experiences:getExperiences(),education:getEducation(),languages:getLanguages(),photo:photoData,letter:getLetterFields(),jd:document.getElementById('jdText')?.value||''};}
-function restoreState(s){if(!s)return;['fullName','title','email','phone','linkedin','location','summary','skills','targetRole'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=(id==='fullName'?(s.fullName??s.name??''):(s[id]||''))||'';});customKWList=Array.isArray(s.customKWList)?[...s.customKWList]:[];renderCustomKWChips();const jdEl=document.getElementById('jdText');if(jdEl)jdEl.value=s.jd||'';const L=s.letter||{};[['clCompany','company'],['clHiringManager','hiringManager'],['clRole','role'],['clTone','tone'],['clP1','p1'],['clP2','p2'],['clP3','p3'],['clP4','p4'],['clSignoff','signoff']].forEach(([id,k])=>{const el=document.getElementById(id);if(el&&L[k])el.value=L[k];});renderLetter();currentTemplate=s.template||'classic';currentColor=s.color||'#2563eb';currentFontPair=s.fontPair||0;photoShape=s.photoShape||'circle';photoSize=s.photoSize||'md';sectionOrder=(Array.isArray(s.sectionOrder)?s.sectionOrder:[]).filter(k=>['summary','skills','experience','education','languages'].includes(k));['summary','skills','experience','education','languages'].forEach(k=>{if(!sectionOrder.includes(k))sectionOrder.push(k);});if(s.photo){photoData=s.photo;document.getElementById('photoPreview').src=photoData;document.getElementById('photoPreview').style.display='block';document.getElementById('photoPlaceholder').style.display='none';}else{photoData=null;document.getElementById('photoPreview').style.display='none';document.getElementById('photoPlaceholder').style.display='block';}renderPhotoControls();document.getElementById('templateSelect').value=currentTemplate;document.getElementById('experienceList').innerHTML='';document.getElementById('educationList').innerHTML='';document.getElementById('languageList').innerHTML='';(s.experiences||[]).forEach(e=>{addExpSilent();const is=document.querySelectorAll('#experienceList .dynamic-item');const l=is[is.length-1];if(l){l.querySelectorAll('input')[0].value=e.title||'';l.querySelectorAll('input')[1].value=e.company||'';l.querySelectorAll('input')[2].value=e.dates||'';l.querySelector('textarea').value=e.description||'';}});(s.education||[]).forEach(e=>{addEduSilent();const is=document.querySelectorAll('#educationList .dynamic-item');const l=is[is.length-1];if(l){l.querySelectorAll('input')[0].value=e.degree||'';l.querySelectorAll('input')[1].value=e.institution||'';l.querySelectorAll('input')[2].value=e.year||'';}});(s.languages||[]).forEach(e=>{addLangSilent();const is=document.querySelectorAll('#languageList .dynamic-item');const l=is[is.length-1];if(l){l.querySelector('input').value=e.language||'';l.querySelector('select').value=e.level||'';}});if(!s.experiences||!s.experiences.length)addExpSilent();if(!s.education||!s.education.length)addEduSilent();if(!s.languages||!s.languages.length)addLangSilent();document.getElementById('cvPreview').className='cv-preview cv-'+currentTemplate;document.documentElement.style.setProperty('--cv-color',currentColor);const fp=FONT_PAIRS[currentFontPair];document.documentElement.style.setProperty('--cv-font-heading',fp.heading);document.documentElement.style.setProperty('--cv-font-body',fp.body);buildAll();reorderFormSections();_updatePreviewNow();initDragDrop();initSectionSortable();}
+function restoreState(s){if(!s)return;['fullName','title','email','phone','linkedin','location','summary','skills','targetRole'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=(id==='fullName'?(s.fullName??s.name??''):(s[id]||''))||'';});customKWList=Array.isArray(s.customKWList)?[...s.customKWList]:[];renderCustomKWChips();const jdEl=document.getElementById('jdText');if(jdEl)jdEl.value=s.jd||'';const L=s.letter||{};[['clCompany','company'],['clHiringManager','hiringManager'],['clRole','role'],['clTone','tone'],['clP1','p1'],['clP2','p2'],['clP3','p3'],['clP4','p4'],['clSignoff','signoff']].forEach(([id,k])=>{const el=document.getElementById(id);if(el&&L[k])el.value=L[k];});renderLetter();currentTemplate=s.template||'classic';currentColor=s.color||'#2563eb';currentFontPair=s.fontPair||0;photoShape=s.photoShape||'circle';photoSize=s.photoSize||'md';sectionOrder=(Array.isArray(s.sectionOrder)?s.sectionOrder:[]).filter(k=>['summary','skills','experience','education','languages'].includes(k));['summary','skills','experience','education','languages'].forEach(k=>{if(!sectionOrder.includes(k))sectionOrder.push(k);});if(s.photo){photoData=s.photo;document.getElementById('photoPreview').src=photoData;document.getElementById('photoPreview').style.display='block';document.getElementById('photoPlaceholder').style.display='none';}else{photoData=null;document.getElementById('photoPreview').style.display='none';document.getElementById('photoPlaceholder').style.display='block';}renderPhotoControls();document.getElementById('templateSelect').value=currentTemplate;document.getElementById('experienceList').innerHTML='';document.getElementById('educationList').innerHTML='';document.getElementById('languageList').innerHTML='';(s.experiences||[]).forEach(e=>{addExpSilent();const is=document.querySelectorAll('#experienceList .dynamic-item');const l=is[is.length-1];if(l){l.querySelectorAll('input')[0].value=e.title||'';l.querySelectorAll('input')[1].value=e.company||'';l.querySelectorAll('input')[2].value=e.dates||'';l.querySelector('textarea').value=e.description||'';}});(s.education||[]).forEach(e=>{addEduSilent();const is=document.querySelectorAll('#educationList .dynamic-item');const l=is[is.length-1];if(l){l.querySelectorAll('input')[0].value=e.degree||'';l.querySelectorAll('input')[1].value=e.institution||'';l.querySelectorAll('input')[2].value=e.year||'';}});(s.languages||[]).forEach(e=>{addLangSilent();const is=document.querySelectorAll('#languageList .dynamic-item');const l=is[is.length-1];if(l){l.querySelector('input').value=e.language||'';l.querySelector('select').value=e.level||'';}});if(!s.experiences||!s.experiences.length)addExpSilent();if(!s.education||!s.education.length)addEduSilent();if(!s.languages||!s.languages.length)addLangSilent();document.getElementById('cvPreview').className='cv-preview cv-'+currentTemplate;document.documentElement.style.setProperty('--cv-color',currentColor);const fp=FONT_PAIRS[currentFontPair];document.documentElement.style.setProperty('--cv-font-heading',fp.heading);document.documentElement.style.setProperty('--cv-font-body',fp.body);buildAll();reorderFormSections();_updatePreviewNow();updateTemplateGallerySelection();initDragDrop();initSectionSortable();}
 function reorderFormSections(){const c=document.getElementById('formSectionsContainer');if(!c)return;const ex={};c.querySelectorAll('.section-draggable').forEach(el=>ex[el.dataset.section]=el);c.innerHTML='';const done=new Set();sectionOrder.forEach(k=>{if(ex[k]&&!done.has(k)){c.appendChild(ex[k]);done.add(k);}});Object.keys(ex).forEach(k=>{if(!done.has(k)){c.appendChild(ex[k]);done.add(k);if(!sectionOrder.includes(k))sectionOrder.push(k);}});}
 
 /* ── Dynamic list builders ── */
@@ -1482,6 +1494,7 @@ function _updatePreviewNow(){
     scaleCVToFit();
     /* re-measure once web fonts settle (metrics can shift after load) */
     clearTimeout(scaleCVToFit._t);scaleCVToFit._t=setTimeout(scaleCVToFit,350);
+    tpl3dScheduleRefresh();
     runATSAnalysis();
 }
 
@@ -1491,18 +1504,55 @@ function closePhotoEditor(){document.getElementById('photoCropperModal').style.d
 function rotatePhoto(deg){if(cropperInstance)cropperInstance.rotate(deg);}
 function applyCrop(){if(!cropperInstance)return;const c=cropperInstance.getCroppedCanvas({width:400,height:400});photoData=c.toDataURL('image/jpeg',0.9);document.getElementById('photoPreview').src=photoData;document.getElementById('photoPreview').style.display='block';document.getElementById('photoPlaceholder').style.display='none';closePhotoEditor();renderPhotoControls();updatePreview();}
 
-/* ── Template gallery: 3D carousel with live-rendered pages ──
-   The selected design sits at the centre; neighbours flank it on both sides.
+/* ── Template carousel: 3D live-rendered pages — the default CV view ──
+   The active design sits at the centre; neighbours flank it on both sides.
    Cards are real renders of the user's own CV via templateHtml(), so every
-   design is previewed with live data (wireframe fallback if a render throws). */
-let tpl3dIndex=0;
-function tpl3dGalleryOpen(){const m=document.getElementById('templateGalleryModal');return !!m&&m.style.display==='flex';}
-function openTemplateGallery(){
-  document.getElementById('templateGalleryModal').style.display='flex';
-  tpl3dBuild(true);
+   design is previewed with live data (wireframe fallback if a render throws).
+   previewMode: 'gallery' (3D carousel, default) | 'document' (full page).
+   The carousel is the main CV viewpoint; letter mode always shows the document. */
+let tpl3dIndex=0,previewMode='gallery',tpl3dDirty=true,tpl3dRefreshT=null,tpl3dApplyT=null;
+function carouselShown(){
+  if(previewMode!=='gallery'||activeDoc!=='cv')return false;
+  /* on mobile the edit form overlays the panel — the carousel is not visible then,
+     so skip background rebuilds while the user types. (The 'active' class is
+     hardcoded in the markup but only overlays at <=900px.) */
+  if(window.innerWidth<=900){
+    const fp=document.getElementById('formPanel');
+    if(fp&&fp.classList.contains('active'))return false;
+  }
+  return true;
 }
-function closeTemplateGallery(){document.getElementById('templateGalleryModal').style.display='none';}
-function tpl3dBuild(rebuildHtml){
+function applyPreviewMode(){
+  const panel=document.getElementById('previewPanel');
+  if(!panel)return;
+  const on=carouselShown();
+  panel.classList.toggle('show-gallery',on);
+  const btn=document.getElementById('previewModeBtn');
+  if(btn){
+    btn.classList.toggle('mode-on',on);
+    btn.title=on?'Show full document view':'Show template carousel';
+    btn.setAttribute('aria-label',btn.title);
+    btn.innerHTML=on
+      ?'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>'
+      :'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>';
+  }
+  if(on){tpl3dBuild(tpl3dDirty||!document.getElementById('tpl3dTrack').children.length);tpl3dDirty=false;}
+  scaleCVToFit();
+}
+function setPreviewMode(m){previewMode=m;applyPreviewMode();}
+function togglePreviewMode(){setPreviewMode(previewMode==='gallery'?'document':'gallery');}
+function tpl3dScheduleRefresh(){
+  if(!carouselShown()){tpl3dDirty=true;return;}
+  clearTimeout(tpl3dRefreshT);
+  /* keepIndex: a data refresh must not yank the ring back — the user may be
+     mid-rotation with the auto-apply debounce still pending */
+  tpl3dRefreshT=setTimeout(()=>{tpl3dBuild(true,true);tpl3dDirty=false;},500);
+}
+function tpl3dAutoApply(){
+  clearTimeout(tpl3dApplyT);
+  tpl3dApplyT=setTimeout(()=>{const t=TEMPLATES[tpl3dIndex];if(t&&t!==currentTemplate)changeTemplate(t);},350);
+}
+function tpl3dBuild(rebuildHtml,keepIndex){
   const track=document.getElementById('tpl3dTrack');
   if(!track)return;
   if(rebuildHtml||!track.children.length){
@@ -1514,8 +1564,7 @@ function tpl3dBuild(rebuildHtml){
       return `<div class="tpl3d-card" data-tpl="${t}" onclick="tpl3dCardClick(this)"><span class="tpl3d-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Active</span><div class="tpl3d-page">${page}</div></div>`;
     }).join('');
   }
-  const i=TEMPLATES.indexOf(currentTemplate);
-  tpl3dIndex=i<0?0:i;
+  if(!keepIndex){const i=TEMPLATES.indexOf(currentTemplate);tpl3dIndex=i<0?0:i;}
   tpl3dLayout(true);
 }
 function tpl3dLayout(instant){
@@ -1534,7 +1583,8 @@ function tpl3dLayout(instant){
     let off=i-tpl3dIndex;
     if(off>half)off-=n;else if(off<-half)off+=n; /* circular ring */
     const card=cards[i],a=Math.abs(off);
-    card.classList.toggle('is-active',TEMPLATES[i]===currentTemplate);
+    card.classList.toggle('is-center',off===0);
+    card.classList.toggle('is-applied',TEMPLATES[i]===currentTemplate);
     card.classList.toggle('tpl3d-off',a>2);
     if(instant){card.style.transition='none';requestAnimationFrame(()=>{card.style.transition='';});}
     if(a>2){card.style.opacity='0';card.style.visibility='hidden';card.style.zIndex='1';continue;}
@@ -1563,25 +1613,21 @@ function tpl3dLayout(instant){
   if(nm)nm.textContent=meta.name;
   const ds=document.getElementById('tpl3dDesc');
   if(ds)ds.textContent=meta.desc;
-  const use=document.getElementById('tpl3dUseBtn');
-  if(use)use.textContent=t===currentTemplate?'Close — already active':'Use this template';
 }
-function tpl3dPrev(){const n=TEMPLATES.length;tpl3dIndex=(tpl3dIndex-1+n)%n;tpl3dLayout(false);}
-function tpl3dNext(){tpl3dIndex=(tpl3dIndex+1)%TEMPLATES.length;tpl3dLayout(false);}
+function tpl3dPrev(){const n=TEMPLATES.length;tpl3dIndex=(tpl3dIndex-1+n)%n;tpl3dLayout(false);tpl3dAutoApply();}
+function tpl3dNext(){tpl3dIndex=(tpl3dIndex+1)%TEMPLATES.length;tpl3dLayout(false);tpl3dAutoApply();}
 function tpl3dCardClick(card){
   const idx=TEMPLATES.indexOf(card.dataset.tpl);
   if(idx<0)return;
-  if(idx===tpl3dIndex){tpl3dApply();return;}
-  tpl3dIndex=idx;tpl3dLayout(false);
+  if(idx===tpl3dIndex){setPreviewMode('document');return;}
+  tpl3dIndex=idx;tpl3dLayout(false);tpl3dAutoApply();
 }
-function tpl3dApply(){
-  const t=TEMPLATES[tpl3dIndex];
-  if(!t)return;
-  if(t!==currentTemplate){changeTemplate(t);showToast(TEMPLATE_META[t].name+' applied to your CV');}
-  else showToast('Already using '+TEMPLATE_META[t].name);
-  closeTemplateGallery();
+function updateTemplateGallerySelection(){
+  if(!carouselShown()){tpl3dDirty=true;return;}
+  const i=TEMPLATES.indexOf(currentTemplate);
+  if(i>=0)tpl3dIndex=i; /* explicit selection (dropdown, undo, import) re-centres the ring */
+  tpl3dLayout(false);
 }
-function updateTemplateGallerySelection(){if(tpl3dGalleryOpen())tpl3dLayout(false);}
 /* swipe / drag + keyboard */
 (function(){
   let sx=null,moved=false;
@@ -1597,14 +1643,13 @@ function updateTemplateGallerySelection(){if(tpl3dGalleryOpen())tpl3dLayout(fals
   };
   stage.addEventListener('pointerup',end);
   stage.addEventListener('pointercancel',()=>{sx=null;});
-  window.addEventListener('resize',()=>{if(tpl3dGalleryOpen())tpl3dLayout(false);});
+  window.addEventListener('resize',()=>{if(carouselShown())tpl3dLayout(false);else applyPreviewMode();});
   document.addEventListener('keydown',e=>{
-    if(!tpl3dGalleryOpen())return;
+    if(!carouselShown())return;
     const tag=document.activeElement&&document.activeElement.tagName;
     if(tag==='INPUT'||tag==='TEXTAREA'||tag==='SELECT')return;
     if(e.key==='ArrowLeft'){e.preventDefault();tpl3dPrev();}
     else if(e.key==='ArrowRight'){e.preventDefault();tpl3dNext();}
-    else if(e.key==='Escape'){e.preventDefault();closeTemplateGallery();}
   });
 })();
 
@@ -1632,8 +1677,18 @@ async function exportServerPDF(){
     const b=await r.blob();if(b.size<1000)throw new Error('PDF too small');saveAs(b,'cv-genie-'+(activeDoc==='letter'?'cover-letter':currentTemplate)+'.pdf');
 }
 async function exportClientPDF(){
-    const el=activeDoc==='letter'?document.getElementById('clPreview'):document.getElementById('cvPreview');
-    await html2pdf().set({margin:[8,8],filename:'cv-genie-'+(activeDoc==='letter'?'cover-letter':currentTemplate)+'.pdf',image:{type:'jpeg',quality:0.95},html2canvas:{scale:2,useCORS:true},jsPDF:{unit:'mm',format:'a4',orientation:'portrait'}}).from(el).save();
+    /* the carousel can hide the document — force it visible for the capture, then restore */
+    const panel=document.getElementById('previewPanel');
+    const forced=panel&&panel.classList.contains('show-gallery');
+    if(forced)panel.classList.remove('show-gallery');
+    try{
+      scaleCVToFit();
+      await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
+      const el=activeDoc==='letter'?document.getElementById('clPreview'):document.getElementById('cvPreview');
+      await html2pdf().set({margin:[8,8],filename:'cv-genie-'+(activeDoc==='letter'?'cover-letter':currentTemplate)+'.pdf',image:{type:'jpeg',quality:0.95},html2canvas:{scale:2,useCORS:true},jsPDF:{unit:'mm',format:'a4',orientation:'portrait'}}).from(el).save();
+    } finally {
+      if(forced)panel.classList.add('show-gallery');
+    }
 }
 function docxPayload(){
     return{name:document.getElementById('fullName')?.value||'Your Name',title:document.getElementById('title')?.value||'',contact:[document.getElementById('email')?.value,document.getElementById('phone')?.value,document.getElementById('linkedin')?.value,document.getElementById('location')?.value].filter(Boolean).join(' | '),summary:document.getElementById('summary')?.value||'',skills:document.getElementById('skills')?.value||'',experiences:getExperiences(),education:getEducation(),languages:getLanguages()};
@@ -1670,6 +1725,7 @@ function setActiveDoc(doc){
     document.getElementById('docToggleLetter').classList.toggle('active',doc==='letter');
     document.getElementById('cvPreview').style.display=doc==='cv'?'':'none';
     document.getElementById('clPreview').style.display=doc==='letter'?'':'none';
+    applyPreviewMode();
     updateLetterPreview();
     scaleCVToFit();
 }
@@ -3454,12 +3510,12 @@ loadSaved();
 /* prefill the Gemini key inputs from storage (same key powers import, ATS coach and letter writer) */
 try{const _gk=cviGetKey();if(_gk){const _ak=document.getElementById('atsAiKey');if(_ak&&!_ak.value)_ak.value=_gk;const _lk=document.getElementById('clAiKey');if(_lk&&!_lk.value)_lk.value=_gk;}}catch(e){}
 try{const vs=localStorage.getItem('cvGenieVersions');if(vs)versionSlots=JSON.parse(vs)||[];}catch(e){}
-/* On mobile, start in Edit mode — form visible, nav hidden */
+/* On mobile, start in Edit mode — form visible, the floating Preview pill is
+   the gateway to the CV viewpoint (3D carousel). mobileNav('edit') also arms it. */
 if(window.innerWidth<=900){
-  document.getElementById('formPanel').classList.add('active');
-  document.getElementById('mobileNav').classList.add('nav-hidden');
-  document.getElementById('mnav-edit').classList.add('active');
+  mobileNav('edit');
 }
+applyPreviewMode();
 </script>
 </body>
 </html>
