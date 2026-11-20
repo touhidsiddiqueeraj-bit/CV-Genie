@@ -136,6 +136,16 @@ else {
   try { execFileSync('node', ['--check', swPath], { stdio: 'pipe' }); ok('sw.js parses'); }
   catch (e) { fail('sw.js syntax error'); }
 }
+/* exactly one service-worker registration, and it must be sw.js — no inline
+   blob workers racing the real one (a cache-first leftover of the export-server
+   era once deleted the app-shell cache from under it) */
+{
+  const regs = html.match(/serviceWorker\s*\.\s*register\s*\(/g) || [];
+  if (regs.length !== 1) fail('index.html must register exactly one service worker, found ' + regs.length);
+  else if (!/serviceWorker\s*\.\s*register\s*\(\s*['"]sw\.js['"]/.test(html)) fail("the single serviceWorker.register() must target 'sw.js'");
+  else if (/createObjectURL\s*\(\s*\w*blob/i.test(html)) fail('index.html registers a service worker from a Blob URL');
+  else ok('sw.js is the only service-worker registration');
+}
 const appleIcon = path.join(ROOT, 'icons', 'apple-touch-icon.png');
 if (!fs.existsSync(appleIcon)) fail('icons/apple-touch-icon.png missing');
 else ok('apple-touch-icon present');

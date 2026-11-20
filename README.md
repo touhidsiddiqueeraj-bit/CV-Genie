@@ -35,6 +35,7 @@
 | **Vector PDF** | “High-quality PDF (server)” is replaced by **PDF (print dialog)**: a dedicated print stylesheet reduces the page to just the active document, and your browser's *Save as PDF* produces crisp, selectable vector text — better than the old server render, with zero infrastructure. The one-click html2pdf export stays for quick drafts. |
 | **Installable PWA** | Web app manifest, a real `sw.js` service worker (app shell precached; CDN libraries and web fonts warmed at activation; network-first navigations so updates land on refresh), generated icon set (any + maskable + apple-touch), and an **Install** button in the header. Once installed, CV Genie works completely offline — editing, templates, ATS, deterministic cover letters and every export format. |
 | **Android APK from CI** | A new [GitHub Actions workflow](.github/workflows/apk.yml) wraps the deployed PWA into a signed **Trusted Web Activity APK** (and AAB) using Bubblewrap — run it on demand or let it attach the APK to version releases. See [Android app](#-android-app-twa-apk). |
+| **Legacy cleanup** | The last remnant of the server era is gone: an early inline service worker (a cache-first Blob registered in `<head>`) used to race the real one and could delete the app-shell cache from under it. `sw.js` is now the **only** registration, and CI enforces that — exactly one `serviceWorker.register('sw.js')`, no Blob workers. |
 | **Verified** | New Playwright suites: `test-export-docx.js` (16 assertions — package structure, well-formed XML, content, letter mode, LibreOffice round-trip) and `test-pwa.js` (22 assertions — manifest, icons, SW lifecycle, cache warm-up, full offline boot, Gemini never cached). |
 
 ## ✦ What's new in v2.2
@@ -294,7 +295,7 @@ The whole CV is serialised by `getState()` into one plain object (template, colo
 
 ### The service worker
 
-`sw.js` precaches the app shell at install (`./`, `index.html`, manifest, icons), warms the exact CDN libraries and web fonts (woff2 URLs parsed out of the Google Fonts CSS) right after activation so the **first** visit already survives going offline, serves assets cache-first, and handles navigations network-first with a cached fallback so deploys land on the next refresh. The Gemini API is deliberately never cached — AI features simply wait for a connection. The cache name is versioned (`cv-genie-v2.3`); bump it when you want every install to refresh its cache.
+`sw.js` precaches the app shell at install (`./`, `index.html`, manifest, icons), warms the exact CDN libraries and web fonts (woff2 URLs parsed out of the Google Fonts CSS) right after activation so the **first** visit already survives going offline, serves assets cache-first, and handles navigations network-first with a cached fallback so deploys land on the next refresh. The Gemini API is deliberately never cached — AI features simply wait for a connection. The cache name is versioned (`cv-genie-v2.3`); bump it when you want every install to refresh its cache. It is the app's **only** registration (registered on secure contexts at the end of `<body>`; CI fails the build if a second service worker — e.g. an inline Blob worker — ever appears), so the caching strategy above is the whole truth.
 
 ### Keyboard shortcuts & accessibility
 
