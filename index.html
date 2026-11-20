@@ -493,12 +493,16 @@ html.dark .cv-preview{box-shadow:0 1px 3px rgba(0,0,0,0.4),0 8px 32px rgba(0,0,0
 .confirm-dialog .confirm-actions{display:flex;gap:0.5rem;justify-content:center;}
 
 /* ── 3D template carousel (live-rendered pages) — default CV view ── */
-.tpl3d-main{display:none;flex-direction:column;align-items:center;flex:1;min-width:0;width:100%;}
+.tpl3d-main{display:none;flex-direction:column;align-items:center;flex:1;min-width:0;min-height:0;width:100%;}
 .preview-panel.show-gallery .cv-wrapper{display:none;}
 .preview-panel.show-gallery .tpl3d-main{display:flex;}
-.tpl3d-stage{position:relative;height:400px;margin:0.15rem 0 0;perspective:1400px;perspective-origin:50% 42%;user-select:none;-webkit-user-select:none;touch-action:pan-y;overflow:hidden;width:100%;max-width:900px;}
+/* gallery mode: the carousel claims every spare pixel — full panel width, no page-width cap,
+   and the inner row stretches so the stage can flex to the full panel height */
+.preview-panel.show-gallery{overflow:hidden;}
+.preview-panel.show-gallery .preview-panel-inner{max-width:none;flex:1;min-height:0;align-items:stretch;}
+.tpl3d-stage{position:relative;flex:1 1 auto;min-height:340px;margin:0.1rem 0 0;perspective:1400px;perspective-origin:50% 50%;user-select:none;-webkit-user-select:none;touch-action:pan-y;overflow:hidden;width:100%;max-width:none;}
 .tpl3d-track{position:absolute;inset:0;transform-style:preserve-3d;}
-.tpl3d-card{position:absolute;left:50%;top:16px;width:var(--tpl-w,224px);height:var(--tpl-h,316px);margin-left:calc(var(--tpl-w,224px)/-2);transform-style:preserve-3d;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:transform .55s cubic-bezier(.25,.8,.3,1),opacity .45s ease,filter .45s ease;}
+.tpl3d-card{position:absolute;left:50%;top:calc(50% - var(--tpl-h,316px)/2);width:var(--tpl-w,224px);height:var(--tpl-h,316px);margin-left:calc(var(--tpl-w,224px)/-2);transform-style:preserve-3d;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:transform .55s cubic-bezier(.25,.8,.3,1),opacity .45s ease,filter .45s ease;}
 .tpl3d-card.tpl3d-off{pointer-events:none;}
 .tpl3d-page{width:100%;height:100%;border-radius:7px;overflow:hidden;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.14),0 16px 40px rgba(0,0,0,.20);position:relative;outline:1px solid rgba(0,0,0,.05);transition:box-shadow .3s ease;}
 .tpl3d-card:hover .tpl3d-page{box-shadow:0 2px 8px rgba(0,0,0,.16),0 22px 52px rgba(0,0,0,.26);}
@@ -509,27 +513,27 @@ html.dark .cv-preview{box-shadow:0 1px 3px rgba(0,0,0,0.4),0 8px 32px rgba(0,0,0
 .tpl3d-badge{position:absolute;bottom:10px;left:10px;z-index:3;background:var(--accent);color:var(--accent-contrast);padding:3px 10px;border-radius:99px;font-size:9.5px;font-weight:700;display:none;align-items:center;gap:4px;box-shadow:0 2px 10px rgba(0,0,0,.28);letter-spacing:.03em;}
 .tpl3d-badge svg{width:9px;height:9px;}
 .tpl3d-card.is-center.is-applied .tpl3d-badge{display:inline-flex;}
-.tpl3d-nav{position:absolute;top:50%;transform:translateY(-50%);z-index:30;width:38px;height:38px;border-radius:50%;border:1px solid var(--border);background:var(--surface);color:var(--text);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background .15s,border-color .15s,transform .15s;box-shadow:0 2px 10px rgba(0,0,0,.10);}
-.tpl3d-nav svg{width:17px;height:17px;}
+.tpl3d-nav{position:absolute;top:50%;transform:translateY(-50%);z-index:30;width:42px;height:42px;border-radius:50%;border:1px solid var(--border);background:var(--surface);color:var(--text);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background .15s,border-color .15s,transform .15s;box-shadow:0 2px 10px rgba(0,0,0,.10);}
+.tpl3d-nav svg{width:18px;height:18px;}
 .tpl3d-nav:hover{border-color:var(--border-strong);transform:translateY(-50%) scale(1.08);}
 .tpl3d-nav:active{transform:translateY(-50%) scale(.94);}
-.tpl3d-nav.prev{left:2px;}
-.tpl3d-nav.next{right:2px;}
-.tpl3d-info{display:flex;align-items:center;justify-content:space-between;gap:0.7rem;flex-wrap:wrap;margin-top:0.15rem;padding-top:0.65rem;border-top:1px solid var(--border);}
+.tpl3d-nav.prev{left:6px;}
+.tpl3d-nav.next{right:6px;}
+.tpl3d-info{display:flex;align-items:center;justify-content:space-between;gap:0.7rem;flex-wrap:wrap;margin-top:0.1rem;padding-top:0.5rem;border-top:1px solid var(--border);flex-shrink:0;}
 .tpl3d-meta{display:flex;flex-direction:column;gap:1px;min-width:0;}
 .tpl3d-count{font-size:10px;font-weight:700;color:var(--accent);letter-spacing:.08em;}
 .tpl3d-name-row{display:flex;align-items:baseline;gap:0.45rem;}
 .tpl3d-name{font-size:15px;font-weight:700;}
 .tpl3d-desc{font-size:11px;color:var(--text-secondary);}
-.tpl3d-hint{font-size:10.5px;color:var(--text-tertiary);text-align:center;margin-top:0.6rem;}
+.tpl3d-hint{font-size:10px;color:var(--text-tertiary);text-align:center;margin-top:0.35rem;flex-shrink:0;}
 .tpl3d-info .btn svg{width:13px;height:13px;}
 .btn-icon.mode-on{background:var(--accent);color:var(--accent-contrast);}
 .btn-icon.mode-on:hover{background:var(--accent);color:var(--accent-contrast);opacity:.9;}
 @media (prefers-reduced-motion:reduce){.tpl3d-card{transition:none;}}
 @media (max-width:640px){
-  .tpl3d-nav{width:32px;height:32px;}
-  .tpl3d-nav.prev{left:2px;}
-  .tpl3d-nav.next{right:2px;}
+  .tpl3d-nav{width:34px;height:34px;}
+  .tpl3d-nav.prev{left:4px;}
+  .tpl3d-nav.next{right:4px;}
   .tpl3d-info{flex-direction:column;align-items:stretch;text-align:center;}
   .tpl3d-name-row{justify-content:center;}
   .tpl3d-info .btn{justify-content:center;display:flex;}
@@ -578,8 +582,9 @@ html.dark .cv-preview{box-shadow:0 1px 3px rgba(0,0,0,0.4),0 8px 32px rgba(0,0,0
 @media print{
   body{background:#fff;}
   .app-header,.form-panel,.mobile-nav,.ats-sidebar,.preview-toolbar,.edit-back-btn,.tpl3d-main{display:none!important;}
-  .preview-panel{padding:0;background:#fff;overflow:visible;flex-direction:column;}
-  .preview-panel-inner{width:100%;max-width:100%;}
+  .preview-panel{padding:0;background:#fff;overflow:visible!important;flex-direction:column;}
+  .preview-panel-inner{width:100%;max-width:100%;flex:none;}
+  .tpl3d-stage{flex:none;}
   .cv-scale-outer{height:auto!important;overflow:visible;}
   .cv-scale-inner{transform:none!important;width:100%!important;}
   .cv-preview{box-shadow:none;margin:0;padding:0;font-size:9.5pt;width:100%!important;}
@@ -625,7 +630,10 @@ html.dark .cv-preview{box-shadow:0 1px 3px rgba(0,0,0,0.4),0 8px 32px rgba(0,0,0
   .cv-preview.cv-compact .cv-cols{flex-direction:column;}
   .preview-toolbar{display:none;}
   .preview-toolbar.visible{display:flex;}
-  .tpl3d-stage{max-width:100%;}
+  /* mobile: the card is width-bound (~46% of stage width), so a huge stage only adds air.
+     Height = what's left of the fold after header/toolbar/info/nav so everything is visible;
+     the JS sizes the card to fill whatever height it gets. */
+  .tpl3d-stage{flex:none;min-height:0;height:clamp(270px,calc(100vh - 560px),560px);height:clamp(270px,calc(100dvh - 560px),560px);max-width:100%;}
   .tpl3d-info .btn{min-height:34px;}
   .modal-overlay{align-items:flex-end;}
   .modal{width:100%;max-width:100%;border-radius:16px 16px 0 0;margin:0;max-height:88vh;border-bottom:none;}
@@ -687,6 +695,7 @@ html.dark .cv-preview{box-shadow:0 1px 3px rgba(0,0,0,0.4),0 8px 32px rgba(0,0,0
 .ai-coach-box{border:1px solid var(--border);border-radius:var(--radius);padding:0.75rem;background:var(--surface);}
 .hint a,.cvi-ai-note a,.ats-ai-status a{color:#3b82f6;}
 html.dark .hint a,html.dark .cvi-ai-note a,html.dark .ats-ai-status a{color:#93b4ff;}
+html.dark .ats-ai-status.warn{color:#fbbf24;}
 .ai-coach-box .hint{display:block;font-size:10.5px;color:var(--text-tertiary);line-height:1.45;margin-top:0.25rem;}
 .ai-coach-head{font-size:12px;color:var(--text-secondary);margin-bottom:0.55rem;line-height:1.5;}
 .ai-card{border:1px solid var(--border);border-radius:10px;padding:0.6rem 0.65rem;margin-top:0.45rem;background:var(--surface-2);}
@@ -701,6 +710,7 @@ html.dark .hint a,html.dark .cvi-ai-note a,html.dark .ats-ai-status a{color:#93b
 .ats-ai-status{display:block;font-size:11px;color:var(--text-secondary);margin-top:0.4rem;line-height:1.45;}
 .ats-ai-status.err{color:var(--danger);}
 .ats-ai-status.ok{color:var(--success);}
+.ats-ai-status.warn{color:#b45309;}
 .ats-ai-verdict{font-size:12.5px;font-weight:600;line-height:1.5;margin:0.15rem 0 0.2rem;color:var(--text);}
 /* ── ATS plain-text view ── */
 .atstext-pre{white-space:pre-wrap;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:11.5px;line-height:1.55;background:var(--surface-3);border:1px solid var(--border);border-radius:10px;padding:0.8rem;max-height:46vh;overflow:auto;margin:0.6rem 0;}
@@ -880,7 +890,7 @@ html.dark .hint a,html.dark .cvi-ai-note a,html.dark .ats-ai-status a{color:#93b
 
         <div id="tab-letter" class="tab-content" style="display:none">
             <div style="display:flex;flex-direction:column;gap:0.75rem;">
-                <div class="jd-note" style="margin:0">A matching cover letter, styled with the same colour and fonts as your CV. Write it yourself, instantly draft it from your CV, or let Gemini write it for you. Toggle <strong>CV / Letter</strong> above the preview to switch documents — exports follow the active one.</div>
+                <div class="jd-note" style="margin:0">A matching cover letter, styled with the same colour and fonts as your CV. One click drafts it deterministically from your CV — instant, offline, no API key. Gemini is the optional backup for a more natural voice. Toggle <strong>CV / Letter</strong> above the preview to switch documents — exports follow the active one.</div>
                 <div class="form-group" style="margin:0">
                     <label for="clCompany">Company</label>
                     <input type="text" id="clCompany" oninput="sanitizeInput(this);updateLetterPreview()" placeholder="Acme Corp">
@@ -902,15 +912,15 @@ html.dark .hint a,html.dark .cvi-ai-note a,html.dark .ats-ai-status a{color:#93b
                     </select>
                 </div>
                 <div class="ai-coach-box">
-                    <div class="ai-coach-head"><strong>AI writer</strong> — Gemini writes all four paragraphs from your CV, this role, this tone, and the job description you pasted in the ATS tab (if any). Uses your own free API key, stored only in this browser.</div>
-                    <div class="form-group" style="margin:0 0 0.5rem">
-                        <label for="clAiKey">Gemini API key</label>
+                    <div class="ai-coach-head"><strong>Letter writer</strong> — the deterministic engine drafts all four paragraphs from your CV, this role, this tone and the job description in the ATS tab (if any). Instant, fully offline, nothing leaves your browser. <strong>Gemini is the backup</strong>: it rewrites the draft in a more natural voice, and if it ever fails the deterministic letter is written automatically instead.</div>
+                    <div style="display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap">
+                        <button class="btn btn-primary btn-sm" onclick="draftLetter()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;vertical-align:-2px"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg>Draft letter — instant, offline</button>
+                        <button class="btn btn-sm" id="clAiBtn" onclick="runLetterAi()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;vertical-align:-2px"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/><path d="M20 3v4"/><path d="M22 5h-4"/></svg> Rewrite with Gemini</button>
+                    </div>
+                    <div class="form-group" style="margin:0.55rem 0 0">
+                        <label for="clAiKey">Gemini API key <span style="font-weight:400;color:var(--text-tertiary)">— only needed for the AI backup</span></label>
                         <input type="password" id="clAiKey" placeholder="AIza…" autocomplete="off" spellcheck="false" style="width:100%">
                         <small class="hint">Same key as the ATS AI coach and CV import — free at <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">aistudio.google.com/apikey</a>. Your CV text and job description go directly from your browser to Google and nowhere else.</small>
-                    </div>
-                    <div style="display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap">
-                        <button class="btn btn-primary btn-sm" id="clAiBtn" onclick="runLetterAi()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;vertical-align:-2px"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/><path d="M20 3v4"/><path d="M22 5h-4"/></svg> Write with Gemini</button>
-                        <button class="btn btn-sm" onclick="draftLetter()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;vertical-align:-2px"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/></svg>Draft from my CV</button>
                     </div>
                     <span id="clAiStatus" class="ats-ai-status"></span>
                 </div>
@@ -1571,13 +1581,21 @@ function tpl3dLayout(instant){
   const stage=document.getElementById('tpl3dStage');
   if(!stage)return;
   const n=TEMPLATES.length,half=Math.floor(n/2);
-  const W=stage.clientWidth||600;
-  const w=Math.round(Math.max(146,Math.min(230,W*0.30)));
-  const h=Math.round(w*297/210);
+  const W=stage.clientWidth||600,H=stage.clientHeight||420;
+  const AR=297/210; /* A4 portrait aspect */
+  /* fill ALL the free space: the card is capped by height (page fits the stage)
+     and by a width share that keeps the flanking pages inside the stage.
+     phones get a wider share — their stage is narrow and tall */
+  const wShare=W<560?0.46:0.40;
+  let w=Math.floor(Math.min(W*wShare,(H-26)/AR,470));
+  w=Math.max(136,Math.min(w,W-32));
+  const h=Math.round(w*AR);
   stage.style.setProperty('--tpl-w',w+'px');
   stage.style.setProperty('--tpl-h',h+'px');
   stage.style.setProperty('--tpl-s',(w/794).toFixed(4));
-  stage.style.height=(h+38)+'px';
+  /* perspective and depth scale with the card so the 3D look stays balanced at any size */
+  stage.style.perspective=Math.round(Math.max(900,w*5.6))+'px';
+  const zC=Math.round(w*0.30),z1=Math.round(w*0.66),z2=Math.round(w*1.5);
   const cards=document.getElementById('tpl3dTrack').children;
   for(let i=0;i<cards.length;i++){
     let off=i-tpl3dIndex;
@@ -1591,13 +1609,13 @@ function tpl3dLayout(instant){
     card.style.visibility='visible';
     card.style.zIndex=String(10-a);
     if(off===0){
-      card.style.transform='translateX(0px) translateZ(70px) rotateY(0deg) scale(1)';
+      card.style.transform=`translateX(0px) translateZ(${zC}px) rotateY(0deg) scale(1)`;
       card.style.opacity='1';
       card.style.filter='none';
     }else{
       const dir=off<0?-1:1;
-      const x=dir*(a===1?w*0.98:w*1.45);
-      const z=a===1?-150:-330;
+      const x=dir*(a===1?w*0.94:w*1.42);
+      const z=a===1?-z1:-z2;
       const rot=dir*(a===1?42:52)*-1;
       const sc=a===1?0.82:0.60;
       card.style.transform=`translateX(${x}px) translateZ(${z}px) rotateY(${rot}deg) scale(${sc})`;
@@ -1743,33 +1761,221 @@ function renderLetter(){
     const dateStr=new Date().toLocaleDateString(undefined,{year:'numeric',month:'long',day:'numeric'});
     el.innerHTML=`<div class="cl-name">${esc(name)}</div>${title?`<div class="cl-title">${esc(title)}</div>`:''}${contacts.length?`<div class="cl-contact">${contacts.map(c=>`<span>${c}</span>`).join('')}</div>`:''}<div class="cl-date">${dateStr}</div>${f.company.trim()?`<div class="cl-recipient">${hm?esc(hm)+'<br>':''}${esc(f.company)}</div>`:''}<div class="cl-subject">${subject}</div><div class="cl-salutation">${salutation}</div>${nl(f.p1)}${nl(f.p2)}${nl(f.p3)}${nl(f.p4)}<div class="cl-signoff">${esc(f.signoff)}</div><div class="cl-sig">${esc(name)}</div>`;
 }
-function draftLetter(){
-    const f=getLetterFields(),name=(document.getElementById('fullName')?.value||'').trim()||'me';
-    const role=f.role.trim()||(document.getElementById('targetRole')?.value||'').trim()||'the advertised role';
-    const company=f.company.trim()||'your company';
-    const skills=(document.getElementById('skills')?.value||'').split(',').map(s=>s.trim()).filter(Boolean);
-    const exp=getExperiences(),latest=exp[0];
-    const topSkills=skills.slice(0,3).join(', ')||'the skills outlined in my CV';
-    let p1,p2,p3,p4;
-    if(f.tone==='direct'){
-        p1=`I'm writing to apply for ${role==='the advertised role'?'the advertised role':'the '+role} at ${company}. In one line: I do this work, I enjoy it, and I'm good at it.`;
-        p2=`What draws me to ${company} is simple — the problems you're solving are the ones I've built my career on.`;
-        p3=latest?`Most recently as ${latest.title||'a professional'}${latest.company?' at '+latest.company:''}, I focused on exactly this kind of work. Day to day, that meant ${latest.description?latest.description.split('.')[0].toLowerCase().trim():'delivering results against clear goals'}. My strongest assets: ${topSkills}.`:`My strongest assets for this role: ${topSkills}.`;
-        p4=`I'd welcome a conversation about how I can help ${company} succeed. I'm available for an interview at your convenience.`;
-    }else if(f.tone==='warm'){
-        p1=`I was genuinely pleased to see ${company} is hiring for ${role==='the advertised role'?'this role':'the '+role} — it's exactly the kind of opportunity I've been hoping to find.`;
-        p2=`I've followed ${company} for a while, and what stands out to me is the way you approach your work. It's the kind of environment where I do my best.`;
-        p3=latest?`In my current role as ${latest.title||'a professional'}${latest.company?' at '+latest.company:''}, I've grown strongest in ${topSkills}. ${latest.description?'A recent highlight: '+latest.description.split('.')[0].trim()+'.':''}`:`I bring ${topSkills}, and I'm eager to keep growing.`;
-        p4=`I'd love to talk about what ${company} needs from this role — thank you for considering my application.`;
-    }else{
-        p1=`I am writing to express my interest in ${role==='the advertised role'?'the advertised position':'the position of '+role} at ${company}.`;
-        p2=`${company}'s reputation for quality and its approach to the work align closely with my own professional values.`;
-        p3=latest?`In my present role as ${latest.title||'a professional'}${latest.company?' at '+latest.company:''}, I have developed considerable expertise in ${topSkills}. ${latest.description?'Among my responsibilities: '+latest.description.split('.')[0].trim()+'.':''}`:`I offer considerable expertise in ${topSkills}.`;
-        p4=`I have attached my CV for your consideration and would be delighted to discuss my application further at your convenience.`;
+/* ── Deterministic cover-letter engine — the PRIMARY writer. Rules + your CV data only:
+   no network, no key, no hallucination. Gemini stays as the backup (runLetterAi falls back
+   here automatically). Same 4-paragraph contract as the AI so the two are interchangeable. ── */
+const LETTER_VERBS=/^(led|built|launched|shipped|increased|reduced|improved|grew|saved|delivered|designed|automated|managed|created|developed|drove|cut|won|trained|mentored|spearheaded|optimised|optimized|streamlined|negotiated|achieved|exceeded|owned|wrote|ran|oversaw|introduced|migrated|rebuilt|scaled|supported|maintained|analysed|analyzed|researched|planned|coordinated|presented|taught|founded|started|helped|worked|responsible|accountable)\b/i;
+function letterHash(s){let h=7;for(let i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))|0;return Math.abs(h);} /* stable pick: same CV → same letter */
+function letterAnd(a){a=a.filter(Boolean);if(a.length<=1)return a[0]||'';if(a.length===2)return a[0]+' and '+a[1];return a.slice(0,-1).join(', ')+' and '+a[a.length-1];}
+function letterCap(s){return s?s.charAt(0).toUpperCase()+s.slice(1):s;}
+function letterParseDate(s){
+    s=(s||'').trim();if(!s)return null;
+    const M={jan:0,feb:1,mar:2,apr:3,may:4,jun:5,jul:6,aug:7,sep:8,oct:9,nov:10,dec:11};
+    let m=s.match(/^(\d{4})$/);if(m)return new Date(+m[1],6,1);
+    m=s.match(/^(?:(\d{1,2})[/.\-]\s*)?(\d{4})$/);if(m)return new Date(+m[2],m[1]?+m[1]-1:6,1);
+    m=s.match(/^([A-Za-z]{3,})[a-z]*\.?\s+(\d{4})$/);if(m&&M[m[1].slice(0,3).toLowerCase()]!=null)return new Date(+m[2],M[m[1].slice(0,3).toLowerCase()],1);
+    m=s.match(/^(\d{1,2})\s+([A-Za-z]{3,})[a-z]*\.?\s+(\d{4})$/);if(m&&M[m[2].slice(0,3).toLowerCase()]!=null)return new Date(+m[3],M[m[2].slice(0,3).toLowerCase()],+m[1]);
+    return null;
+}
+function letterParseRange(dates){
+    const d=(dates||'').trim();if(!d)return null;
+    const parts=d.split(/\s*(?:–|—|-|to)\s*/i).filter(Boolean);
+    if(parts.length<2){const s=letterParseDate(parts[0]);return s?{start:s,end:s}:null;}
+    const present=/present|current|now|ongoing|today/i.test(d);
+    const start=letterParseDate(parts[0]);
+    const end=present?new Date():letterParseDate(parts[parts.length-1]);
+    if(!start||!end||end<start)return null;
+    return{start,end};
+}
+function letterExperienceSpan(exp){
+    const ranges=exp.map(e=>letterParseRange(e.dates)).filter(Boolean);
+    if(!ranges.length)return null;
+    ranges.sort((a,b)=>a.start-b.start);
+    let months=0,lastEnd=null;
+    for(const r of ranges){
+        if(lastEnd&&r.start<lastEnd){if(r.end>lastEnd){months+=(r.end-lastEnd)/(30.44*864e5);lastEnd=r.end;}}
+        else{months+=(r.end-r.start)/(30.44*864e5);lastEnd=r.end;}
     }
-    if((f.p1+f.p2+f.p3+f.p4).trim()&&!confirm('Replace your current letter text with a fresh draft?'))return;
-    document.getElementById('clP1').value=p1;document.getElementById('clP2').value=p2;document.getElementById('clP3').value=p3;document.getElementById('clP4').value=p4;
-    renderLetter();scaleCVToFit();showToast('Letter drafted from your CV');
+    return Math.max(0,months);
+}
+function letterAchievements(exp){
+    const out=[];
+    exp.forEach((job,ji)=>{
+        String(job.description||'').split(/\n|\u2022|•/).forEach(raw=>{
+            const l=raw.replace(/^[\s\-–—*•\u2022.]+/,'').replace(/\s+$/,'').trim();
+            if(l.length<25||l.length>240)return;
+            let s=0;
+            if(/\d/.test(l))s+=3;
+            if(/(\d+\s*%|\$\d|\b\d+x\b|\b\d{2,}\b)/i.test(l))s+=2;
+            if(LETTER_VERBS.test(l))s+=2;
+            out.push({line:l,score:s,job,ji});
+        });
+    });
+    out.sort((a,b)=>b.score-a.score||a.ji-b.ji);
+    return out;
+}
+function letterRankSkills(skills,jdTerms){
+    if(!skills.length)return[];
+    if(!jdTerms||!jdTerms.length)return skills.slice(0,4);
+    const scored=skills.map(sk=>{
+        const k=sk.toLowerCase();let sc=0;
+        jdTerms.forEach(t=>{if(t&&(k.includes(t)||t.includes(k)))sc+=3;});
+        return{sk,sc};
+    });
+    scored.sort((a,b)=>b.sc-a.sc); /* stable: ties keep CV order */
+    return scored.map(x=>x.sk).slice(0,4);
+}
+/* turn a CV bullet into an "I …" clause without breaking proper nouns.
+   form 'sub' → follows "As X, …" · 'verb' → follows "I also …" · 'i' → standalone */
+function letterAchieveClause(line,form){
+    form=form||'sub';
+    let s=line.replace(/[\s.;,]+$/,'').trim();
+    if(!s)return'';
+    const fw=s.split(/\s+/)[0];
+    if(LETTER_VERBS.test(s)){
+        const lc=fw.toLowerCase()+s.slice(fw.length);
+        return form==='verb'?lc:'I '+lc; /* verb-first bullet → "I led a team of 5" */
+    }
+    /* noun phrase, digit or acronym start → "my work included …", original casing for acronyms */
+    const lowerable=/^[A-Z][a-z'’]*$/.test(fw);
+    const body=lowerable?fw.toLowerCase()+s.slice(fw.length):s;
+    if(form==='verb')return 'did work that included '+body;
+    return (form==='i'?'My':'my')+' work included '+body;
+}
+function letterDeterministicParts(){
+    const f=getLetterFields();
+    const D=collectPreviewData();
+    const jd=(document.getElementById('jdText')?.value||'').trim();
+    const targetRole=(document.getElementById('targetRole')?.value||'').trim();
+    const role=f.role.trim()||targetRole;
+    const roleThe=role?`the ${role} role`:'the advertised role'; /* "apply for …" */
+    const roleA=role?`a ${role}`:'this role'; /* "is hiring …" */
+    const company=f.company.trim();
+    const coFormal=company||'your organisation';
+    const coPlain=company||'your company';
+    const v=letterHash((D.name||'')+'|'+role+'|'+company)%2; /* stable variant per candidate+role */
+    const tone=f.tone==='direct'?'direct':f.tone==='warm'?'warm':'formal';
+    const months=letterExperienceSpan(D.exp);
+    const years=months?months/12:0;
+    const jdTerms=jd?extractJDTerms(jd).slice(0,6):[];
+    const skills=letterRankSkills(D.skillList,jdTerms);
+    const top2=skills.slice(0,2),top3=skills.slice(0,3);
+    const skillPhrase=top2.length?letterAnd(top2):'the core of this work';
+    const cur=D.exp[0]||null;
+    const ach=letterAchievements(D.exp).slice(0,2);
+    const curRef=cur&&cur.title?`${cur.title}${cur.company?' at '+cur.company:''}`:'';
+    const yearsPhrase=years>=2?(Math.round(years)+' years'):years>=1?'the past year':'';
+    const P={};
+    /* ── p1: opening — role + one-line fit ── */
+    if(tone==='formal'){
+        P.p1=v===0
+            ?`I am writing to apply for ${roleThe} at ${coFormal}.${yearsPhrase?` I bring ${yearsPhrase==='the past year'?'a year':'over '+yearsPhrase} of experience in ${skillPhrase}${curRef?', most recently as '+curRef:''}.`:` My background is in ${skillPhrase}${curRef?', currently as '+curRef:''}.`}`
+            :`Please accept this letter as my application for ${roleThe} at ${coFormal}.${yearsPhrase?` Over ${yearsPhrase}, I have built my work around ${skillPhrase}${curRef?', most recently as '+curRef:''}.`:` My work centres on ${skillPhrase}${curRef?', currently as '+curRef:''}.`}`;
+    }else if(tone==='direct'){
+        P.p1=v===0
+            ?`I'm applying for ${roleThe} at ${coPlain}.${yearsPhrase?` Short version: ${yearsPhrase} doing exactly this kind of work${curRef?', currently as '+curRef:''}.`:` This is the work I do${curRef?' — as '+curRef:''}.`}`
+            :`${coPlain} is hiring ${roleA}${yearsPhrase?`, and I've spent ${yearsPhrase} doing exactly that`:''}.${top3.length?` What I bring: ${letterAnd(top3)}.`:''}`;
+    }else{
+        P.p1=v===0
+            ?`When I saw ${coPlain} was looking for ${roleA}, I had to write in — this is exactly the work I've been building toward${yearsPhrase?' for '+yearsPhrase:''}.`
+            :`${letterCap(roleThe)} at ${coPlain} caught my eye${yearsPhrase?` — ${yearsPhrase} working with ${skillPhrase} made it read like my day job`:top2.length?` — ${skillPhrase} are what I do best`:''}.`;
+    }
+    /* ── p2: why this company — grounded in the JD when we have one, honest guidance when we don't.
+       Skip JD terms that just restate the role; prefer terms the candidate's skills match. ── */
+    const skLow=skills.map(s=>s.toLowerCase());
+    const rLow=role.toLowerCase();
+    const jt=jdTerms.filter(t=>t!==rLow&&!rLow.includes(t)&&!t.includes(rLow))
+                    .sort((a,b)=>(skLow.some(s=>s.includes(a)||a.includes(s))?0:1)-(skLow.some(s=>s.includes(b)||b.includes(s))?0:1))
+                    .slice(0,3);
+    if(jt.length){
+        if(tone==='formal'){
+            P.p2=`Your posting emphasises ${letterAnd(jt)} — these are precisely the areas where I have invested most of my effort${top2.length?`, particularly ${letterAnd(top2)}`:''}. That combination is what I look for in a next role.`;
+        }else if(tone==='direct'){
+            P.p2=`The posting is clear about what matters: ${letterAnd(jt)}. Convenient, because that's where my work already lives${top2.length?` — ${letterAnd(top2)} are my strongest ground`:''}.`;
+        }else{
+            P.p2=`What pulled me in was how the posting describes the work — ${letterAnd(jt)} — because that's the part of the job I genuinely enjoy most.`;
+        }
+    }else{
+        const guide=company?`[One specific sentence about ${company} — a product you use, a decision they made, why their work matters to you. It carries real weight.]`:`[Add one sentence about the company once you know them — it is the line recruiters read first.]`;
+        if(tone==='formal'){
+            P.p2=`The shape of this role — ${skillPhrase} applied to real problems — is precisely the work I want to be doing. ${guide}`;
+        }else if(tone==='direct'){
+            P.p2=`Straight answer: I'm drawn to the work itself — ${skillPhrase} on problems that matter. ${guide}`;
+        }else{
+            P.p2=`What draws me is simpler than it sounds: work that treats ${skillPhrase} as craft. ${guide}`;
+        }
+    }
+    /* ── p3: evidence — the most quantified achievements we can find ── */
+    if(ach.length){
+        const a0=ach[0],current0=a0.ji===0;
+        const lead=current0
+            ?`In my current role${a0.job.title?' as '+a0.job.title:''}${a0.job.company?' at '+a0.job.company:''}`
+            :`As ${a0.job.title||'a professional'}${a0.job.company?' at '+a0.job.company:''}`;
+        let ev=`${lead}, ${letterAchieveClause(a0.line,'sub')}.`;
+        if(ach[1]){
+            const same=ach[1].job===a0.job;
+            if(same)ev+=` I also ${letterAchieveClause(ach[1].line,'verb')}.`;
+            else ev+=` Earlier, as ${ach[1].job.title||'a professional'}${ach[1].job.company?' at '+ach[1].job.company:''}, ${letterAchieveClause(ach[1].line,'sub')}.`;
+        }
+        if(!ach.some(a=>/\d/.test(a.line)))ev+=' [Add a number to one of these — a figure makes evidence land.]';
+        P.p3=letterCap(ev);
+    }else if(cur&&(cur.title||cur.description)){
+        const desc=String(cur.description||'').split(/[.\n]/).map(x=>x.trim()).filter(Boolean)[0]||'';
+        P.p3=tone==='formal'
+            ?`In my present role${cur.title?' as '+cur.title:''}${cur.company?' at '+cur.company:''}${desc?', my responsibilities centre on '+desc.charAt(0).toLowerCase()+desc.slice(1):''}. My strongest assets for this position are ${skillPhrase}.`
+            :`Right now${cur.title?' I work as '+cur.title:''}${cur.company?' at '+cur.company:''}${desc?': '+desc.charAt(0).toLowerCase()+desc.slice(1):''}. ${letterCap(skillPhrase)} are what I bring to this role.`;
+    }else{
+        const edu=D.edu[0],langs=D.langs.map(l=>l.language).filter(Boolean);
+        let p3=top3.length?`My strongest assets for this role are ${letterAnd(top3)}.`:'';
+        if(edu&&edu.degree)p3+=` My ${edu.degree}${edu.institution?' from '+edu.institution:''} provided the foundation for this work.`;
+        if(langs.length)p3+=` I also bring ${letterAnd(langs.slice(0,2))}${langs.length>2?' (among other languages)':''}.`;
+        P.p3=(p3||'My background aligns closely with what this role needs.').trim();
+    }
+    /* ── p4: closing — short, confident, clear CTA ── */
+    if(tone==='formal'){
+        P.p4=v===0
+            ?`My CV is attached with further detail. I would welcome the opportunity to discuss how I could contribute to ${coFormal}, and I am available for interview at your convenience.`
+            :`Thank you for considering my application. My CV is attached, and I would be glad to expand on any part of it in an interview.`;
+    }else if(tone==='direct'){
+        P.p4=v===0
+            ?`My CV has the detail. I'd welcome a conversation about what ${coPlain} needs from this role first — that's usually the fastest way to see the fit. I'm available any weekday.`
+            :`Happy to talk whenever suits. My CV is attached, and I can walk through any part of it in detail.`;
+    }else{
+        P.p4=v===0
+            ?`Thank you for reading this far — I know what an inbox of applications looks like. I'd love to talk about what ${coPlain} needs from this role; my CV is attached with the rest of the story.`
+            :`I'd really enjoy a conversation about the role — thank you for considering my application. My CV has the full picture.`;
+    }
+    return{p1:P.p1.trim(),p2:P.p2.trim(),p3:P.p3.trim(),p4:P.p4.trim(),meta:{tone,years:+years.toFixed(1),skills,jdUsed:jdTerms.length>0,achievements:ach.length}};
+}
+function draftLetter(opts){
+    opts=opts||{};
+    const f=getLetterFields();
+    const D=collectPreviewData();
+    const hasCv=D.name!=='Your Name'&&((D.summary&&D.summary.trim())||D.skillList.length||D.exp.length);
+    const st=document.getElementById('clAiStatus');
+    if(!hasCv){
+        const msg='Fill in your CV first — there is nothing to write from yet.';
+        if(opts.quiet)return null;
+        if(st){st.textContent=msg;st.className='ats-ai-status err';}
+        showToast(msg);return null;
+    }
+    if(!opts.quiet&&(f.p1+f.p2+f.p3+f.p4).trim()&&!confirm('Replace your current letter text with a fresh draft?'))return null;
+    const parts=letterDeterministicParts();
+    document.getElementById('clP1').value=parts.p1;
+    document.getElementById('clP2').value=parts.p2;
+    document.getElementById('clP3').value=parts.p3;
+    document.getElementById('clP4').value=parts.p4;
+    renderLetter();
+    setActiveDoc('letter');
+    scaleCVToFit();
+    if(opts.fallbackMsg){
+        if(st){st.textContent=opts.fallbackMsg;st.className='ats-ai-status warn';}
+        showToast('Gemini unavailable — deterministic draft written instead');
+    }else{
+        if(st){st.textContent=`Drafted from your CV in ${parts.meta.achievements||0} achievement${parts.meta.achievements===1?'':'s'}${parts.meta.jdUsed?' and matched to the job description':''} — fully offline, no AI. Edit freely or let Gemini rewrite it.`;st.className='ats-ai-status ok';}
+        showToast('Letter drafted from your CV');
+    }
+    return parts;
 }
 /* ── AI cover letter writer (Gemini, user's own key — same engine as the ATS coach) ── */
 const LETTER_AI_SCHEMA={
@@ -1838,7 +2044,11 @@ async function runLetterAi(){
     showToast('Cover letter drafted \u2014 tweak any [placeholders]');
     if(st){st.textContent='Written with '+model+' \u2014 edit freely below, it\u2019s your letter.';st.className='ats-ai-status ok';}
   }catch(e){
-    if(st){st.textContent=(e&&e.message)||'Gemini request failed \u2014 try again in a minute.';st.className='ats-ai-status err';}
+    /* AI is the backup — when Gemini fails (quota, 503, offline, bad key) the
+       deterministic engine writes the letter so the user is never left empty-handed */
+    const msg=(e&&e.message)||'Gemini request failed';
+    const parts=draftLetter({quiet:true,fallbackMsg:'Gemini couldn\u2019t write it ('+msg+') \u2014 the deterministic engine drafted your letter from your CV instead. Edit it below, or retry Gemini in a minute.'});
+    if(!parts&&st){st.textContent=msg+' \u2014 and the CV is too empty to draft from. Add experience, skills or a summary first.';st.className='ats-ai-status err';}
   }finally{
     if(btn)btn.disabled=false;
   }
