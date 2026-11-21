@@ -9,7 +9,7 @@
 [![Release](https://github.com/touhidsiddiqueeraj-bit/CV-Genie/actions/workflows/release.yml/badge.svg)](https://github.com/touhidsiddiqueeraj-bit/CV-Genie/actions/workflows/release.yml)
 [![APK](https://github.com/touhidsiddiqueeraj-bit/CV-Genie/actions/workflows/apk.yml/badge.svg)](https://github.com/touhidsiddiqueeraj-bit/CV-Genie/actions/workflows/apk.yml)
 
-[Live demo](https://touhidsiddiqueeraj-bit.github.io/CV-Genie/) · [Templates](#-templates) · [What's new](#-whats-new-in-v23) · [Documentation](#-documentation)
+[Live demo](https://touhidsiddiqueeraj-bit.github.io/CV-Genie/) · [Templates](#-templates) · [What's new](#-whats-new-in-v24) · [Documentation](#-documentation)
 
 </div>
 
@@ -26,6 +26,16 @@
 - **ATS-aware** — a 7-category engine with ~25 concrete checks (plus job-description matching and an optional Gemini AI coach) scores your CV on every keystroke and shows exactly what to fix.
 - **Serious output** — vector PDF through the print dialog, an editable DOCX generated entirely in-browser, RTF, Markdown, plain text, plus bulk export of all 18 templates in one ZIP.
 - **Works everywhere** — responsive down to phone screens, dark mode, and an installable Android APK built by CI.
+
+## ✦ What's new in v2.4
+
+| Area | Change |
+|---|---|
+| **Full letter editing** | Every part of the cover letter is now editable in the Letter tab — not just the four paragraphs. New fields for **date**, **subject line**, **salutation**, **recipient address block**, **custom sign-off** (free text with the classic presets as dropdown suggestions) and **signature name**. Leave any of them empty and the smart default you see in its placeholder is used (today's date, “Re: Application for …”, the right “Dear …”, your CV name). |
+| **Any number of paragraphs** | The four paragraphs are no longer a fixed grid: **add** and **remove** paragraphs (one is always kept), with the first four carrying their semantic hints (opening / why this company / evidence / closing). The deterministic and Gemini writers still write their four-part draft and replace the list in one go. |
+| **One envelope, every format** | A single `letterEnvelope()` resolver now feeds the preview **and** DOCX, RTF, Markdown and TXT exports, so they can never disagree — this also fixed the RTF export missing the date line, and a pre-existing RTF bug where the recipient block rendered the literal text `\line` instead of a line break. |
+| **Backwards compatible** | Old saves, share links, undo history and version snapshots (which stored `p1`–`p4`) migrate transparently into the paragraph list; the first four slots keep the `clP1`–`clP4` ids. |
+| **Verified** | New Playwright suite `scripts/test-letter-edit.js` (67 assertions — defaults, overrides, add/remove/renumber, single-paragraph guard, state round-trip, legacy-state migration, and all four export builders agreeing on the envelope). |
 
 ## ✦ What's new in v2.3
 
@@ -110,6 +120,8 @@ A **Letter** tab beside the editor builds a cover letter that matches your CV �
 
 - **Draft from my CV** — a one-click offline draft from your own experience, skills and most recent role. No AI, no data leaving the browser.
 - **Write with Gemini** — the AI writer drafts all four paragraphs (opening, why this company, evidence, closing) from your CV, the target role, your tone choice and the job description you pasted in the ATS tab. It uses only facts from your CV — unknown metrics come back as `[placeholder]` — and reuses the same free API key and model-fallback engine as the ATS coach. The letter lands in the editable fields and the preview switches to it instantly.
+
+**Every part of the letter is editable** in the Letter tab: date, subject line, salutation, recipient address block, any number of paragraphs (add / remove — the four defaults carry the opening / why-this-company / evidence / closing hints), a free-text sign-off with the classic presets as suggestions, and the signature name. Empty fields fall back to the smart defaults shown in their placeholders (today's date, “Re: Application for …”, the context-appropriate “Dear …”, your CV name), so a drafted letter is already complete but nothing is locked. A single envelope resolver feeds the preview and every export format, so they always agree.
 
 Toggle **CV / Letter** above the preview to switch documents; exports (PDF, RTF, Markdown, TXT) follow whichever is active. Letter content travels with saves, share links and version history like everything else.
 
@@ -281,7 +293,7 @@ The application is a single, self-contained HTML file (SPA) — vanilla JavaScri
 | **Edit** | Personal info (photo, contact), Summary, Skills, Experience, Education, Languages — all collapsible and reorderable |
 | **Content** | 20 summary templates · skill cloud (10 categories) |
 | **Design** | Font pairing (6) · accent colour (8 presets) · 3D template carousel (live-rendered pages) |
-| **Letter** | Company / hiring manager / role / tone · offline one-click draft · **Gemini AI writer** (own key) · four editable paragraphs |
+| **Letter** | Company / hiring manager / recipient address · role · date · subject · salutation · tone · paragraphs (add / remove) · sign-off · signature · offline one-click draft · **Gemini AI writer** (own key) |
 | **ATS** | Score ring + letter grade · 7-category breakdown · ~25 checks with fixes · target role & custom keywords · keyword cloud · job-description match · AI Coach (Gemini, own key) |
 | **Tools** | LinkedIn import · JSON backup · share link · version history |
 
@@ -295,7 +307,7 @@ The whole CV is serialised by `getState()` into one plain object (template, colo
 
 ### The service worker
 
-`sw.js` precaches the app shell at install (`./`, `index.html`, manifest, icons), warms the exact CDN libraries and web fonts (woff2 URLs parsed out of the Google Fonts CSS) right after activation so the **first** visit already survives going offline, serves assets cache-first, and handles navigations network-first with a cached fallback so deploys land on the next refresh. The Gemini API is deliberately never cached — AI features simply wait for a connection. The cache name is versioned (`cv-genie-v2.3`); bump it when you want every install to refresh its cache. It is the app's **only** registration (registered on secure contexts at the end of `<body>`; CI fails the build if a second service worker — e.g. an inline Blob worker — ever appears), so the caching strategy above is the whole truth.
+`sw.js` precaches the app shell at install (`./`, `index.html`, manifest, icons), warms the exact CDN libraries and web fonts (woff2 URLs parsed out of the Google Fonts CSS) right after activation so the **first** visit already survives going offline, serves assets cache-first, and handles navigations network-first with a cached fallback so deploys land on the next refresh. The Gemini API is deliberately never cached — AI features simply wait for a connection. The cache name is versioned (`cv-genie-v2.4`); bump it when you want every install to refresh its cache. It is the app's **only** registration (registered on secure contexts at the end of `<body>`; CI fails the build if a second service worker — e.g. an inline Blob worker — ever appears), so the caching strategy above is the whole truth.
 
 ### Keyboard shortcuts & accessibility
 
@@ -356,16 +368,15 @@ NODE_PATH="$(npm root -g)" node scripts/test-ats-v2.js
 
 `scripts/shoot-ats.js` regenerates the three ATS screenshots above the same way.
 
-### Testing exports and the PWA
-
-Two more Playwright suites cover the v2.3 work:
+### Testing exports, the letter and the PWA
 
 ```bash
+NODE_PATH="$(npm root -g)" node scripts/test-letter-edit.js     # 67 checks — full letter editing, envelope, exports agreement
 NODE_PATH="$(npm root -g)" node scripts/test-export-docx.js   # 16 checks — DOCX packages, letter mode, LibreOffice round-trip
 NODE_PATH="$(npm root -g)" node scripts/test-pwa.js            # 22 checks — manifest, SW lifecycle, offline boot, cache warm
 ```
 
-`test-export-docx.js` drives the real export buttons, saves the downloads, then validates the ZIP/OOXML structure and content with Python's `zipfile` + `minidom` and converts one file with headless LibreOffice to prove it opens. `test-pwa.js` runs the service worker on `127.0.0.1` (a secure context) and asserts the full offline story — including that the Gemini API is never cached.
+`test-letter-edit.js` drives the real Letter tab: default layout and ids, smart fallbacks, every envelope override, add/remove/renumber of paragraphs, the single-paragraph guard, writer replacement, state round-trip and legacy `p1`–`p4` migration, and asserts the Markdown, plain-text, RTF and DOCX builders all carry the same envelope. `test-export-docx.js` drives the real export buttons, saves the downloads, then validates the ZIP/OOXML structure and content with Python's `zipfile` + `minidom` and converts one file with headless LibreOffice to prove it opens. `test-pwa.js` runs the service worker on `127.0.0.1` (a secure context) and asserts the full offline story — including that the Gemini API is never cached.
 
 ### Regenerating README screenshots
 
