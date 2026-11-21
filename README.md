@@ -9,7 +9,7 @@
 [![Release](https://github.com/touhidsiddiqueeraj-bit/CV-Genie/actions/workflows/release.yml/badge.svg)](https://github.com/touhidsiddiqueeraj-bit/CV-Genie/actions/workflows/release.yml)
 [![APK](https://github.com/touhidsiddiqueeraj-bit/CV-Genie/actions/workflows/apk.yml/badge.svg)](https://github.com/touhidsiddiqueeraj-bit/CV-Genie/actions/workflows/apk.yml)
 
-[Live demo](https://touhidsiddiqueeraj-bit.github.io/CV-Genie/) · [Templates](#-templates) · [What's new](#-whats-new-in-v24) · [Documentation](#-documentation)
+[Live demo](https://touhidsiddiqueeraj-bit.github.io/CV-Genie/) · [Templates](#-templates) · [What's new](#-whats-new-in-v25) · [Documentation](#-documentation)
 
 </div>
 
@@ -26,6 +26,20 @@
 - **ATS-aware** — a 7-category engine with ~25 concrete checks (plus job-description matching and an optional Gemini AI coach) scores your CV on every keystroke and shows exactly what to fix.
 - **Serious output** — vector PDF through the print dialog, an editable DOCX generated entirely in-browser, RTF, Markdown, plain text, plus bulk export of all 18 templates in one ZIP.
 - **Works everywhere** — responsive down to phone screens, dark mode, and an installable Android APK built by CI.
+
+## ✦ What's new in v2.5
+
+The final polish pass: a cohesive motion layer and small UI cleanups. Every animation is transform/opacity only (GPU-composited), one-shot, and fully neutralised by the global `prefers-reduced-motion` rule — nothing loops, nothing flashes.
+
+| Area | Change |
+|---|---|
+| **First-load choreography** | The app assembles itself once on load: header slides in, form sections cascade with a 45ms stagger, the preview area and ATS widget rise in. Gated by a `boot` class that JS retires after ~1.4s, so it never replays on tab switches or re-renders. |
+| **Sliding tab indicator** | The active-tab underline is now a shared “ink bar” that glides between tabs (repositioned on switch, resize and font-load) instead of each tab growing its own border. |
+| **Modal & dialog motion** | Modals and the confirm dialog spring in (translate + settle overshoot) and fade out on close instead of vanishing. All five overlays also close on **Escape** (topmost first). |
+| **Toast upgrade** | Toasts spring in with a slight overshoot, slide down when leaving, and stack instead of overlapping when several fire in quick succession. |
+| **Micro-interactions** | Buttons lift on hover and press down on click; icon buttons scale; chips, colour dots and font pills pop when selected; the modal close button rotates 90°; export options nudge right on hover; dropzones and import banners give tactile press feedback; mobile nav icons bounce when activated. |
+| **Page swaps** | Switching templates or toggling CV ↔ Letter plays a quick fade-and-settle on the document instead of a hard cut. |
+| **Cleanup** | Collapsing form sections now fade their content as well as animating height; a duplicated `display:none` in the floating preview button was removed; version strings in the title and header (stuck at v2.3 since the v2.4 letter work) are aligned with the real version, and the service-worker cache is bumped to `cv-genie-v2.5` so installed clients pick the new shell up on refresh. |
 
 ## ✦ What's new in v2.4
 
