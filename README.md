@@ -2,7 +2,7 @@
 
 # CV Genie
 
-**A fast, private, offline-capable CV builder — 24 templates including Europass, a matching cover letter builder (deterministic + Gemini AI), a 7-category ATS engine with job-description matching, profile photos, and fully local PDF / DOCX / RTF / Markdown / TXT export. Installable as a PWA and as an Android APK built by CI.**
+**A fast, private, offline-capable CV builder — 30 templates including Europass, a matching cover letter builder (deterministic + Gemini AI), a 7-category ATS engine with job-description matching, profile photos, and fully local PDF / DOCX / RTF / Markdown / TXT export. Installable as a PWA and as an Android APK built by CI.**
 
 [![CI](https://github.com/touhidsiddiqueeraj-bit/CV-Genie/actions/workflows/ci.yml/badge.svg)](https://github.com/touhidsiddiqueeraj-bit/CV-Genie/actions/workflows/ci.yml)
 [![Deploy](https://github.com/touhidsiddiqueeraj-bit/CV-Genie/actions/workflows/deploy.yml/badge.svg)](https://github.com/touhidsiddiqueeraj-bit/CV-Genie/actions/workflows/deploy.yml)
@@ -24,8 +24,20 @@
 - **Zero friction** — no build step, no dependencies to install. One HTML file, open it and go.
 - **Installable & fully offline** — a real PWA: install it from the browser (the download icon in the header), and the service worker warms the app shell, the CDN libraries and the web fonts so CV Genie keeps working with no connection at all.
 - **ATS-aware** — a 7-category engine with ~25 concrete checks (plus job-description matching and an optional Gemini AI coach) scores your CV on every keystroke and shows exactly what to fix.
-- **Serious output** — vector PDF through the print dialog, an editable DOCX generated entirely in-browser, RTF, Markdown, plain text, plus bulk export of all 24 templates in one ZIP.
+- **Serious output** — vector PDF through the print dialog, an editable DOCX generated entirely in-browser, RTF, Markdown, plain text, plus bulk export of all 30 templates in one ZIP.
 - **Works everywhere** — responsive down to phone screens, dark mode, and an installable Android APK built by CI.
+
+## ✦ What's new in v2.7
+
+**Six more templates (30 total) and a rebuilt import pipeline.**
+
+| Change | Details |
+|---|---|
+| **6 popular new templates** | **Primo** (after Zety's Primo — iconed sidebar with round contact chips and deterministic skill bars), **Diamond** (after Zety's Diamond — centred layout with ◆-framed headings), **Berlin** (Novoresume's minimalist ink-black header band), **Monogram** (the Initials family — colour badge with your initials), **Wall Street** (finance-grade serif conservatism — small-caps headings over double rules) and **Medic** (clinical-clean healthcare layout with a labelled contact grid and date pills) — **30 templates in total**. |
+| **LinkedIn import rebuilt** | The old LinkedIn reader joined every PDF page into one giant line, so the name field swallowed the whole first page, and its positional splitter assumed fixed 4-line blocks that real exports break immediately. Extraction now goes through the same **coordinate-aware PDF reader** as the universal parser, and `parseLinkedInText` was rewritten on top of the battle-tested section parsers — with LinkedIn-specific cleanups: `· 2 yrs 3 mos` duration suffixes, `· Full-time` employment types, "500+ connections" / "Contact info" / "Show all…" noise and per-job "City, Country" lines are all stripped, and LinkedIn's ILR proficiency labels (*Full professional*, *Professional working*, *Limited working*, *Native or bilingual*) map to CEFR. |
+| **Universal parser upgrades** | **Cross-segment date anchors** — column-split PDFs that put "Jan 2020 –" and "Present" in different segments of one row now pair correctly with their role line. **~30 new section-heading synonyms** (*Career Objective*, *Professional History*, *Research Experience*, *Summary of Qualifications*, *Licenses & Certifications*, *Training*, *Skills & Endorsements*, …) incl. all LinkedIn headings. **Heading-less pitch fallback** — a CV that opens with an unlabelled summary paragraph before its first job gets it picked up. Bare page-number lines, `(+880) …` phone prefixes and a **role-line fix** ("Junior Software Engineer" no longer mis-filed as a company because "Software" is also a company keyword) round it out. |
+| **JD keyword extraction** | The ATS matcher now merges singular/plural forms ("dashboard" + "dashboards" count as one term) and **rescues single-occurrence technical phrases** — a posting that lists "Kubernetes cluster" or "Power BI" exactly once is still captured as the hard requirement it is. |
+| **Verified** | `test-cv-import.js` grew from 80 to **104 assertions**: a full LinkedIn-PDF end-to-end fixture (`fixture4-linkedin.pdf` — identity, duration-stripped dates, role/company pairing, ILR levels) plus a unit battery for every new parser heuristic. Service-worker cache bumped to `cv-genie-v2.7`. |
 
 ## ✦ What's new in v2.6
 
@@ -117,7 +129,7 @@ Every keystroke updates the A4 preview (debounced 200 ms). Sections are collapsi
 
 ### Profile photos
 
-Upload a picture, crop and rotate it in-browser (Cropper.js), then choose its **shape** — circle, rounded or square — and its **size** (S / M / L). The photo flows into all 24 templates: an ID-style photo in the label gutter on Europass, a framed circle on Modern, a colour-backed circle on Sidebar Bold. Shape and size controls update every template instantly, and the settings travel with saves, share links and version history.
+Upload a picture, crop and rotate it in-browser (Cropper.js), then choose its **shape** — circle, rounded or square — and its **size** (S / M / L). The photo flows into all 30 templates: an ID-style photo in the label gutter on Europass, a framed circle on Modern, a colour-backed circle on Sidebar Bold. Shape and size controls update every template instantly, and the settings travel with saves, share links and version history.
 
 ### ATS analyser
 
@@ -154,7 +166,7 @@ Toggle **CV / Letter** above the preview to switch documents; exports (PDF, RTF,
 
 ### Template carousel — the default CV view
 
-The CV preview **is** a **cover-flow style 3D carousel** — no gallery to open: your selected design sits large at the centre, the neighbouring designs flank it on both sides at an angle, and two more peek from the edges. Every page is a **live render of your own CV** in that design — not a static wireframe — in your current colour and fonts, updating as you edit. Drag or swipe, use the arrow keys, or click a side page to rotate it to the centre — **the design you centre on is applied automatically** (the counter shows where you are, e.g. *3 / 24*, and the ring wraps around, so you can spin through all 24 designs endlessly). Click the centre page or **Full view** (or the first toolbar button) to zoom into the full-page document view and back. For a quick switch, the toolbar dropdown still works. On mobile, the carousel is the viewpoint behind the floating **Preview** button.
+The CV preview **is** a **cover-flow style 3D carousel** — no gallery to open: your selected design sits large at the centre, the neighbouring designs flank it on both sides at an angle, and two more peek from the edges. Every page is a **live render of your own CV** in that design — not a static wireframe — in your current colour and fonts, updating as you edit. Drag or swipe, use the arrow keys, or click a side page to rotate it to the centre — **the design you centre on is applied automatically** (the counter shows where you are, e.g. *3 / 30*, and the ring wraps around, so you can spin through all 30 designs endlessly). Click the centre page or **Full view** (or the first toolbar button) to zoom into the full-page document view and back. For a quick switch, the toolbar dropdown still works. On mobile, the carousel is the viewpoint behind the floating **Preview** button.
 
 ![Template carousel](docs/images/gallery.png)
 
@@ -166,13 +178,13 @@ Six font pairings (now properly loaded as web fonts, so exports match the previe
 
 ### Export — all local, all the time
 
-Pick any combination of **PDF (print dialog)** — the page collapses to just the active document and your browser's *Save as PDF* produces crisp vector text — **PDF (instant)** for one-click raster drafts, **DOCX** generated entirely in-browser, instant **RTF**, **Markdown** and **plain text** — or export **all 24 templates** in one ZIP. The export dialog follows the active document: cover letters export as PDF / DOCX / RTF / Markdown / TXT. No format touches a server; DOCX is a complete OOXML package (Word, LibreOffice and Google Docs all open it) carrying your accent colour and font pairing.
+Pick any combination of **PDF (print dialog)** — the page collapses to just the active document and your browser's *Save as PDF* produces crisp vector text — **PDF (instant)** for one-click raster drafts, **DOCX** generated entirely in-browser, instant **RTF**, **Markdown** and **plain text** — or export **all 30 templates** in one ZIP. The export dialog follows the active document: cover letters export as PDF / DOCX / RTF / Markdown / TXT. No format touches a server; DOCX is a complete OOXML package (Word, LibreOffice and Google Docs all open it) carrying your accent colour and font pairing.
 
 ![Export dialog](docs/images/export.png)
 
 ### Install it — offline forever
 
-CV Genie is a real installable PWA. Click the **install icon** in the header (Chrome/Edge desktop, or *Add to Home Screen* on mobile) and it runs in its own window, launches instantly, and — because the service worker precaches the app shell and warms the CDN libraries and web fonts — **keeps working with no connection at all**: editing, all 24 templates, the ATS engine, deterministic cover letters and every export format. Navigations are network-first, so a deploy lands the next time you're online and refresh. The only thing that needs the network is the optional Gemini AI.
+CV Genie is a real installable PWA. Click the **install icon** in the header (Chrome/Edge desktop, or *Add to Home Screen* on mobile) and it runs in its own window, launches instantly, and — because the service worker precaches the app shell and warms the CDN libraries and web fonts — **keeps working with no connection at all**: editing, all 30 templates, the ATS engine, deterministic cover letters and every export format. Navigations are network-first, so a deploy lands the next time you're online and refresh. The only thing that needs the network is the optional Gemini AI.
 
 ### Android app (TWA APK)
 
@@ -197,7 +209,7 @@ Upload an old CV in **PDF, DOCX or plain text** (or paste its text) and CV Genie
 
 **How it works, in order of preference:**
 
-1. **Local rule-based parser (default, fully offline).** Text is extracted in your browser — pdf.js for PDFs, JSZip for DOCX — and mapped onto the app's data model. For PDFs the extractor is **coordinate-aware**: text items are clustered into visual lines by position and font size, and large horizontal gaps are kept as column separators, so right-aligned date columns, multi-column skill grids, label/value contact grids and letter-spaced headers (`E D U C A T I O N`) all survive extraction in reading order — the name is picked up as the largest font in the page-1 header area. On top of that: section segmentation (plain and letter-spaced headers), label/value contact pairs plus regex fallbacks, experience/education entries anchored on date ranges with role/company splitting across the common layouts, volunteering mapped into experience, skill-list splitting and CEFR language-level mapping. Every parse gets a **confidence score (0–100)**; the review screen shows exactly what was found, per-section checkboxes to untick anything you don't want, and a heads-up list of anything missing.
+1. **Local rule-based parser (default, fully offline).** Text is extracted in your browser — pdf.js for PDFs, JSZip for DOCX — and mapped onto the app's data model. For PDFs the extractor is **coordinate-aware**: text items are clustered into visual lines by position and font size, and large horizontal gaps are kept as column separators, so right-aligned date columns, multi-column skill grids, label/value contact grids and letter-spaced headers (`E D U C A T I O N`) all survive extraction in reading order — the name is picked up as the largest font in the page-1 header area. On top of that: section segmentation (plain and letter-spaced headers, ~60 heading synonyms incl. *Career Objective*, *Professional History*, *Summary of Qualifications*, *Licenses & Certifications*, *Training* and every LinkedIn heading), label/value contact pairs plus regex fallbacks (incl. `(+880) …` phone prefixes), experience/education entries anchored on date ranges — **including ranges split across PDF columns** — with role/company splitting across the common layouts (a stacked "Junior Software Engineer" line is correctly treated as a role even though "Software" is also a company keyword), volunteering mapped into experience, skill-list splitting, a **pitch-paragraph fallback** that picks up the opening summary of heading-less CVs, and CEFR language-level mapping (incl. LinkedIn's ILR proficiency labels). Every parse gets a **confidence score (0–100)**; the review screen shows exactly what was found, per-section checkboxes to untick anything you don't want, and a heads-up list of anything missing.
 2. **Optional Gemini AI fallback.** When the layout is unusual, the CV isn't in English, or the parse just misses things, you can paste **your own free Google AI Studio API key** and let Gemini re-extract the CV with a strict JSON response schema. The key is stored only in your browser's `localStorage` and used for direct browser → Google calls; CV-Genie has no server-side AI. For PDFs the original file is sent as inline data alongside the pre-extracted text, so scanned PDFs need no separate OCR step. Models are **discovered at runtime** from your key's `/models` list — the picker defaults to `gemini-flash-latest`, and if a model is busy (429/500/503) or discontinued the app auto-retries with exponential backoff and falls back (`gemini-flash-lite-latest` → `gemini-3.5-flash-lite` → 3.6/3.8 flash → other available models), so it never gets stuck on one endpoint. AI results are merged with the parser's (parser values fill any gaps) and shown in the same review screen with an "AI" badge.
 
 Importing pushes an undo snapshot first (Ctrl+Z restores your previous CV) and asks before overwriting existing content.
@@ -207,7 +219,7 @@ Importing pushes an undo snapshot first (Ctrl+Z restores your previous CV) and a
 ### Data portability
 
 - **CV import** — upload any PDF/DOCX/text CV and autofill the form (local parser, optional Gemini AI with your own key — see above).
-- **LinkedIn import** — upload your LinkedIn "Save to PDF" export and autofill the form (experiences, education, skills and languages).
+- **LinkedIn import** — upload your LinkedIn "Save to PDF" export and autofill the form (name, headline, location, About summary, experiences with clean dates, education, skills and languages with ILR→CEFR levels). Since v2.7 it runs on the same coordinate-aware PDF reader and section parsers as the universal import, with LinkedIn's decorations (`· 2 yrs 3 mos`, `· Full-time`, connection counts, "Contact info") stripped automatically.
 - **Share links** — the entire CV is LZ-compressed into a URL. Anyone with the link sees your exact CV; nothing is sent to a server.
 - **JSON backup** — full export/import of your state.
 - **Version history** — save and restore up to 10 named snapshots.
@@ -217,7 +229,7 @@ Importing pushes an undo snapshot first (Ctrl+Z restores your previous CV) and a
 
 ## ✦ Templates
 
-All 24 templates rendered with the same sample data:
+All 30 templates rendered with the same sample data:
 
 | | | |
 |:---:|:---:|:---:|
@@ -237,6 +249,10 @@ All 24 templates rendered with the same sample data:
 | **Tech** — Jake's Resume, the engineer standard | **Harvard** — education-first classic | **Cascade** — tinted skills sidebar |
 | [![Functional](docs/images/templates/functional.png)](docs/images/templates/functional.png) | [![Pastel](docs/images/templates/pastel.png)](docs/images/templates/pastel.png) | [![Vogue](docs/images/templates/vogue.png)](docs/images/templates/vogue.png) |
 | **Functional** — skills-first, for career changes | **Pastel** — soft tinted header band | **Vogue** — fashion-editorial masthead |
+| [![Primo](docs/images/templates/primo.png)](docs/images/templates/primo.png) | [![Diamond](docs/images/templates/diamond.png)](docs/images/templates/diamond.png) | [![Berlin](docs/images/templates/berlin.png)](docs/images/templates/berlin.png) |
+| **Primo** — iconed sidebar, skill bars | **Diamond** — centred, ◆-framed headings | **Berlin** — ink header band, ultra-clean |
+| [![Monogram](docs/images/templates/monogram.png)](docs/images/templates/monogram.png) | [![Wall Street](docs/images/templates/wallstreet.png)](docs/images/templates/wallstreet.png) | [![Medic](docs/images/templates/medic.png)](docs/images/templates/medic.png) |
+| **Monogram** — initials badge, airy serif | **Wall Street** — finance-grade navy serif | **Medic** — clinical clean, contact grid |
 
 ### About the Europass template
 
@@ -332,7 +348,7 @@ A few conventions that keep the graph debuggable:
 │   ├── layout.css              # app shell, panels, responsive breakpoints
 │   ├── components.css          # buttons, forms, tabs, modals, toasts, …
 │   ├── preview.css             # A4 document surface
-│   ├── templates.css           # the 24 template designs
+│   ├── templates.css           # the 30 template designs
 │   ├── carousel.css            # 3D template ring
 │   ├── letter.css              # cover-letter envelope
 │   ├── ats.css                 # ATS panel, JD matcher, import UI
@@ -345,7 +361,7 @@ A few conventions that keep the graph debuggable:
 ├── .well-known/assetlinks.json# Android TWA site association
 ├── android-signing/            # committed TWA wrapper keystore (+ rotation notes)
 ├── docs/images/                # screenshots used by this README
-│   └── templates/*.png         # all 24 template previews
+│   └── templates/*.png         # all 30 template previews
 ├── scripts/
 │   ├── validate.js             # CI validation (module graph, cycles, bridge, SW shell, registry, PWA assets)
 │   ├── apk-driver.js           # non-interactive Bubblewrap runner for the APK workflow
@@ -380,7 +396,7 @@ The whole CV is serialised by `getState()` into one plain object (template, colo
 
 ### The service worker
 
-`sw.js` precaches the app shell at install (`./`, `index.html`, manifest, icons, **every `js/` module and `css/` stylesheet** — CI fails if a file is missing from the list), warms the exact CDN libraries and web fonts (woff2 URLs parsed out of the Google Fonts CSS) right after activation so the **first** visit already survives going offline, serves assets cache-first, and handles navigations network-first with a cached fallback so deploys land on the next refresh. The Gemini API is deliberately never cached — AI features simply wait for a connection. The cache name is versioned (`cv-genie-v2.6`); bump it when you want every install to refresh its cache. It is the app's **only** registration (from `js/main.js` on secure contexts; CI fails the build if a second service worker — e.g. an inline Blob worker — ever appears), so the caching strategy above is the whole truth.
+`sw.js` precaches the app shell at install (`./`, `index.html`, manifest, icons, **every `js/` module and `css/` stylesheet** — CI fails if a file is missing from the list), warms the exact CDN libraries and web fonts (woff2 URLs parsed out of the Google Fonts CSS) right after activation so the **first** visit already survives going offline, serves assets cache-first, and handles navigations network-first with a cached fallback so deploys land on the next refresh. The Gemini API is deliberately never cached — AI features simply wait for a connection. The cache name is versioned (`cv-genie-v2.7`); bump it when you want every install to refresh its cache. It is the app's **only** registration (from `js/main.js` on secure contexts; CI fails the build if a second service worker — e.g. an inline Blob worker — ever appears), so the caching strategy above is the whole truth.
 
 ### Keyboard shortcuts & accessibility
 
@@ -422,7 +438,7 @@ Edit the module-level `ROLE_KW` dictionary (just above the ATS engine). Target r
 
 ### Testing the CV import parser
 
-`scripts/make-cv-fixtures.py` generates three sample CVs (TXT, DOCX via python-docx, PDF via ReportLab) into `/tmp/cvfix`; `scripts/test-cv-import.js` is a Playwright E2E suite (80 assertions) that runs the real app, imports each fixture through the modal, and checks every parsed field plus the apply-into-editor flow, the no-section-headers fallback, AI response mapping/merging and the guard rails:
+`scripts/make-cv-fixtures.py` generates four sample CVs (TXT, DOCX via python-docx, PDF via ReportLab, and a LinkedIn-style profile PDF) into `/tmp/cvfix`; `scripts/test-cv-import.js` is a Playwright E2E suite (104 assertions) that runs the real app, imports each fixture through the modal, and checks every parsed field plus the apply-into-editor flow, the no-section-headers fallback, AI response mapping/merging and the guard rails:
 
 ```bash
 python3 scripts/make-cv-fixtures.py
@@ -444,13 +460,13 @@ NODE_PATH="$(npm root -g)" node scripts/test-ats-v2.js
 ### Testing exports, the letter and the PWA
 
 ```bash
-NODE_PATH="$(npm root -g)" node scripts/test-modules.js        # 16 checks — module graph, window bridge, 24 templates, SW precache
+NODE_PATH="$(npm root -g)" node scripts/test-modules.js        # 16 checks — module graph, window bridge, 30 templates, SW precache
 NODE_PATH="$(npm root -g)" node scripts/test-letter-edit.js     # 67 checks — full letter editing, envelope, exports agreement
 NODE_PATH="$(npm root -g)" node scripts/test-export-docx.js   # 16 checks — DOCX packages, letter mode, LibreOffice round-trip
 NODE_PATH="$(npm root -g)" node scripts/test-pwa.js            # 22 checks — manifest, SW lifecycle, offline boot, cache warm
 ```
 
-`test-modules.js` guards the modular architecture itself: the ES-module graph loads with zero console errors and zero failed requests, all ten stylesheets load in cascade order, the window bridge exposes the public API (with live getters for mutable state), every one of the 24 templates renders real content, the carousel shows all designs as live renders, the service worker precaches every module and stylesheet, and the undo/redo providers are wired. `test-letter-edit.js` drives the real Letter tab: default layout and ids, smart fallbacks, every envelope override, add/remove/renumber of paragraphs, the single-paragraph guard, writer replacement, state round-trip and legacy `p1`–`p4` migration, and asserts the Markdown, plain-text, RTF and DOCX builders all carry the same envelope. `test-export-docx.js` drives the real export buttons, saves the downloads, then validates the ZIP/OOXML structure and content with Python's `zipfile` + `minidom` and converts one file with headless LibreOffice to prove it opens. `test-pwa.js` runs the service worker on `127.0.0.1` (a secure context) and asserts the full offline story — including that the Gemini API is never cached.
+`test-modules.js` guards the modular architecture itself: the ES-module graph loads with zero console errors and zero failed requests, all ten stylesheets load in cascade order, the window bridge exposes the public API (with live getters for mutable state), every one of the 30 templates renders real content, the carousel shows all designs as live renders, the service worker precaches every module and stylesheet, and the undo/redo providers are wired. `test-letter-edit.js` drives the real Letter tab: default layout and ids, smart fallbacks, every envelope override, add/remove/renumber of paragraphs, the single-paragraph guard, writer replacement, state round-trip and legacy `p1`–`p4` migration, and asserts the Markdown, plain-text, RTF and DOCX builders all carry the same envelope. `test-export-docx.js` drives the real export buttons, saves the downloads, then validates the ZIP/OOXML structure and content with Python's `zipfile` + `minidom` and converts one file with headless LibreOffice to prove it opens. `test-pwa.js` runs the service worker on `127.0.0.1` (a secure context) and asserts the full offline story — including that the Gemini API is never cached.
 
 ### Regenerating README screenshots
 

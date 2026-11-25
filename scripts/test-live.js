@@ -1,4 +1,4 @@
-// Live smoke test: verify the deployed v2.6 modular app boots and serves all 24 templates.
+// Live smoke test: verify the deployed modular app boots and serves all 30 templates.
 const { chromium } = require('playwright');
 const BASE = 'https://touhidsiddiqueeraj-bit.github.io/CV-Genie/';
 let pass = 0, fail = 0;
@@ -28,11 +28,11 @@ const bad = (m) => { fail++; console.log('  FAIL ' + m); };
 
   // 3. template count on live site
   const count = await page.evaluate(() => (window.CVG?.templates || window.TEMPLATES || []).length);
-  count === 24 ? ok('24 templates on live site') : bad(`template count = ${count}`);
+  count === 30 ? ok('30 templates on live site') : bad(`template count = ${count}`);
 
   // 4. carousel cards
   const cards = await page.evaluate(() => document.querySelectorAll('.tpl-card, .carousel-card, [data-tpl]').length);
-  (cards === 24 || cards === 0) ? (cards === 24 ? ok('24 carousel cards rendered') : bad('carousel cards not found')) : bad(`carousel cards = ${cards}`);
+  (cards === 30 || cards === 0) ? (cards === 30 ? ok('30 carousel cards rendered') : bad('carousel cards not found')) : bad(`carousel cards = ${cards}`);
 
   // 5. new templates render HTML
   for (const t of ['harvard', 'cascade', 'functional', 'pastel', 'vogue', 'tech']) {

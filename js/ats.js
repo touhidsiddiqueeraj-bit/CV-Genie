@@ -14,8 +14,12 @@ export function extractJDTerms(text){
     /* protect technical tokens like c++, c#, node.js, ci/cd before splitting */
     const tokens=norm.match(/[a-z0-9][a-z0-9+#./-]*[a-z0-9+#]|[a-z0-9]/g)||[];
     const kept=tokens.filter(t=>t.length>1&&!JD_STOP.has(t)&&!/^\d+$/.test(t));
-    const counts={};
-    kept.forEach(t=>{counts[t]=(counts[t]||0)+1;});
+    /* v2.7: merge singular/plural so "dashboard" and "dashboards" count as one
+       term — counts keyed on a light stem, display keeps the most common form */
+    const stem=t=>t.length>3&&!/(?:ss|us|is)$/.test(t)&&/s$/.test(t)?t.slice(0,-1):t;
+    const counts={};const forms={};
+    kept.forEach(t=>{const k=stem(t);counts[k]=(counts[k]||0)+1;(forms[k]=forms[k]||{})[t]=(forms[k][t]||0)+1;});
+    const disp=k=>{let best=k,n=0;for(const f in forms[k]){if(forms[k][f]>n){n=forms[k][f];best=f;}}return best;};
     /* 2- and 3-word phrases from consecutive kept tokens */
     const phrases={};
     for(let n=2;n<=3;n++){
@@ -27,9 +31,20 @@ export function extractJDTerms(text){
     /* score: phrases get a big boost (they're specific) and frequency matters */
     const scored=[];
     Object.entries(phrases).forEach(([ph,c])=>{if(c>=2)scored.push({term:ph,score:c*(2+ph.split(' ').length)});});
-    Object.entries(counts).forEach(([w,c])=>{if(c>=2&&!scored.some(s=>s.term.includes(w)))scored.push({term:w,score:c});});
+    /* v2.7: rescue single-occurrence phrases that contain a known technical
+       token — a JD lists "Kubernetes cluster" or "Power BI" exactly once but it
+       is still a hard requirement */
+    const TECH=new Set('js,ts,sql,nosql,aws,gcp,azure,k8s,react,vue,angular,node,nodejs,python,java,kotlin,swift,docker,kubernetes,terraform,ansible,jenkins,figma,salesforce,sap,excel,tableau,powerbi,seo,sem,crm,erp,etl,api,rest,graphql,css,html,php,laravel,django,flask,rails,scala,rust,golang,cpp,csharp,devops,saas,jira,confluence,notion,slack,hubspot,pandas,numpy,spark,hadoop,kafka,ml'.split(','));
+    Object.entries(phrases).forEach(([ph,c])=>{
+        if(c>=2)return;
+        const ws=ph.split(' ');
+        if(ws.some(w=>TECH.has(w)||TECH.has(stem(w))))scored.push({term:ph,score:2+ws.length});
+    });
+    /* a stem is covered when an already-picked term contains it (plural-aware) */
+    const covered=w=>scored.some(s=>s.term.split(' ').map(stem).includes(w));
+    Object.entries(counts).forEach(([w,c])=>{if(c>=2&&!covered(w))scored.push({term:disp(w),score:c});});
     /* keep single words that are part of no kept phrase, appearing >=3 times, as extras */
-    Object.entries(counts).forEach(([w,c])=>{if(c>=3&&!scored.some(s=>s.term===w||s.term.includes(' '+w+' ')||s.term.startsWith(w+' ')||s.term.endsWith(' '+w)))scored.push({term:w,score:c*0.5});});
+    Object.entries(counts).forEach(([w,c])=>{if(c>=3&&!covered(w))scored.push({term:disp(w),score:c*0.5});});
     scored.sort((a,b)=>b.score-a.score);
     /* drop terms that are substrings of an already-picked higher term */
     const picked=[];

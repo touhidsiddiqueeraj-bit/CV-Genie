@@ -165,6 +165,79 @@ para("German: Native, English: C2, French: B2, Spanish: A2")
 c.showPage()
 c.save()
 
+# ---------------------------------------------------------------- fixture 4: LinkedIn-style PDF
+# Mirrors the structure of LinkedIn's "Save to PDF" profile export: stacked
+# identity lines, "About" heading, experience blocks with "· Full-time" and
+# "· 2 yrs 3 mos" decorations, one skill per line, and LinkedIn's ILR-style
+# language proficiency labels.
+lc = canvas.Canvas(os.path.join(OUT, "fixture4-linkedin.pdf"), pagesize=A4)
+y = h - 20 * mm
+
+
+def lpara(text, size=9.5, bold=False, gap=4.5, indent=0):
+    global y
+    lc.setFont("SansB" if bold else "Sans", size)
+    lc.drawString(LEFT + indent, y, text)
+    y -= size / 2.8 * mm + gap / 2.8 * mm
+
+
+def lhead(text):
+    global y
+    y -= 4 * mm
+    lc.setFont("SansB", 11.5)
+    lc.drawString(LEFT, y, text)
+    y -= 9 * mm
+
+
+lpara("Touhid Siddique", 16, bold=True, gap=6)
+lpara("Senior Software Engineer", 10, gap=2)
+lpara("Dhaka, Bangladesh", 9.5, gap=2)
+lpara("500+ connections", 9.5, gap=2)
+lpara("Contact info", 9.5, gap=6)
+
+lhead("About")
+lpara("Results-driven software engineer with 7 years of experience building scalable web")
+lpara("applications. Specialised in JavaScript ecosystems and cloud-native architecture.")
+lpara("Proven record of mentoring teams and shipping products used by millions.")
+
+lhead("Experience")
+lpara("Software Engineer", 10, bold=True, gap=2)
+lpara("TechCorp Solutions Ltd. \u00b7 Full-time", 9.5, gap=2)
+lpara("Jan 2021 - Present \u00b7 2 yrs 3 mos", 9.5, gap=2)
+lpara("Dhaka, Bangladesh", 9.5, gap=2)
+lpara("Built a multi-tenant SaaS platform serving 2M users.")
+lpara("Led a team of 6 engineers across two squads.")
+lpara("Junior Software Engineer", 10, bold=True, gap=2)
+lpara("Globex Digital Agency", 9.5, gap=2)
+lpara("Mar 2018 - Dec 2020 \u00b7 2 yrs 10 mos", 9.5, gap=2)
+lpara("Dhaka, Bangladesh", 9.5, gap=2)
+lpara("Built customer portals with React and Node.js.")
+
+lhead("Education")
+lpara("University of Dhaka", 10, bold=True, gap=2)
+lpara("BSc in Computer Science and Engineering", 9.5, gap=2)
+lpara("2013 - 2017", 9.5, gap=6)
+
+lhead("Licenses & Certifications")
+lpara("AWS Certified Solutions Architect", 9.5, gap=6)
+
+lhead("Skills")
+lpara("JavaScript")
+lpara("TypeScript")
+lpara("React")
+lpara("Node.js")
+lpara("Docker")
+lpara("SQL")
+
+lhead("Languages")
+lpara("English")
+lpara("Full professional proficiency")
+lpara("Bengali")
+lpara("Native or bilingual proficiency")
+
+lc.showPage()
+lc.save()
+
 print("Fixtures written to", OUT)
 for fn in sorted(os.listdir(OUT)):
     print(" -", fn, os.path.getsize(os.path.join(OUT, fn)), "bytes")

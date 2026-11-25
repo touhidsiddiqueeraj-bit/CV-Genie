@@ -59,7 +59,7 @@ async function applyImport(page) {
 }
 
 (async () => {
-  if (!fs.existsSync(path.join(FIX, 'fixture2.docx'))) {
+  if (!fs.existsSync(path.join(FIX, 'fixture2.docx')) || !fs.existsSync(path.join(FIX, 'fixture4-linkedin.pdf'))) {
     console.error('Fixtures missing — run: python3 scripts/make-cv-fixtures.py');
     process.exit(1);
   }
@@ -270,6 +270,84 @@ Supported the content calendar.`;
     assert(step1 === 'block', 'reopening shows the upload step again');
     const fileCleared = await page.evaluate(() => document.getElementById('cvImportFile').value === '');
     assert(fileCleared, 'file input cleared on reopen');
+    assert(page._errors.length === 0, 'no page errors');
+    await page.close();
+  }
+
+  /* ── Test 7: LinkedIn PDF import (fixture4-linkedin.pdf) ────── */
+  console.log('\n[7] LinkedIn PDF import');
+  {
+    const page = await freshPage(context);
+    await page.evaluate(() => switchTab('tools', null)); /* the LinkedIn panel lives in the Tools tab */
+    await page.setInputFiles('#linkedInFile', path.join(FIX, 'fixture4-linkedin.pdf'));
+    await page.waitForSelector('#linkedInPreview', { state: 'visible' });
+    const preview = await page.evaluate(() => [...document.querySelectorAll('#linkedInPreviewTable tr')].map(tr => tr.textContent.trim()).join(' | '));
+    assert(preview.includes('Touhid Siddique'), 'preview row: name');
+    assert(preview.includes('2 position(s)'), 'preview row: experience count = ' + (preview.match(/\d+ position/) || ['?'])[0]);
+    await page.click('text=Apply to CV');
+    await page.waitForTimeout(400);
+    const applied = await page.evaluate(() => ({
+      name: document.getElementById('fullName').value,
+      title: document.getElementById('title').value,
+      location: document.getElementById('location').value,
+      summary: document.getElementById('summary').value,
+      skills: document.getElementById('skills').value,
+      exps: getExperiences(),
+      edu: getEducation(),
+      langs: getLanguages()
+    }));
+    assert(applied.name === 'Touhid Siddique', `name = "${applied.name}"`);
+    assert(applied.title === 'Senior Software Engineer', `title = "${applied.title}"`);
+    assert(applied.location === 'Dhaka, Bangladesh', `location = "${applied.location}"`);
+    assert(applied.exps.length === 2, `experiences = ${applied.exps.length}`);
+    assert(applied.exps[0].title === 'Software Engineer' && applied.exps[0].company === 'TechCorp Solutions Ltd.', `exp[0] = ${applied.exps[0].title} @ ${applied.exps[0].company}`);
+    assert(/Jan 2021/.test(applied.exps[0].dates) && /Present/i.test(applied.exps[0].dates) && !/yrs/.test(applied.exps[0].dates), `exp[0].dates = "${applied.exps[0].dates}" (duration suffix stripped)`);
+    assert(!/Dhaka/.test(applied.exps[0].description), 'job location line not leaked into the description');
+    assert(applied.exps[0].description.includes('multi-tenant SaaS'), 'exp[0] description kept');
+    assert(applied.exps[1].title === 'Junior Software Engineer' && applied.exps[1].company === 'Globex Digital Agency', `exp[1] = ${applied.exps[1].title} @ ${applied.exps[1].company}`);
+    assert(applied.edu.length === 1 && applied.edu[0].institution === 'University of Dhaka' && applied.edu[0].degree.includes('BSc'), `education = ${JSON.stringify(applied.edu)}`);
+    assert(/2013/.test(applied.edu[0].year) && /2017/.test(applied.edu[0].year), `edu[0].year = "${applied.edu[0].year}"`);
+    assert(applied.skills.split(',').length >= 5 && applied.skills.includes('TypeScript'), `skills = "${applied.skills}"`);
+    const lv = Object.fromEntries(applied.langs.map(l => [l.language, l.level]));
+    assert(lv['English'] === 'C2' && lv['Bengali'] === 'Native', `LinkedIn ILR levels mapped = ${JSON.stringify(lv)}`);
+    assert(applied.summary.toLowerCase().includes('results-driven'), 'About section imported as summary');
+    assert(page._errors.length === 0, 'no page errors');
+    await page.close();
+  }
+
+  /* ── Test 8: parser-engine unit checks (new v2.7 heuristics) ── */
+  console.log('\n[8] Parser engine unit checks');
+  {
+    const page = await freshPage(context);
+    const u = await page.evaluate(() => {
+      const out = {};
+      /* cross-segment date anchors: "Jan 2020 –" | "Present" split by the PDF column reader */
+      out.crossSeg = (() => { const a = cviAnchorOf({ segs: ['Marketing Manager', 'Jan 2020 \u2013', 'Present'] }, ''); return !!(a && /Jan 2020/.test(a.dates) && /Present/i.test(a.dates) && /Marketing Manager/.test(a.pre)); })();
+      /* new section headings route correctly */
+      out.headers = ['Career Objective', 'Professional History', 'Summary of Qualifications', 'Licenses & Certifications', 'Training', 'Research Experience']
+        .map(h => [h, cviHeaderType(h)]);
+      out.objHeader = out.headers.find(h => h[0] === 'Career Objective')[1] === 'summary';
+      out.expHeader = ['Professional History', 'Research Experience'].every(h => cviHeaderType(h) === 'experience');
+      out.skillHeader = cviHeaderType('Summary of Qualifications') === 'skills';
+      out.ignoreHeader = cviHeaderType('Licenses & Certifications') === 'ignore';
+      out.eduHeader = cviHeaderType('Training') === 'education';
+      /* bare page-number lines and "N connections" noise are dropped */
+      out.pageDrop = cviLines('Page 2\nSome line\n3\n500+ connections\n12 of 14').length === 1;
+      /* ILR proficiency labels map to CEFR */
+      out.ilr = ['Full professional proficiency', 'Professional working proficiency', 'Limited working proficiency', 'Native or bilingual proficiency'].map(cviLevelFromText);
+      /* heading-less CVs: the opening pitch before the first date anchor becomes the summary */
+      const pitch = 'James Okafor\nMarketing Manager\njames@mail.com | +234 803 555 1234 | Lagos, Nigeria\nI am a results-driven marketing professional with eight years of experience across FMCG and retail, leading integrated campaigns and mentoring high-performing teams that consistently beat their targets.\nFeb 2019 - Present\nOversaw campaigns across 5 regions.';
+      out.pitch = parseCVText(pitch).summary.toLowerCase().includes('results-driven');
+      /* (parenthesised) international phone prefix is recognised */
+      out.phone = cviFindPhone('call me at (+880) 1712 345 678 anytime');
+      return out;
+    });
+    assert(u.crossSeg, 'cross-segment date anchor joined');
+    assert(u.objHeader && u.expHeader && u.skillHeader && u.ignoreHeader && u.eduHeader, `new headings route: ${JSON.stringify(u.headers)}`);
+    assert(u.pageDrop, 'page-number and connection-count noise lines dropped');
+    assert(JSON.stringify(u.ilr) === JSON.stringify(['C2', 'C1', 'B1', 'Native']), `ILR→CEFR = ${JSON.stringify(u.ilr)}`);
+    assert(u.pitch, 'heading-less pitch paragraph becomes the summary');
+    assert(u.phone.replace(/\s+/g, '') === '(+880)1712345678'.replace(/\s+/g, ''), `parenthesised phone = "${u.phone}"`);
     assert(page._errors.length === 0, 'no page errors');
     await page.close();
   }

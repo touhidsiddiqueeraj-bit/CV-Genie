@@ -13,29 +13,81 @@ import { showToast, uiAnimateClose } from './ui.js';
 let pendingLinkedInData=null;
 
 // ============ LinkedIn Import ============
-export async function importLinkedInPDF(e){const f=e.target.files[0];if(!f)return;document.getElementById('linkedInProgress').style.display='block';document.getElementById('linkedInProgressFill').style.width='20%';document.getElementById('linkedInProgressText').textContent='Reading…';try{const b=await f.arrayBuffer();document.getElementById('linkedInProgressFill').style.width='50%';const pdf=await pdfjsLib.getDocument({data:b}).promise;let t='';for(let i=1;i<=pdf.numPages;i++){const pg=await pdf.getPage(i);const c=await pg.getTextContent();t+=c.items.map(it=>it.str).join(' ')+'\n';}document.getElementById('linkedInProgressFill').style.width='80%';pendingLinkedInData=parseLinkedInText(t);const pv=[];if(pendingLinkedInData.name)pv.push(['Name',pendingLinkedInData.name]);if(pendingLinkedInData.title)pv.push(['Title',pendingLinkedInData.title]);if(pendingLinkedInData.email)pv.push(['Email',pendingLinkedInData.email]);if(pendingLinkedInData.phone)pv.push(['Phone',pendingLinkedInData.phone]);if(pendingLinkedInData.location)pv.push(['Location',pendingLinkedInData.location]);if(pendingLinkedInData.summary)pv.push(['Summary',pendingLinkedInData.summary.substring(0,80)+'…']);if(pendingLinkedInData.experiences&&pendingLinkedInData.experiences.length)pv.push(['Experience',pendingLinkedInData.experiences.length+' position(s)']);if(pendingLinkedInData.education&&pendingLinkedInData.education.length)pv.push(['Education',pendingLinkedInData.education.length+' degree(s)']);if(pendingLinkedInData.languages&&pendingLinkedInData.languages.length)pv.push(['Languages',pendingLinkedInData.languages.length+' language(s)']);if(pendingLinkedInData.skills)pv.push(['Skills',pendingLinkedInData.skills.substring(0,80)+'…']);document.getElementById('linkedInPreviewTable').innerHTML=pv.map(([l,v])=>`<tr><td>${l}</td><td>${v}</td></tr>`).join('');document.getElementById('linkedInPreview').style.display='block';document.getElementById('linkedInProgressFill').style.width='100%';document.getElementById('linkedInProgressText').textContent='Review below';setTimeout(()=>document.getElementById('linkedInProgress').style.display='none',2000);}catch(err){document.getElementById('linkedInProgressText').textContent='Could not read PDF';setTimeout(()=>document.getElementById('linkedInProgress').style.display='none',3000);}}
+/* v2.7: extract LinkedIn text through the same coordinate-aware PDF reader
+   (cviPdfToLines) the universal parser uses — the old space-join handed the
+   parser one giant blob per page, which made the name field swallow the whole
+   first page on real exports. Rows are joined to real visual lines; the
+   parser's clean() strips the "|" column separators it inserts. */
+export async function importLinkedInPDF(e){const f=e.target.files[0];if(!f)return;document.getElementById('linkedInProgress').style.display='block';document.getElementById('linkedInProgressFill').style.width='20%';document.getElementById('linkedInProgressText').textContent='Reading…';try{const b=await f.arrayBuffer();document.getElementById('linkedInProgressFill').style.width='50%';const pdf=await pdfjsLib.getDocument({data:b}).promise;const out=await cviPdfToLines(pdf);document.getElementById('linkedInProgressFill').style.width='80%';pendingLinkedInData=parseLinkedInText(out.text);const pv=[];if(pendingLinkedInData.name)pv.push(['Name',pendingLinkedInData.name]);if(pendingLinkedInData.title)pv.push(['Title',pendingLinkedInData.title]);if(pendingLinkedInData.email)pv.push(['Email',pendingLinkedInData.email]);if(pendingLinkedInData.phone)pv.push(['Phone',pendingLinkedInData.phone]);if(pendingLinkedInData.location)pv.push(['Location',pendingLinkedInData.location]);if(pendingLinkedInData.summary)pv.push(['Summary',pendingLinkedInData.summary.substring(0,80)+'…']);if(pendingLinkedInData.experiences&&pendingLinkedInData.experiences.length)pv.push(['Experience',pendingLinkedInData.experiences.length+' position(s)']);if(pendingLinkedInData.education&&pendingLinkedInData.education.length)pv.push(['Education',pendingLinkedInData.education.length+' degree(s)']);if(pendingLinkedInData.languages&&pendingLinkedInData.languages.length)pv.push(['Languages',pendingLinkedInData.languages.length+' language(s)']);if(pendingLinkedInData.skills)pv.push(['Skills',pendingLinkedInData.skills.substring(0,80)+'…']);document.getElementById('linkedInPreviewTable').innerHTML=pv.map(([l,v])=>`<tr><td>${l}</td><td>${v}</td></tr>`).join('');document.getElementById('linkedInPreview').style.display='block';document.getElementById('linkedInProgressFill').style.width='100%';document.getElementById('linkedInProgressText').textContent='Review below';setTimeout(()=>document.getElementById('linkedInProgress').style.display='none',2000);}catch(err){document.getElementById('linkedInProgressText').textContent='Could not read PDF';setTimeout(()=>document.getElementById('linkedInProgress').style.display='none',3000);}}
 export function applyLinkedInData(){if(!pendingLinkedInData)return;const d=pendingLinkedInData;if(d.name)document.getElementById('fullName').value=d.name;if(d.title)document.getElementById('title').value=d.title;if(d.email)document.getElementById('email').value=d.email;if(d.phone)document.getElementById('phone').value=d.phone;if(d.location)document.getElementById('location').value=d.location;if(d.summary)document.getElementById('summary').value=d.summary.substring(0,300);if(d.skills)document.getElementById('skills').value=d.skills;document.getElementById('experienceList').innerHTML='';(d.experiences||[]).forEach(e=>{addExpSilent();const is=document.querySelectorAll('#experienceList .dynamic-item');const l=is[is.length-1];if(l){l.querySelectorAll('input')[0].value=e.title||'';l.querySelectorAll('input')[1].value=e.company||'';l.querySelectorAll('input')[2].value=e.dates||'';l.querySelector('textarea').value=e.description||'';}});if(!d.experiences||!d.experiences.length)addExpSilent();document.getElementById('educationList').innerHTML='';(d.education||[]).forEach(e=>{addEduSilent();const is=document.querySelectorAll('#educationList .dynamic-item');const l=is[is.length-1];if(l){l.querySelectorAll('input')[0].value=e.degree||'';l.querySelectorAll('input')[1].value=e.institution||'';l.querySelectorAll('input')[2].value=e.year||'';}});if(!d.education||!d.education.length)addEduSilent();document.getElementById('languageList').innerHTML='';(d.languages||[]).forEach(e=>{addLangSilent();const is=document.querySelectorAll('#languageList .dynamic-item');const l=is[is.length-1];if(l){l.querySelector('input').value=e.language||'';l.querySelector('select').value=e.level||'';}});if(!d.languages||!d.languages.length)addLangSilent();updatePreview();initDragDrop();document.getElementById('linkedInPreview').style.display='none';pendingLinkedInData=null;showToast('Profile applied');}
 export function discardLinkedInData(){document.getElementById('linkedInPreview').style.display='none';pendingLinkedInData=null;showToast('Discarded');}
 export function parseLinkedInText(t){
-  const ls=t.split('\n').map(l=>l.trim()).filter(l=>l);
-  const r={name:ls[0]||'',title:ls[1]||'',email:'',phone:'',summary:'',skills:'',experiences:[],education:[],languages:[]};
-  const em=t.match(/[\w.+-]+@[\w-]+\.[\w.-]+/);if(em)r.email=em[0];
-  const ph=t.match(/\+?[\d\s()-]{7,}/);if(ph)r.phone=ph[0];
-  const si=ls.findIndex(l=>/summary|about/i.test(l));if(si>=0&&si+1<ls.length)r.summary=ls[si+1];
-  const es=t.split(/experience/i)[1];
-  if(es){const el=es.split('\n').filter(l=>l.trim());for(let i=0;i<Math.min(el.length,20);i+=4)r.experiences.push({title:el[i]||'',company:el[i+1]||'',dates:el[i+2]||'',description:el[i+3]||''});}
-  const ed=t.split(/education/i)[1];
-  if(ed){const dl=ed.split('\n').filter(l=>l.trim());for(let i=0;i<Math.min(dl.length,12);i+=3)r.education.push({degree:dl[i]||'',institution:dl[i+1]||'',year:dl[i+2]||''});}
-  /* languages section: list of language names until the next blank-ish heading */
-  try{
-    const lm=t.match(/languages?([\s\S]{0,400}?)(honors|interests|accomplishments|organizations|skills)/i);
-    if(lm){
-      const names=lm[1].split(/[\n,·•]/).map(s=>s.trim()).filter(s=>s&&s.length<25&&!/^\d/.test(s));
-      const COMMON=['English','Spanish','French','German','Italian','Portuguese','Dutch','Swedish','Polish','Arabic','Chinese','Hindi','Bengali','Urdu','Russian','Japanese','Korean','Turkish','Danish','Norwegian','Finnish','Greek','Czech','Romanian','Hungarian','Ukrainian','Vietnamese','Thai','Indonesian','Malay','Punjabi','Tamil','Telugu','Marathi','Gujarati','Kannada','Malayalam','Sinhala','Nepali','Pashto','Persian','Hebrew','Swahili','Catalan','Basque','Galician','Welsh','Irish','Bulgarian','Slovak','Croatian','Serbian','Bosnian','Slovenian','Albanian','Macedonian','Lithuanian','Latvian','Estonian'];
-      r.languages=[...new Set(names.map(n=>{const m=COMMON.find(c=>n.toLowerCase().startsWith(c.toLowerCase()));return m||null;}).filter(Boolean))].slice(0,6).map(l=>({language:l,level:''}));
+  /* v2.7: rebuilt on top of the universal parser. The old positional splitter
+     assumed fixed 4-line blocks (title/company/dates/description) and broke on
+     every real "Save to PDF" export. Now: line-ise the text, split it into
+     sections with the shared heading detector, and run the same battle-tested
+     section parsers (cviParseExperience/Education/Skills/Languages). */
+  const EMPTY={name:'',title:'',email:'',phone:'',location:'',summary:'',skills:'',experiences:[],education:[],languages:[]};
+  const text=cviNormalize(t||'');
+  /* LinkedIn decorations that are never CV content: "· 2 yrs 3 mos" duration
+     suffixes, "· Full-time" employment types, "Contact info", "500+ connections",
+     "Show all N experiences" links. Durations keep their leading · so prose like
+     "5+ years of experience" inside descriptions is never touched. */
+  const liNoise=/^(?:contact\s+info|page\s*\d+(?:\s+of\s+\d+)?|\d[\d.,]*\s*\+?\s*(?:connections?|followers?|recommendations?)|show\s+(?:all|more)\b)/i;
+  const liDur=/\s*[\u00b7|]\s*\d+\s*(?:yrs?|years?|mos?|months?)\s*(?:\d+\s*(?:yrs?|years?|mos?|months?)\s*)?$/i;
+  const liEmp=/\s*[\u00b7|]\s*(?:full[- ]time|part[- ]time|contract|internship|self[- ]employed|freelance|apprenticeship)\s*$/i;
+  const clean=s=>String(s).replace(liDur,'').replace(liEmp,'').replace(/\s{2,}/g,' ').replace(/^[\s|\u00b7]+|[\s|\u00b7]+$/g,'').trim();
+  const rows=cviLines(text).map(clean).filter(s=>s&&!liNoise.test(s));
+  const L=rows.map(s=>({segs:[s],size:0,top:false}));
+  if(!L.length)return EMPTY;
+  /* section split through the shared heading detector (Experience, Education,
+     Skills, Languages, Summary/About, Volunteer Experience all match) */
+  const secs={pre:[]};let cur='pre';
+  for(const ln of L){
+    const h=cviHeaderType(ln.segs.join(' '));
+    if(h){cur=h;if(!secs[cur])secs[cur]=[];continue;}
+    secs[cur].push(ln);
+  }
+  const sl=k=>secs[k]||[];
+  const r={...EMPTY};
+  /* identity from the preamble: name (1-5 words), headline, "City, Country" */
+  const pre=sl('pre');
+  if(pre.length){
+    let ni=0;
+    r.name=pre[ni].segs.join(' ').slice(0,60);
+    /* long names export on two stacked lines: single word + title-case follower */
+    if(r.name.split(/\s+/).length===1&&pre[ni+1]){
+      const s1=pre[ni+1].segs.join(' ').trim();
+      if(s1&&!/\d|@|http|,/.test(s1)&&!cviHeaderType(s1)&&!CVI_ROLE_KW.test(s1)&&!CVI_CO_KW.test(s1)&&s1.split(/\s+/).length<=3){r.name+=' '+s1;ni++;}
     }
-  }catch(e){}
-  const sm=t.match(/skills?[:\s]+([^\n]+)/i);if(sm)r.skills=sm[1];
+    for(let i=ni+1;i<pre.length;i++){
+      const s=pre[i].segs.join(' ');
+      if(!r.location&&/^[A-Z][\p{L}.`'\u2019-]+(?:\s+[A-Z][\p{L}.`'\u2019-]+)?,\s*(?:[A-Z]{2}\b|[A-Z][\p{L}.`'\u2019-]+)/u.test(s)&&!CVI_ROLE_KW.test(s)&&!CVI_CO_KW.test(s)){r.location=s;continue;}
+      if(!r.title&&s!==r.name&&!cviHeaderType(s)&&!/^(?:contact|page|phone|email)\b/i.test(s))r.title=s.slice(0,90);
+      if(r.title&&r.location)break;
+    }
+  }
+  const emM=text.match(/[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/);
+  if(emM)r.email=emM[0];
+  r.phone=cviFindPhone(text);
+  /* job/education lines that are pure "City, Country" markers are dropped (a
+     company like "Acme Corp, Inc." survives via the company-keyword guard) */
+  const liPlace=/^[A-Z][\p{L}.`'\u2019-]+(?:\s+[A-Z][\p{L}.`'\u2019-]+)?,\s*(?:[A-Z]{2}\b|[A-Z][\p{L}.`'\u2019-]+(?:\s+[A-Z][\p{L}.`'\u2019-]+)?)$/u;
+  const notPlace=arr=>arr.filter(ln=>{const s=ln.segs.join(' ');return !liPlace.test(s)||/\d/.test(s)||CVI_CO_KW.test(s)||CVI_INST_KW.test(s);});
+  const found=Object.keys(secs).some(k=>k!=='pre'&&k!=='personal'&&k!=='ignore'&&secs[k].length);
+  if(found){
+    r.experiences=cviParseExperience(notPlace(sl('experience'))).concat(cviParseExperience(notPlace(sl('volunteering')))).slice(0,12);
+    r.education=cviParseEducation(sl('education'));
+    const sk=cviParseSkills(sl('skills'));r.skills=sk.join(', ');
+    r.languages=cviParseLanguages(sl('languages'));
+    r.summary=cviParseSummary(sl('summary'));
+  }else{
+    /* no recognisable headings at all — best-effort on the whole document */
+    r.experiences=cviParseExperience(notPlace(L)).slice(0,12);
+    r.education=cviParseEducation(L);
+    r.skills=cviParseSkills(L).join(', ');
+    r.languages=cviParseLanguages(L);
+  }
   return r;
 }
 const dz=document.getElementById('linkedInDropZone');if(dz){dz.addEventListener('dragover',e=>{e.preventDefault();dz.style.borderColor='var(--text-secondary)';});dz.addEventListener('dragleave',e=>{e.preventDefault();dz.style.borderColor='';});dz.addEventListener('drop',e=>{e.preventDefault();e.stopPropagation();dz.style.borderColor='';const f=e.dataTransfer.files[0];if(f&&f.type==='application/pdf'){const dt=new DataTransfer();dt.items.add(f);document.getElementById('linkedInFile').files=dt.files;importLinkedInPDF({target:{files:dt.files}});}});}
@@ -46,20 +98,20 @@ export const CVI_LANG_NAMES=['English','Spanish','French','German','Italian','Po
 export const CVI_ROLE_KW=/(engineer|developer|programmer|manager|consultant|analyst|designer|specialist|architect|scientist|director|coordinator|assistant|officer|accountant|teacher|lecturer|professor|researcher|intern|apprentice|trainee|nurse|doctor|physician|lawyer|attorney|paralegal|technician|administrator|executive|recruiter|advisor|associate|partner|freelance|contractor|scrum\s*master|product\s+owner|chef|bartender|barista|waiter|waitress|server|cashier|sales|marketing|writer|editor|journalist|translator|tutor|volunteer|founder|co-?founder|ceo|cto|cfo|coo|steward|operator|mechanic|electrician|plumber|driver|pilot|head|lead|secretary|president|treasurer|chairman|chairperson|representative|captain|mentor|organizer|member)/i;
 export const CVI_CO_KW=/\b(inc|llc|ltd|limited|gmbh|s\.?a\.?|ag|bv|nv|plc|pty|pvt|corp|corporation|company|group|agency|technologies|technology|labs?|solutions|systems|consulting|partners|associates|studios?|media|software|digital|bank|hospital|clinic|universit|institute|college|school|academy|foundation|ministry|department|bureau|communications|networks?|industries|logistics|pharma|capital|ventures|association|organisation|organization|centre|center|council|airlines|hotel|restaurant|cafe|store|shop|retail|energy|petroleum|telecom|insurance|firm)\b/i;
 export const CVI_SEC_DEFS=[
- ['summary',/^(?:(?:personal|professional|career|executive)\s+)?(?:profile|summary|about(?:\s+me)?|objective|personal\s+statement|career\s+overview)\s*$/i],
- ['experience',/^(?:(?:work|professional|employment|career|relevant)\s+)?(?:experience|employment\s+history|work\s+history|professional\s+background|career\s+history|history|employment)\s*$/i],
- ['education',/^(?:education|academics?|educational\s+background|academic\s+(?:background|history|qualifications)|qualifications?)\s*(?:\s*[&+]\s*training)?\s*$/i],
- ['skills',/^(?:(?:technical|core|key|professional|personal|it|digital|computer|special)\s+)?(?:skills|competencies|expertise|technologies|tech\s*stack|strengths|tools)\s*(?:\s*[&+]\s*(?:abilities|tools|interests))?\s*$/i],
+ ['summary',/^(?:(?:personal|professional|career|executive)\s+)?(?:profile|summary|about(?:\s+me)?|objective|personal\s+statement|career\s+overview|career\s+objective|profile\s+summary)\s*$/i],
+ ['experience',/^(?:(?:work|professional|employment|career|relevant)\s+)?(?:experience|employment\s+history|work\s+history|professional\s+background|career\s+history|history|employment|professional\s+history|employment\s+record|relevant\s+work\s+experience|research\s+experience)\s*$/i],
+ ['education',/^(?:education|academics?|educational\s+background|academic\s+(?:background|history|qualifications|record)|qualifications?|training|professional\s+development|continuing\s+education)\s*(?:\s*[&+]\s*training)?\s*$/i],
+ ['skills',/^(?:(?:technical|core|key|professional|personal|it|digital|computer|special|top)\s+)?(?:skills|competencies|expertise|technologies|tech\s*stack|strengths|tools|summary\s+of\s+qualifications|core\s+competencies|technical\s+profile|key\s+strengths)\s*(?:\s*[&+]\s*(?:abilities|tools|interests|endorsements|technologies))?\s*$/i],
  ['languages',/^(?:languages?|linguistic\s+skills?|language\s+skills?)\s*$/i],
  ['volunteering',/^(?:volunteer(?:ing)?(?:\s+(?:experience|work|service))?|community\s+service|extracurricular(?:\s+activities)?|activities)\s*$/i],
- ['personal',/^(?:personal\s+(?:information|details)|contact(?:\s+information)?|additional\s+contact)\s*$/i],
- ['ignore',/^(?:references|interests|hobbies|awards?|honou?rs|publications?|papers|certificates?|certifications?|licenses?|projects?|achievements|courses|additional\s+information|objective\s+statement|declaration|annex(?:es)?|photographs?)\s*$/i]
+ ['personal',/^(?:personal\s+(?:information|details|data)|contact(?:\s+(?:information|details|info))?|additional\s+contact)\s*$/i],
+ ['ignore',/^(?:references|interests|hobbies(?:\s*(?:&|and)\s*interests)?|personal\s+interests|awards?|honou?rs?(?:\s*(?:&|and)\s*awards?)?|publications?|papers|certificates?|certifications?|licen[cs]es?(?:\s*(?:&|and)?\s*certifications?)?|projects?|achievements|courses|additional\s+information|objective\s+statement|declaration|annex(?:es)?|photographs?|patents|memberships|professional\s+affiliations|conferences|talks)\s*$/i]
 ];
 /* compressed (space-stripped) header names — handles letter-spaced headers like "E D U C AT I O N" */
-export const CVI_SEC_COMPRESSED={summary:['SUMMARY','PROFILE','ABOUTME','OBJECTIVE','PERSONALSTATEMENT','CAREEROVERVIEW','PROFESSIONALPROFILE','CAREERPROFILE','PERSONALPROFILE','EXECUTIVESUMMARY'],experience:['EXPERIENCE','WORKEXPERIENCE','EMPLOYMENTHISTORY','EMPLOYMENT','WORKHISTORY','CAREERHISTORY','PROFESSIONALEXPERIENCE','PROFESSIONALBACKGROUND','RELEVANTEXPERIENCE'],education:['EDUCATION','ACADEMICS','EDUCATIONALBACKGROUND','ACADEMICBACKGROUND','ACADEMICHISTORY','ACADEMICQUALIFICATIONS','QUALIFICATIONS','EDUCATIONTRAINING','EDUCATIONANDTRAINING'],skills:['SKILLS','TECHNICALSKILLS','CORESKILLS','KEYSKILLS','PROFESSIONALSKILLS','PERSONALSKILLS','ITSKILLS','DIGITALSKILLS','SPECIALSKILLS','COMPETENCIES','EXPERTISE','TECHNOLOGIES','TECHSTACK','STRENGTHS','TOOLS','SKILLSABILITIES','SKILLSANDABILITIES','SKILLSINTERESTS'],languages:['LANGUAGES','LANGUAGE','LANGUAGESKILLS','LINGUISTICSKILLS'],volunteering:['VOLUNTEERING','VOLUNTEEREXPERIENCE','VOLUNTEERWORK','VOLUNTEER','COMMUNITYSERVICE','EXTRACURRICULAR','EXTRACURRICULARACTIVITIES','ACTIVITIES'],personal:['PERSONALINFORMATION','PERSONALDETAILS','CONTACT','CONTACTINFORMATION','ADDITIONALCONTACT'],ignore:['REFERENCES','INTERESTS','HOBBIES','AWARDS','HONOURS','HONORS','PUBLICATIONS','PAPERS','CERTIFICATES','CERTIFICATIONS','LICENSES','PROJECTS','ACHIEVEMENTS','COURSES','ADDITIONALINFORMATION','OBJECTIVESTATEMENT','DECLARATION','ANNEXES','PHOTOGRAPHS','PHOTO']};
+export const CVI_SEC_COMPRESSED={summary:['SUMMARY','PROFILE','ABOUTME','ABOUT','OBJECTIVE','PERSONALSTATEMENT','CAREEROVERVIEW','PROFESSIONALPROFILE','CAREERPROFILE','PERSONALPROFILE','EXECUTIVESUMMARY','CAREEROBJECTIVE','PROFILESUMMARY'],experience:['EXPERIENCE','WORKEXPERIENCE','EMPLOYMENTHISTORY','EMPLOYMENT','WORKHISTORY','CAREERHISTORY','PROFESSIONALEXPERIENCE','PROFESSIONALBACKGROUND','RELEVANTEXPERIENCE','PROFESSIONALHISTORY','EMPLOYMENTRECORD','RELEVANTWORKEXPERIENCE','RESEARCHEXPERIENCE'],education:['EDUCATION','ACADEMICS','EDUCATIONALBACKGROUND','ACADEMICBACKGROUND','ACADEMICHISTORY','ACADEMICQUALIFICATIONS','QUALIFICATIONS','EDUCATIONTRAINING','EDUCATIONANDTRAINING','TRAINING','PROFESSIONALDEVELOPMENT','CONTINUINGEDUCATION','ACADEMICRECORD'],skills:['SKILLS','TECHNICALSKILLS','CORESKILLS','KEYSKILLS','PROFESSIONALSKILLS','PERSONALSKILLS','ITSKILLS','DIGITALSKILLS','SPECIALSKILLS','COMPETENCIES','EXPERTISE','TECHNOLOGIES','TECHSTACK','STRENGTHS','TOOLS','SKILLSABILITIES','SKILLSANDABILITIES','SKILLSINTERESTS','SKILLSENDORSEMENTS','SKILLSANDENDORSEMENTS','TOPSKILLS','SUMMARYOFQUALIFICATIONS','CORECOMPETENCIES','TECHNICALPROFILE','TOOLSANDTECHNOLOGIES','KEYSTRENGTHS'],languages:['LANGUAGES','LANGUAGE','LANGUAGESKILLS','LINGUISTICSKILLS'],volunteering:['VOLUNTEERING','VOLUNTEEREXPERIENCE','VOLUNTEERWORK','VOLUNTEER','COMMUNITYSERVICE','EXTRACURRICULAR','EXTRACURRICULARACTIVITIES','ACTIVITIES'],personal:['PERSONALINFORMATION','PERSONALDETAILS','PERSONALDATA','CONTACT','CONTACTINFORMATION','CONTACTDETAILS','ADDITIONALCONTACT'],ignore:['REFERENCES','INTERESTS','HOBBIES','HOBBIESANDINTERESTS','PERSONALINTERESTS','AWARDS','HONOURS','HONORS','HONORSANDAWARDS','HONOURSANDAWARDS','PUBLICATIONS','PAPERS','CERTIFICATES','CERTIFICATIONS','LICENSES','LICENSESCERTIFICATIONS','PROJECTS','ACHIEVEMENTS','COURSES','ADDITIONALINFORMATION','OBJECTIVESTATEMENT','DECLARATION','ANNEXES','PHOTOGRAPHS','PHOTO','PATENTS','MEMBERSHIPS','PROFESSIONALAFFILIATIONS','CONFERENCES','TALKS']};
 export const CVI_SEC_MAP={};
 Object.keys(CVI_SEC_COMPRESSED).forEach(k=>CVI_SEC_COMPRESSED[k].forEach(w=>{if(!CVI_SEC_MAP[w])CVI_SEC_MAP[w]=k;}));
-export const CVI_LABEL_ALIAS={address:'location',location:'location',basedin:'location',residence:'location',telephone:'phone',tel:'phone',phone:'phone',mobile:'phone',cell:'phone',email:'email',mail:'email',linkedin:'linkedin',web:'web',website:'web',url:'web',site:'web',portfolio:'web',github:'web',homepage:'web'};
+export const CVI_LABEL_ALIAS={address:'location',location:'location',city:'location',basedin:'location',residence:'location',telephone:'phone',tel:'phone',phone:'phone',mobile:'phone',mob:'phone',cell:'phone',email:'email',mail:'email',linkedin:'linkedin',web:'web',website:'web',url:'web',site:'web',portfolio:'web',github:'web',gitlab:'web',behance:'web',dribbble:'web',homepage:'web'};
 export const CVI_MON='(?:jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\\.?';
 export const CVI_DATE_PART=`(?:${CVI_MON}\\s*'?(?:19|20)\\d{2}|(?:0?[1-9]|1[0-2])\\/(?:19|20)?\\d{2}|(?:19|20)\\d{2})`;
 export const CVI_RANGE_RE=new RegExp('('+CVI_DATE_PART+')\\s*(?:-|\\u2013|\\u2014|to|until|through)\\s*('+CVI_DATE_PART+'|present|current|now|today|ongoing)','i');
@@ -68,8 +120,8 @@ export const CVI_DEG_KW=/bachelor|master|ph\.?d|doctora|m\.?sc|b\.?sc|b\.?eng|b\
 export const CVI_INST_KW=/universit|institut|college|school|academy|polytechnic|\u00e9cole|l'\u00e9cole|business\s+school|law\s+school|medical\s+school/i;
 
 export function cviEsc(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
-export function cviNormalize(t){return String(t||'').replace(/\r\n?/g,'\n').replace(/\u00a0/g,' ').replace(/([a-z,;])-\n([a-z])/g,'$1$2');}
-export function cviLines(t){return cviNormalize(t).split('\n').map(l=>l.replace(/\s+/g,' ').trim()).filter(l=>l&&!/^(?:page\s*)?\d{1,3}\s*(?:\/\s*\d{1,3}|of\s*\d{1,3})$/i.test(l));}
+export function cviNormalize(t){return String(t||'').replace(/\r\n?/g,'\n').replace(/[\u2028\u2029]/g,'\n').replace(/\u00ad\n?/g,'').replace(/\u00a0/g,' ').replace(/([a-z,;])-\n([a-z])/g,'$1$2');}
+export function cviLines(t){return cviNormalize(t).split('\n').map(l=>l.replace(/\s+/g,' ').trim()).filter(l=>l&&!/^(?:page\s*)?\d{1,3}\s*(?:\/\s*\d{1,3}|of\s*\d{1,3})?$/i.test(l)&&!/\d[\d.,]*\s*\+?\s*(?:connections?|followers?|recommendations?)$/i.test(l));}
 
 /* ── text extraction: TXT / DOCX / PDF (all client-side) ── */
 export async function cviExtractText(file){
@@ -244,11 +296,11 @@ export function cviFindTitle(L,nameIdx){
   return cands[0].t.slice(0,90);
 }
 export function cviFindPhone(text){
-  const res=[/\+\d{1,3}[\s.-]?\d[\d\s().-]{6,14}\d/g,/(?:\(\d{2,4}\)|\d{2,4})[\s.-]?\d[\d\s().-]{6,14}\d/g];
+  const res=[/\(\+\d{1,3}\)[\s.-]?\d[\d\s().-]{5,13}\d/g,/\+\d{1,3}[\s.-]?\d[\d\s().-]{6,14}\d/g,/(?:\(\d{2,4}\)|\d{2,4})[\s.-]?\d[\d\s().-]{6,14}\d/g];
   for(const re of res){
     let m;
     while((m=re.exec(text))){
-      const cand=(m[0]||'').trim();
+      const cand=(m[0]||'').trim().replace(/[\s.,;|-]+$/,'');
       const digits=cand.replace(/\D/g,'');
       if(digits.length<8||digits.length>15)continue;
       if(/(?:19|20)\d{2}\s*[-\u2013\u2014]\s*(?:19|20)\d{2}/.test(cand))continue;
@@ -363,6 +415,17 @@ export function cviAnchorOf(ln,joined){ /* find a date/year segment → {dates, 
       if(pre)return {dates:ym[1].replace(/\s+/g,' ').trim(),pre};
     }
   }
+  /* v2.7: cross-segment fallback — column-split PDFs put "Jan 2020 –" and
+     "Present" in different segments of the same visual row; match the joined line */
+  const j=joined||segs.join(' ');
+  if(segs.length>1&&j){
+    const jm=CVI_RANGE_RE.exec(j);
+    if(jm){
+      const before=j.slice(0,jm.index),after=j.slice(jm.index+jm[0].length);
+      const pre=[before,after].map(x=>x.replace(/^[\s|,;\u00b7]+/,'').replace(/[\s|,;\u00b7]+$/,'').trim()).filter(Boolean).join(' ');
+      return {dates:cviTidyRange(jm[0]),pre};
+    }
+  }
   return null;
 }
 export function cviParseExperience(lines){
@@ -376,9 +439,16 @@ export function cviParseExperience(lines){
       const fromTail=tail.length>0;
       const plCand=fromTail?tail[tail.length-1]:(pending[pending.length-1]||'');
       const pendingExtras=fromTail?[]:pending.slice(0,-1);
-      /* role+company stacked right above the anchor both belong to the new entry */
+      /* role+company stacked right above the anchor both belong to the new entry.
+         v2.7: a role line like "Junior Software Engineer" used to be rejected because
+         "Software" is also a company keyword — accept it when the line ENDS on a
+         role word ("Engineer"), which company lines ("TechCorp Solutions Ltd.") don't. */
       let extraRole='';
-      if(tail.length>=2&&plCand&&(CVI_CO_KW.test(plCand)||CVI_INST_KW.test(plCand))&&CVI_ROLE_KW.test(tail[tail.length-2])&&!CVI_CO_KW.test(tail[tail.length-2]))extraRole=tail[tail.length-2];
+      if(tail.length>=2){
+        const t2=tail[tail.length-2];
+        const t2Last=String(t2).trim().split(/\s+/).pop().replace(/[.,]$/,'').toLowerCase();
+        if(plCand&&(CVI_CO_KW.test(plCand)||CVI_INST_KW.test(plCand))&&CVI_ROLE_KW.test(t2)&&(!CVI_CO_KW.test(t2)||CVI_ROLE_KW.test(t2Last)))extraRole=t2;
+      }
       const earlierTail=tail.length>1?tail.slice(0,extraRole?tail.length-2:tail.length-1):[];
       tail=[];pending=[];
       if(earlierTail.length&&entries.length)entries[entries.length-1].description.push(...earlierTail);
@@ -504,9 +574,12 @@ export function cviLevelFromText(t){
   const s=String(t==null?'':t).trim();
   if(CVI_LEVELS.includes(s))return s;
   const cefr=s.match(/\b([ABC][12])\b/);if(cefr)return cefr[1].toUpperCase();
-  if(/native|mother\s*tongue|first\s*language/i.test(s))return 'Native';
-  if(/fluent|bilingual/i.test(s))return 'C2';
+  /* v2.7: LinkedIn's ILR-style proficiency labels mapped to CEFR */
+  if(/native|mother\s*tongue|first\s*language|bilingual/i.test(s))return 'Native';
+  if(/full\s*professional|fluent/i.test(s))return 'C2';
+  if(/professional\s*working/i.test(s))return 'C1';
   if(/advanced|professional|proficient/i.test(s))return 'C1';
+  if(/limited\s*working/i.test(s))return 'B1';
   if(/upper[\s-]?intermediate/i.test(s))return 'B2';
   if(/intermediate|conversational|communicat|oral/i.test(s))return 'B1';
   if(/basic|elementary/i.test(s))return 'A2';
@@ -616,6 +689,16 @@ export function parseCVText(rawText,SL){
     skillsArr:cviParseSkills(secLines('skills')),
     experiences:experiences.slice(0,12),education,languages
   };
+  /* v2.7: heading-less CVs often open with an unlabelled pitch paragraph —
+     take the preamble prose that sits BEFORE the first date anchor as summary */
+  if(!p.summary&&secs.preamble&&secs.preamble.length){
+    const preAll=secs.preamble;
+    const cutAt=preAll.findIndex(ln=>CVI_RANGE_RE.test(ln.segs.join(' '))||/^((?:19|20)\d{2})\s*$/i.test(ln.segs.join(' ').trim()));
+    const preBlock=(cutAt>=0?preAll.slice(0,cutAt):preAll);
+    const drop=s=>!s||s===p.name||s===p.title||s===p.location||/^(?:curriculum\s+vitae|resume|cv)$/i.test(s)||/@|http|linkedin/i.test(s)||!!cviFindPhone(s);
+    const txt=preBlock.map(ln=>ln.segs.join(' ').replace(CVI_IS_BULLET,'').trim()).filter(s=>s&&!drop(s)).join(' ');
+    if(txt.length>=150)p.summary=txt.length>1200?txt.slice(0,1197)+'\u2026':txt;
+  }
   p.skills=p.skillsArr.join(', ');
   return {...p,...cviScore(p)};
 }

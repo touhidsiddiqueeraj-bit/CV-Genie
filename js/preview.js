@@ -148,6 +148,46 @@ export function templateHtml(t,D){ /* D = collectPreviewData() — pure so the 3
             const vgExp=e=>`<div class="cv-item"><div class="cv-item-header"><span>${esc(e.title)}</span><span>${esc(e.dates)}</span></div><div class="cv-vg-org">${esc(e.company)}</div><p>${esc(e.description)}</p></div>`;
             html=`${ph?`<div style="text-align:center;margin-bottom:2mm">${ph}</div>`:''}<div class="cv-vg-name">${esc(name)}</div>${title?`<div class="cv-vg-tag">${esc(title)}</div>`:''}<div class="cv-vg-rule"></div>${cs?`<div class="cv-vg-contact">${esc(cs)}</div>`:''}<div class="cv-vg-rule thin"></div>${summary.trim()?`<div class="cv-section cv-vg-sec"><h2>Profile</h2><p>${esc(summary)}</p></div>`:''}${skillList.length?`<div class="cv-section cv-vg-sec"><h2>Expertise</h2><p style="letter-spacing:0.04em">${skillList.map(esc).join(' · ')}</p></div>`:''}${exp.length?`<div class="cv-section cv-vg-sec"><h2>Experience</h2>${exp.map(vgExp).join('')}</div>`:''}${edu.length?`<div class="cv-section cv-vg-sec"><h2>Education</h2>${dH}</div>`:''}${langLines?`<div class="cv-section cv-vg-sec"><h2>Languages</h2>${langLines}</div>`:''}`;
             break;}
+        case'primo':{
+            /* Primo — the popular iconed-sidebar design (after Zety's Primo): tinted rail
+               with round initial chips for contact and deterministic skill bars, square-marker
+               headings in the main column. Skill-bar widths are hashed from the skill text,
+               so a given CV always renders identically. */
+            const prHash=s=>{let h=0;for(const c of String(s))h=(h*31+c.charCodeAt(0))>>>0;return 55+h%41;};
+            const prLvlPct={'Native':100,'C2':90,'C1':80,'B2':70,'B1':60,'A2':45,'A1':30};
+            const prCt=[['Email',email],['Phone',phone],['LinkedIn',linkedin],['Location',location]].filter(x=>x[1]);
+            const prBarRow=(label,pct)=>`<div class="cv-primo-skill"><span class="cv-primo-skill-name">${esc(label)}</span><span class="cv-primo-track"><span class="cv-primo-fill" style="width:${pct}%"></span></span></div>`;
+            html=`<div class="cv-primo"><aside class="cv-primo-side">${ph?`<div class="cv-primo-photo">${ph}</div>`:''}${prCt.length?`<div class="cv-primo-box"><h2>Contact</h2>${prCt.map(x=>`<div class="cv-primo-ct"><span class="cv-primo-dot">${esc(x[0].charAt(0))}</span><span>${esc(x[1])}</span></div>`).join('')}</div>`:''}${skillList.length?`<div class="cv-primo-box"><h2>Skills</h2>${skillList.slice(0,12).map(s=>prBarRow(s,prHash(s))).join('')}</div>`:''}${langs.length?`<div class="cv-primo-box"><h2>Languages</h2>${langs.map(l=>prBarRow(l.language,l.level?(prLvlPct[l.level]||55):prHash(l.language))).join('')}</div>`:''}</aside><div class="cv-primo-main"><div class="cv-primo-head"><div class="cv-name">${esc(name)}</div>${title?`<div class="cv-title">${esc(title)}</div>`:''}</div>${summary.trim()?`<div class="cv-section cv-primo-sec"><h2>Profile</h2><p>${esc(summary)}</p></div>`:''}${exp.length?`<div class="cv-section cv-primo-sec"><h2>Experience</h2>${eH}</div>`:''}${edu.length?`<div class="cv-section cv-primo-sec"><h2>Education</h2>${dH}</div>`:''}</div></div>`;
+            break;}
+        case'diamond':{
+            /* Diamond — centered, decoratively framed headings (after Zety's Diamond):
+             * name mid-page, diamond-flanked section titles, airy single column. */
+            html=`${ph?`<div style="text-align:center;margin-bottom:2mm">${ph}</div>`:''}<div class="cv-name">${esc(name)}</div>${title?`<div class="cv-dm-title">${esc(title)}</div>`:''}${cs?`<div class="cv-dm-contact">${esc(cs)}</div>`:''}<div class="cv-dm-divider"></div>${summary.trim()?`<div class="cv-section cv-dm-sec"><h2>Summary</h2><p>${esc(summary)}</p></div>`:''}${skillList.length?`<div class="cv-section cv-dm-sec"><h2>Skills</h2><p>${skillList.map(esc).join(' · ')}</p></div>`:''}${exp.length?`<div class="cv-section cv-dm-sec"><h2>Experience</h2>${eH}</div>`:''}${edu.length?`<div class="cv-section cv-dm-sec"><h2>Education</h2>${dH}</div>`:''}${langLines?`<div class="cv-section cv-dm-sec"><h2>Languages</h2>${langLines}</div>`:''}`;
+            break;}
+        case'berlin':{
+            /* Berlin — the minimalist header-band look (Novoresume's Simple family):
+             * ink-black masthead, hairline-ruled uppercase headings, generous whitespace. */
+            html=`<div class="cv-bln-band"><div class="cv-bln-id">${ph?`<div class="cv-bln-photo">${ph}</div>`:''}<div style="min-width:0"><div class="cv-bln-name">${esc(name)}</div>${title?`<div class="cv-bln-title">${esc(title)}</div>`:''}</div></div>${cs?`<div class="cv-bln-contact">${esc(cs)}</div>`:''}</div>${summary.trim()?`<div class="cv-section cv-bln-sec"><h2>Profile</h2><p>${esc(summary)}</p></div>`:''}${exp.length?`<div class="cv-section cv-bln-sec"><h2>Experience</h2>${eH}</div>`:''}${edu.length?`<div class="cv-section cv-bln-sec"><h2>Education</h2>${dH}</div>`:''}${skillList.length?`<div class="cv-section cv-bln-sec"><h2>Skills</h2><p>${skillList.map(esc).join(' · ')}</p></div>`:''}${langLines?`<div class="cv-section cv-bln-sec"><h2>Languages</h2>${langLines}</div>`:''}`;
+            break;}
+        case'monogram':{
+            /* Monogram — initials badge beside the name (the "Initials" design family):
+             * a confident colour square, letterspaced headings, airy single column. */
+            const mgInitials=String(name||'').split(/\s+/).filter(Boolean).slice(0,2).map(w=>w.charAt(0).toUpperCase()).join('')||'CV';
+            html=`<div class="cv-mono-head"><div class="cv-mono-badge">${esc(mgInitials)}</div><div style="min-width:0"><div class="cv-name">${esc(name)}</div>${title?`<div class="cv-title">${esc(title)}</div>`:''}${cs?`<div class="cv-mono-contact">${esc(cs)}</div>`:''}</div></div>${summary.trim()?`<div class="cv-section cv-mono-sec"><h2>Profile</h2><p>${esc(summary)}</p></div>`:''}${exp.length?`<div class="cv-section cv-mono-sec"><h2>Experience</h2>${eH}</div>`:''}${edu.length?`<div class="cv-section cv-mono-sec"><h2>Education</h2>${dH}</div>`:''}${skillList.length?`<div class="cv-section cv-mono-sec"><h2>Skills</h2><div class="cv-mono-skills">${skillList.map(s=>`<span class="cv-mono-skill">${esc(s)}</span>`).join('')}</div></div>`:''}${langLines?`<div class="cv-section cv-mono-sec"><h2>Languages</h2>${langLines}</div>`:''}`;
+            break;}
+        case'wallstreet':{
+            /* Wall Street — finance-grade conservatism: serif throughout, double rules,
+             * small-caps headings, nothing decorative. The investment-banking standard. */
+            html=`${ph?`<div style="text-align:center;margin-bottom:2mm">${ph}</div>`:''}<div class="cv-ws-name">${esc(name)}</div><div class="cv-ws-cv">Curriculum Vitae</div>${cs?`<div class="cv-ws-contact">${esc(cs)}</div>`:''}${summary.trim()?`<div class="cv-section cv-ws-sec"><h2>Professional Summary</h2><p>${esc(summary)}</p></div>`:''}${exp.length?`<div class="cv-section cv-ws-sec"><h2>Professional Experience</h2>${eH}</div>`:''}${edu.length?`<div class="cv-section cv-ws-sec"><h2>Education</h2>${dH}</div>`:''}${skills.trim()?`<div class="cv-section cv-ws-sec"><h2>Skills</h2><p>${esc(skills)}</p></div>`:''}${langLines?`<div class="cv-section cv-ws-sec"><h2>Languages</h2>${langLines}</div>`:''}`;
+            break;}
+        case'medic':{
+            /* Medic — clinical-clean healthcare style: scannable labeled contact grid,
+             * date pills, left-accent section headings. Built for high-volume screening. */
+            const mdCt=[['Email',email],['Phone',phone],['LinkedIn',linkedin],['Location',location]].filter(x=>x[1]);
+            const mdExp=e=>`<div class="cv-item"><div class="cv-item-header"><span>${esc(e.title)}${e.company?` — ${esc(e.company)}`:''}</span><span class="cv-md-date">${esc(e.dates)}</span></div><p>${esc(e.description)}</p></div>`;
+            const mdEdu=e=>`<div class="cv-item"><div class="cv-item-header"><span>${esc(e.degree)}${e.institution?` — ${esc(e.institution)}`:''}</span><span class="cv-md-date">${esc(e.year)}</span></div></div>`;
+            html=`<div class="cv-md-head">${ph}<div style="min-width:0"><div class="cv-name">${esc(name)}</div>${title?`<div class="cv-title">${esc(title)}</div>`:''}</div></div>${mdCt.length?`<div class="cv-md-grid">${mdCt.map(x=>`<div class="cv-md-cell"><span class="cv-md-label">${esc(x[0])}</span><span>${esc(x[1])}</span></div>`).join('')}</div>`:''}${summary.trim()?`<div class="cv-section cv-md-sec"><h2>Professional Summary</h2><p>${esc(summary)}</p></div>`:''}${skillList.length?`<div class="cv-section cv-md-sec"><h2>Clinical &amp; Technical Skills</h2><p>${skillList.map(esc).join(' · ')}</p></div>`:''}${exp.length?`<div class="cv-section cv-md-sec"><h2>Experience</h2>${exp.map(mdExp).join('')}</div>`:''}${edu.length?`<div class="cv-section cv-md-sec"><h2>Education &amp; Licensure</h2>${edu.map(mdEdu).join('')}</div>`:''}${langLines?`<div class="cv-section cv-md-sec"><h2>Languages</h2>${langLines}</div>`:''}`;
+            break;}
         default:html=`<div class="cv-name">${esc(name)}</div><p>${esc(title)} | ${esc(cs)}</p>${orderedContent}`;
     }
     return html;
