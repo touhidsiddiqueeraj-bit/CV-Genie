@@ -34,8 +34,8 @@ const bad = (m) => { fail++; console.log('  FAIL ' + m); };
   const cards = await page.evaluate(() => document.querySelectorAll('.tpl-card, .carousel-card, [data-tpl]').length);
   (cards === 30 || cards === 0) ? (cards === 30 ? ok('30 carousel cards rendered') : bad('carousel cards not found')) : bad(`carousel cards = ${cards}`);
 
-  // 5. new templates render HTML
-  for (const t of ['harvard', 'cascade', 'functional', 'pastel', 'vogue', 'tech']) {
+  // 5. v2.6 + v2.7 templates render HTML
+  for (const t of ['harvard', 'cascade', 'functional', 'pastel', 'vogue', 'tech', 'primo', 'diamond', 'berlin', 'monogram', 'wallstreet', 'medic']) {
     const len = await page.evaluate((id) => {
       const el = document.querySelector(`[data-tpl="${id}"], .tpl-${id}`);
       return el ? el.innerHTML.length : (window.renderTemplate ? String(window.renderTemplate(id, { name: 'Test' }) || '').length : 0);
