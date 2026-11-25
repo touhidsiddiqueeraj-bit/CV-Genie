@@ -5,7 +5,6 @@
 **A fast, private, offline-capable CV builder — 30 templates including Europass, a matching cover letter builder (deterministic + Gemini AI), a 7-category ATS engine with job-description matching, profile photos, and fully local PDF / DOCX / RTF / Markdown / TXT export. Installable as a PWA and as an Android APK built by CI.**
 
 [![CI](https://github.com/touhidsiddiqueeraj-bit/CV-Genie/actions/workflows/ci.yml/badge.svg)](https://github.com/touhidsiddiqueeraj-bit/CV-Genie/actions/workflows/ci.yml)
-[![Deploy](https://github.com/touhidsiddiqueeraj-bit/CV-Genie/actions/workflows/deploy.yml/badge.svg)](https://github.com/touhidsiddiqueeraj-bit/CV-Genie/actions/workflows/deploy.yml)
 [![Release](https://github.com/touhidsiddiqueeraj-bit/CV-Genie/actions/workflows/release.yml/badge.svg)](https://github.com/touhidsiddiqueeraj-bit/CV-Genie/actions/workflows/release.yml)
 [![APK](https://github.com/touhidsiddiqueeraj-bit/CV-Genie/actions/workflows/apk.yml/badge.svg)](https://github.com/touhidsiddiqueeraj-bit/CV-Genie/actions/workflows/apk.yml)
 
@@ -287,7 +286,7 @@ python3 -m http.server 8080
 npx serve .
 ```
 
-Then open http://localhost:8080. To publish your own copy, push to a GitHub repo and enable GitHub Pages — the included [deploy workflow](.github/workflows/deploy.yml) handles it automatically.
+Then open http://localhost:8080. To publish your own copy, push to a GitHub repo and enable GitHub Pages with **Deploy from a branch** (`main` / root) — the site publishes automatically on every push.
 
 ### Architecture
 
@@ -370,7 +369,6 @@ A few conventions that keep the graph debuggable:
 │   └── make-cv-fixtures.py     # sample CVs for the import-parser suite
 └── .github/workflows/
     ├── ci.yml                  # validation on push/PR
-    ├── deploy.yml              # GitHub Pages deployment
     ├── apk.yml                 # Bubblewrap TWA → signed APK/AAB
     └── release.yml             # tagged releases with packaged artifact
 ```
@@ -410,14 +408,15 @@ The manifest lives at `manifest.webmanifest` (standalone display, theme `#18181b
 
 ## ✦ CI/CD
 
-Four GitHub Actions workflows:
+GitHub Pages is configured to **deploy from the `main` branch**, so every push publishes the site automatically (the “pages build and deployment” run you'll see on each commit). Three GitHub Actions workflows sit alongside it:
 
 | Workflow | Trigger | What it does |
 |---|---|---|
 | [ci.yml](.github/workflows/ci.yml) | push to `main`, PRs | Runs `scripts/validate.js`: shell structure, stylesheet links, `node --check` on every module, the full import graph (targets resolve, no cycles), template registry consistency (TEMPLATES ↔ TEMPLATE_META ↔ THUMB_WIRES ↔ renderers ↔ CSS), window-bridge coverage incl. every inline handler, service-worker precache completeness, README image references, workflow YAML parsing, PWA asset checks and a no-export-server guard |
-| [deploy.yml](.github/workflows/deploy.yml) | push to `main`, manual | Deploys the repo to GitHub Pages (upload artifact → deploy-pages). Enable "GitHub Actions" as the Pages source in repo settings |
 | [apk.yml](.github/workflows/apk.yml) | manual, `v*` tags | Waits for the deployed manifest, then runs `scripts/apk-driver.js` (Bubblewrap TWA, non-interactive) → signed APK + AAB, uploaded as artifacts and attached to releases |
 | [release.yml](.github/workflows/release.yml) | `v*` tags | Validates, packages the full app (`index.html` + `css/` + `js/` + PWA assets) into a versioned ZIP (+ SHA-256) and publishes a GitHub Release with generated notes |
+
+> The old `deploy.yml` workflow (upload-artifact → deploy-pages) was removed in v2.7: it duplicated the branch deployment that was already publishing the site, and the two raced — the workflow's artifact-metadata lookup intermittently failed seconds after a successful upload. If you switch Pages to the "GitHub Actions" source mode in repo settings, re-add a deploy workflow.
 
 ## ✦ Common maintenance tasks
 
