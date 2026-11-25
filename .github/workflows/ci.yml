@@ -7,7 +7,7 @@ on:
 
 jobs:
   validate:
-    name: Validate app & docs
+    name: Validate app, modules & docs
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -21,13 +21,20 @@ jobs:
       - name: Install js-yaml (workflow linting)
         run: npm install --no-save js-yaml
 
-      - name: Validate index.html, template registry & README assets
+      - name: Validate shell, ES-module graph, template registry & README assets
         run: node scripts/validate.js
 
-      - name: Check bundled file size
+      - name: Check module sizes
         run: |
-          SIZE=$(stat -c%s index.html)
-          echo "index.html is $SIZE bytes"
-          if [ "$SIZE" -gt 400000 ]; then
-            echo "::warning::index.html exceeds 400 KB — consider splitting assets"
+          SHELL_SIZE=$(stat -c%s index.html)
+          APP_SIZE=$(cat index.html css/*.css js/*.js | wc -c)
+          echo "index.html shell is $SHELL_SIZE bytes; app total (html+css+js) is $APP_SIZE bytes"
+          if [ "$SHELL_SIZE" -gt 200000 ]; then
+            echo "::warning::index.html exceeds 200 KB — app code belongs in js/ and css/"
           fi
+          for f in js/*.js; do
+            SIZE=$(stat -c%s "$f")
+            if [ "$SIZE" -gt 90000 ]; then
+              echo "::warning::$f exceeds 90 KB — consider splitting the module"
+            fi
+          done

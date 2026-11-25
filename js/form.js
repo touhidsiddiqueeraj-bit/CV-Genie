@@ -1,0 +1,64 @@
+/* The editor form: dynamic experience / education / language rows,
+ * drag-and-drop ordering, collapsible sections, skill cloud, design controls
+ * (colour, font pairing), the control pickers built by buildAll(), and the
+ * Cropper-powered photo editor. */
+
+import { applyPhotoShape, applyPhotoSize, currentColor, currentFontPair, currentTemplate, photoData, photoShape, photoSize, sectionOrder, setCurrentColor, setCurrentFontPair, setPhotoData, setSectionOrder } from './app-state.js';
+import { COLORS, FONT_PAIRS, LANG_LEVELS, SKILL_CATEGORIES, SUMMARY_TEMPLATES, TEMPLATES, TEMPLATE_META } from './config.js';
+import { updatePreview } from './render.js';
+import { sanitizeInput, showToast, uiAnimateClose, updateCharCount } from './ui.js';
+
+let pendingSummaryIdx=-1;
+let cropperInstance=null;
+const selectedSkills=new Set();
+
+export function buildAll(){
+    const colorHtml=COLORS.map(c=>`<span class="color-dot${c===currentColor?' active':''}" style="background:${c}" onclick="setColor('${c}',this)" title="${c}"></span>`).join('');
+    document.getElementById('colorPresets').innerHTML=colorHtml;
+    if(document.getElementById('colorPresetsPreview'))document.getElementById('colorPresetsPreview').innerHTML=colorHtml;
+    document.getElementById('templateSelect').innerHTML=TEMPLATES.map(t=>`<option value="${t}"${t===currentTemplate?' selected':''}>${TEMPLATE_META[t].name}</option>`).join('');
+    const fontHtml=FONT_PAIRS.map((fp,i)=>`<button class="font-pair-btn${i===currentFontPair?' selected':''}" onclick="setFontPair(${i},this)">${fp.name}</button>`).join('');
+    document.getElementById('fontPairSelector').innerHTML=fontHtml;
+    if(document.getElementById('fontPairSelectorPreview'))document.getElementById('fontPairSelectorPreview').innerHTML=fontHtml;
+    document.getElementById('summaryLibrary').innerHTML=SUMMARY_TEMPLATES.map((st,i)=>`<button class="summary-template-btn" onclick="showSummaryConfirm(${i})">${st.label}</button>`).join('');
+    const catSel=document.getElementById('skillCategory');
+    if(catSel&&!catSel.options.length)catSel.innerHTML=Object.entries(SKILL_CATEGORIES).map(([k,v])=>`<option value="${k}">${v.label}</option>`).join('');
+}
+export function showSummaryConfirm(idx){pendingSummaryIdx=idx;document.getElementById('confirmPreview').textContent='"'+SUMMARY_TEMPLATES[idx].text.substring(0,80)+'…" will replace your current summary.';document.getElementById('confirmDialog').style.display='flex';}
+export function closeConfirmDialog(){uiAnimateClose('confirmDialog');pendingSummaryIdx=-1;}
+document.getElementById('confirmApplyBtn').addEventListener('click',function(){if(pendingSummaryIdx<0)return;document.getElementById('summary').value=SUMMARY_TEMPLATES[pendingSummaryIdx].text;updatePreview();updateCharCount();document.getElementById('confirmDialog').style.display='none';showToast('Summary applied');pendingSummaryIdx=-1;});
+export function renderSkillCloud(){const cat=SKILL_CATEGORIES[document.getElementById('skillCategory').value];document.getElementById('skillCloud').innerHTML=(cat?cat.skills:[]).map(s=>`<span class="skill-chip${selectedSkills.has(s)?' selected':''}" onclick="toggleSkill('${s}',this)">${s}</span>`).join('');}
+export function toggleSkill(s,el){if(selectedSkills.has(s)){selectedSkills.delete(s);el.classList.remove('selected');}else{selectedSkills.add(s);el.classList.add('selected');}}
+export function addSelectedSkills(){if(selectedSkills.size===0)return;const curSkills=document.getElementById('skills').value;const existing=curSkills?curSkills.split(',').map(s=>s.trim()).filter(s=>s.length>0):[];const newSkills=Array.from(selectedSkills).filter(s=>!existing.some(e=>e.toLowerCase()===s.toLowerCase()));if(newSkills.length===0){showToast('Skills already added');selectedSkills.clear();renderSkillCloud();return;}document.getElementById('skills').value=existing.length?existing.join(', ')+', '+newSkills.join(', '):newSkills.join(', ');selectedSkills.clear();renderSkillCloud();updatePreview();showToast(newSkills.length+' skill(s) added');}
+export function setFontPair(i,btn){setCurrentFontPair(i);document.querySelectorAll('.font-pair-btn').forEach(b=>b.classList.remove('selected'));document.querySelectorAll('.font-pair-selector').forEach(sel=>{const b=sel.querySelector(`.font-pair-btn:nth-child(${i+1})`);if(b)b.classList.add('selected');});const fp=FONT_PAIRS[i];document.documentElement.style.setProperty('--cv-font-heading',fp.heading);document.documentElement.style.setProperty('--cv-font-body',fp.body);}
+export function initSectionSortable(){const c=document.getElementById('formSectionsContainer');if(!c)return;if(c._sortable)c._sortable.destroy();c._sortable=new Sortable(c,{animation:200,handle:'.section-drag-handle',draggable:'.section-draggable',onEnd:function(){setSectionOrder(Array.from(c.querySelectorAll('.section-draggable')).map(el=>el.dataset.section));updatePreview();}});}
+export function toggleSection(h){const c=h.parentElement.querySelector('.section-content');const chev=h.querySelector('.chev');if(!c)return;if(c.classList.contains('collapsed')){c.classList.remove('collapsed');if(chev)chev.classList.add('open');c.style.maxHeight=c.scrollHeight+'px';setTimeout(()=>{if(!c.classList.contains('collapsed'))c.style.maxHeight='none';},350);}else{c.style.maxHeight=c.scrollHeight+'px';requestAnimationFrame(()=>{c.classList.add('collapsed');c.style.maxHeight='0';if(chev)chev.classList.remove('open');});}}
+/* ── Photo handling ── */
+export function handlePhoto(e){const f=e.target.files[0];if(!f||f.size>5*1024*1024){if(f)showToast('Photo must be under 5MB');return;}const r=new FileReader();r.onload=ev=>{setPhotoData(ev.target.result);document.getElementById('photoPreview').src=photoData;document.getElementById('photoPreview').style.display='block';document.getElementById('photoPlaceholder').style.display='none';renderPhotoControls();openPhotoEditor();};r.readAsDataURL(f);}
+export function renderPhotoControls(){
+  const c=document.getElementById('photoControls');
+  if(!c)return;
+  c.classList.toggle('visible',!!photoData);
+  document.querySelectorAll('#photoShapeSeg button').forEach(b=>b.classList.toggle('active',b.dataset.shape===photoShape));
+  document.querySelectorAll('#photoSizeSeg button').forEach(b=>b.classList.toggle('active',b.dataset.size===photoSize));
+}
+export function setPhotoShape(s,btn){applyPhotoShape(s);document.querySelectorAll('#photoShapeSeg button').forEach(b=>b.classList.remove('active'));if(btn)btn.classList.add('active');updatePreview();}
+export function setPhotoSize(s,btn){applyPhotoSize(s);document.querySelectorAll('#photoSizeSeg button').forEach(b=>b.classList.remove('active'));if(btn)btn.classList.add('active');updatePreview();}
+export function removePhoto(){setPhotoData(null);document.getElementById('photoPreview').style.display='none';document.getElementById('photoPreview').src='';document.getElementById('photoPlaceholder').style.display='block';renderPhotoControls();updatePreview();showToast('Photo removed');}
+export function reorderFormSections(){const c=document.getElementById('formSectionsContainer');if(!c)return;const ex={};c.querySelectorAll('.section-draggable').forEach(el=>ex[el.dataset.section]=el);c.innerHTML='';const done=new Set();sectionOrder.forEach(k=>{if(ex[k]&&!done.has(k)){c.appendChild(ex[k]);done.add(k);}});Object.keys(ex).forEach(k=>{if(!done.has(k)){c.appendChild(ex[k]);done.add(k);if(!sectionOrder.includes(k))sectionOrder.push(k);}});}
+
+/* ── Dynamic list builders ── */
+export function addExperience(){pushUndo();addExpSilent();updatePreview();initDragDrop();}
+export function addEducation(){pushUndo();addEduSilent();updatePreview();initDragDrop();}
+export function addLanguage(){pushUndo();addLangSilent();updatePreview();initDragDrop();}
+export function addExpSilent(){const d=document.createElement('div');d.className='dynamic-item';d.innerHTML=`<span class="drag-handle">⋮⋮</span><button class="remove-btn" onclick="this.parentElement.remove();updatePreview()" title="Remove">×</button><div class="form-group"><label>Job title</label><input type="text" oninput="sanitizeInput(this);updatePreview()" placeholder="Senior Developer"></div><div class="form-group"><label>Company</label><input type="text" oninput="sanitizeInput(this);updatePreview()" placeholder="Tech Corp"></div><div class="form-group"><label>Dates</label><input type="text" oninput="sanitizeInput(this);updatePreview()" placeholder="2020 – Present"></div><div class="form-group"><label>Description</label><textarea oninput="sanitizeInput(this);updatePreview()" rows="2" placeholder="Led a team of 5…"></textarea></div>`;const _xl=document.getElementById('experienceList');if(!_xl)return;_xl.appendChild(d);d.classList.add('dynamic-item-new');}
+export function addEduSilent(){const d=document.createElement('div');d.className='dynamic-item';d.innerHTML=`<span class="drag-handle">⋮⋮</span><button class="remove-btn" onclick="this.parentElement.remove();updatePreview()" title="Remove">×</button><div class="form-group"><label>Degree</label><input type="text" oninput="sanitizeInput(this);updatePreview()" placeholder="B.S. Computer Science"></div><div class="form-group"><label>Institution</label><input type="text" oninput="sanitizeInput(this);updatePreview()" placeholder="University"></div><div class="form-group"><label>Year</label><input type="text" oninput="sanitizeInput(this);updatePreview()" placeholder="2016 – 2020"></div>`;const _el=document.getElementById('educationList');if(!_el)return;_el.appendChild(d);d.classList.add('dynamic-item-new');}
+export function addLangSilent(){const d=document.createElement('div');d.className='dynamic-item';d.innerHTML=`<span class="drag-handle">⋮⋮</span><button class="remove-btn" onclick="this.parentElement.remove();updatePreview()" title="Remove">×</button><div class="form-group" style="display:flex;gap:0.4rem;align-items:flex-end;"><div style="flex:1"><label>Language</label><input type="text" oninput="sanitizeInput(this);updatePreview()" placeholder="English"></div><div style="width:104px"><label>Level</label><select onchange="updatePreview()">${LANG_LEVELS.map(l=>`<option value="${l}">${l||'—'}</option>`).join('')}</select></div></div>`;const _ll=document.getElementById('languageList');if(!_ll)return;_ll.appendChild(d);d.classList.add('dynamic-item-new');}
+export function initDragDrop(){['experienceList','educationList','languageList'].forEach(id=>{const el=document.getElementById(id);if(!el)return;if(el._sortable)el._sortable.destroy();el._sortable=new Sortable(el,{animation:200,handle:'.drag-handle',onEnd:updatePreview});});}
+export function setColor(c,el){setCurrentColor(c);document.querySelectorAll('.color-dot').forEach(d=>{d.classList.remove('active');if(d.style.background===c||d.style.backgroundColor===c)d.classList.add('active');});document.documentElement.style.setProperty('--cv-color',c);updatePreview();}
+/* ── Photo editor ── */
+export function openPhotoEditor(){if(!photoData){document.getElementById('photoInput').click();return;}document.getElementById('photoCropperModal').style.display='flex';document.getElementById('cropperImage').src=photoData;document.getElementById('cropperImage').style.display='block';if(cropperInstance)cropperInstance.destroy();cropperInstance=new Cropper(document.getElementById('cropperImage'),{aspectRatio:1,viewMode:1,dragMode:'move',autoCropArea:0.9});}
+export function closePhotoEditor(){uiAnimateClose('photoCropperModal');if(cropperInstance){cropperInstance.destroy();cropperInstance=null;}}
+export function rotatePhoto(deg){if(cropperInstance)cropperInstance.rotate(deg);}
+export function applyCrop(){if(!cropperInstance)return;const c=cropperInstance.getCroppedCanvas({width:400,height:400});setPhotoData(c.toDataURL('image/jpeg',0.9));document.getElementById('photoPreview').src=photoData;document.getElementById('photoPreview').style.display='block';document.getElementById('photoPlaceholder').style.display='none';closePhotoEditor();renderPhotoControls();updatePreview();}
+

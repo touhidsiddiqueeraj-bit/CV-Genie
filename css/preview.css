@@ -1,0 +1,25 @@
+/* The A4 document surface, shared CV bits (items, sections, photos) and the print (PDF) rules. */
+
+/* ── CV preview base ────────────────────────────────────── */
+.cv-wrapper{flex:1;min-width:0;position:relative;}
+.cv-scale-outer{overflow:hidden;position:relative;}
+.cv-scale-inner{width:794px;transform-origin:top left;display:block;}
+.cv-preview{width:var(--page-width);min-height:var(--page-height);background:#fff;padding:14mm 12mm;box-shadow:0 1px 3px rgba(0,0,0,0.08),0 8px 32px rgba(0,0,0,0.07);font-size:12pt;line-height:1.45;position:relative;font-family:var(--cv-font-body);color:#1f2937;}
+html.dark .cv-preview{box-shadow:0 1px 3px rgba(0,0,0,0.4),0 8px 32px rgba(0,0,0,0.5);}
+.cv-preview .cv-section{margin-bottom:4mm;}
+.cv-preview .cv-section h2{font-family:var(--cv-font-heading);font-size:10pt;border-bottom:1px solid #d6d3d1;padding-bottom:0.8mm;margin-bottom:1.8mm;text-transform:uppercase;letter-spacing:0.05em;color:#1f2937;}
+.cv-preview .cv-section p{font-size:9.5pt;}
+.cv-item{margin-bottom:2.2mm;}
+.cv-item:last-child{margin-bottom:0;}
+.cv-item-header{display:flex;justify-content:space-between;align-items:baseline;gap:3mm;font-weight:700;font-size:10pt;}
+.cv-item-header span:last-child{font-weight:400;font-size:8.5pt;color:#6b7280;white-space:nowrap;}
+.cv-item-sub{color:#4b5563;font-size:9pt;font-style:italic;margin-bottom:0.6mm;}
+.cv-preview .cv-item p{font-size:9pt;margin:0;}
+.cv-photo{object-fit:cover;flex-shrink:0;}
+.ph-circle{border-radius:50%;}
+.ph-rounded{border-radius:8%;}
+.ph-square{border-radius:0;}
+.ph-sm{width:20mm;height:20mm;}
+.ph-md{width:26mm;height:26mm;}
+.ph-lg{width:32mm;height:32mm;}
+

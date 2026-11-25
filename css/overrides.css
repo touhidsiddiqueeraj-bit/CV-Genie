@@ -1,0 +1,88 @@
+/* Late overrides that must win the cascade: shared CV bits, print (PDF) rules, the <=900px mobile layout and the document toggle. Loaded after templates + carousel on purpose — the original single file had these sections last. */
+
+/* ── Shared CV bits ─────────────────────────────────────── */
+.cv-preview .cv-lang-line{font-size:9pt;display:flex;justify-content:space-between;align-items:baseline;padding:0.5mm 0;border-bottom:1px solid #f3f4f6;}
+.cv-preview .cv-lang-line .lvl{color:var(--cv-color);font-weight:600;font-size:8pt;}
+.kw-chip.kw-pass{background:var(--success-bg);color:var(--success);}
+.kw-chip.kw-custom{background:var(--surface-2);color:var(--text-secondary);}
+.kw-chip.kw-miss{background:var(--danger-bg);color:var(--danger);}
+.kw-chip.kw-click{cursor:pointer;border-color:currentColor;border-style:dashed;}
+.kw-chip.kw-click:hover{filter:brightness(0.96);}
+
+
+/* ── Print — “PDF (print dialog)” export: the page becomes just the active
+   document (CV or letter); pick “Save as PDF” for crisp vector text ── */
+@media print{
+  body{background:#fff;}
+  .app-header,.form-panel,.mobile-nav,.ats-sidebar,.preview-toolbar,.edit-back-btn,.tpl3d-main,.modal-overlay,.toast,.tpl3d-nav{display:none!important;}
+  .preview-panel{padding:0;background:#fff;overflow:visible!important;flex-direction:column;}
+  .preview-panel-inner{width:100%;max-width:100%;flex:none;}
+  .tpl3d-stage{flex:none;}
+  .cv-scale-outer{height:auto!important;overflow:visible;}
+  .cv-scale-inner{transform:none!important;width:100%!important;}
+  .cv-preview,.cl-preview{box-shadow:none;margin:0;padding:0;font-size:9.5pt;width:100%!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  .cv-preview *{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  .cv-wrapper{max-width:100%;padding:0;}
+  .preview-panel.show-gallery .cv-wrapper{display:block!important;}
+  @page{margin:10mm;}
+}
+
+
+/* ── Mobile ─────────────────────────────────────────────── */
+.mobile-nav{display:none;position:fixed;bottom:0;left:0;right:0;height:var(--mobile-nav-height);background:var(--surface);border-top:1px solid var(--border);z-index:200;justify-content:space-around;align-items:center;padding-bottom:max(env(safe-area-inset-bottom,6px),6px);transition:transform .25s ease;}
+.mobile-nav-btn{display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 12px;border:none;background:none;cursor:pointer;color:var(--text-secondary);font-size:10.5px;font-weight:600;position:relative;transition:color .18s;}
+.mobile-nav-btn svg{width:19px;height:19px;}
+.mobile-nav-btn.active{color:var(--text);}
+.mobile-nav-btn.active svg{animation:navPop .3s cubic-bezier(.3,1.5,.5,1);}
+.mobile-nav-btn::after{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:0;height:2px;background:var(--text);border-radius:2px 2px 0 0;transition:width .22s ease;}
+.mobile-nav-btn.active::after{width:55%;}
+.edit-back-btn{display:none;position:fixed;bottom:1rem;right:1rem;z-index:95;background:var(--accent);color:var(--accent-contrast);border:none;border-radius:99px;padding:0.6rem 1.05rem;font-size:13px;font-weight:600;align-items:center;gap:0.4rem;box-shadow:0 6px 24px rgba(0,0,0,0.25);cursor:pointer;transition:transform .15s;}
+.edit-back-btn:active{transform:scale(0.95);}
+.edit-back-btn svg{width:15px;height:15px;}
+@media screen and (max-width:900px){
+  .main-container{flex-direction:column;height:auto;}
+  .form-panel{width:100%;min-width:100%;position:fixed;top:var(--header-height);left:0;right:0;bottom:0;z-index:90;display:none;overflow-y:auto;overflow-x:visible;}
+  .form-panel.active{display:block;}
+  #mobileNav:not(.nav-hidden) ~ * .form-panel,
+  body:has(#mobileNav:not(.nav-hidden)) .form-panel{bottom:var(--mobile-nav-height);}
+  .preview-panel{flex-direction:column;align-items:center;padding:0.5rem 0.5rem calc(var(--mobile-nav-height) + 0.75rem);min-height:calc(100vh - var(--header-height));}
+  .mobile-nav{display:flex;}
+  .nav-hidden{transform:translateY(110%);pointer-events:none;}
+  .preview-panel-inner{flex-direction:column;width:100%;}
+  .ats-sidebar{width:100%;position:static;display:flex;flex-direction:row;align-items:center;margin-top:0.6rem;}
+  .ats-sidebar-title{writing-mode:horizontal-tb;padding:0.5rem 0.7rem;white-space:nowrap;flex-shrink:0;border-bottom:none;border-right:1px solid var(--border);margin:0;align-self:stretch;display:flex;align-items:center;}
+  .ats-sidebar-ring{padding:0.35rem;}
+  .ats-sidebar-checks{flex-direction:row;flex-wrap:wrap;gap:3px 5px;padding:0.35rem;flex:1;align-content:center;}
+  .ats-sidebar-rerun{flex-shrink:0;border-top:none;border-left:1px solid var(--border);width:auto;padding:0 0.7rem;height:100%;white-space:nowrap;}
+  .cv-preview{min-height:auto;}
+  .cv-preview.cv-modern .cv-body{flex-direction:column;}
+  .cv-preview.cv-modern .cv-sidebar,.cv-preview.cv-modern .cv-main{width:100%;min-width:100%;}
+  .cv-preview.cv-colorful .cv-body{flex-direction:column;}
+  .cv-preview.cv-sidebar-bold{flex-direction:column;}
+  .cv-preview.cv-sidebar-bold .cv-sidebar-left,.cv-preview.cv-sidebar-bold .cv-main-right{width:100%;min-width:100%;}
+  .cv-preview.cv-nordic .cv-body{flex-direction:column;}
+  .cv-preview.cv-nordic .cv-aside{width:100%;}
+  .cv-preview.cv-swiss .cv-body{flex-direction:column;}
+  .cv-preview.cv-swiss .cv-side{width:100%;}
+  .cv-preview.cv-compact .cv-cols{flex-direction:column;}
+  .preview-toolbar{display:none;}
+  .preview-toolbar.visible{display:flex;}
+  /* mobile: the card is width-bound (~46% of stage width), so a huge stage only adds air.
+     Height = what's left of the fold after header/toolbar/info/nav so everything is visible;
+     the JS sizes the card to fill whatever height it gets. */
+  .tpl3d-stage{flex:none;min-height:0;height:clamp(270px,calc(100vh - 560px),560px);height:clamp(270px,calc(100dvh - 560px),560px);max-width:100%;}
+  .tpl3d-info .btn{min-height:34px;}
+  .modal-overlay{align-items:flex-end;}
+  .modal{width:100%;max-width:100%;border-radius:16px 16px 0 0;margin:0;max-height:88vh;border-bottom:none;}
+  .edit-back-btn.show{display:inline-flex;}
+  .form-grid-2{grid-template-columns:1fr;}
+  .summary-library{grid-template-columns:1fr;}
+  .app-header{padding:0 0.6rem;}
+  .brand-tag{display:none;}
+}
+
+/* ── Document toggle (CV / Cover letter) in preview toolbar ── */
+.doc-toggle{display:inline-flex;border:1px solid var(--border);border-radius:8px;overflow:hidden;flex-shrink:0;}
+.doc-toggle button{border:none;background:transparent;color:var(--text-secondary);font-size:12px;font-weight:600;padding:0.32rem 0.7rem;cursor:pointer;transition:background .15s,color .15s;}
+.doc-toggle button+button{border-left:1px solid var(--border);}
+.doc-toggle button.active{background:var(--text);color:var(--surface);}

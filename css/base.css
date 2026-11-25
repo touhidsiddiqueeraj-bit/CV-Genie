@@ -1,0 +1,37 @@
+/* Design tokens, reset and dark theme. Loaded first — every other sheet depends on these custom properties. */
+
+/* ============================================================
+   CV Genie v2.0 — Minimalist design system
+   Neutral palette · one accent · hairline borders · no clutter
+   ============================================================ */
+:root{
+  --bg:#f7f7f8;--surface:#ffffff;--surface-2:#f4f4f5;--surface-3:#fafafa;
+  --text:#18181b;--text-secondary:#71717a;--text-tertiary:#a1a1aa;
+  --border:#e4e4e7;--border-strong:#d4d4d8;
+  --accent:#18181b;--accent-contrast:#ffffff;
+  --focus:rgba(24,24,27,0.14);
+  --success:#16a34a;--success-bg:#f0fdf4;
+  --warning:#d97706;--danger:#dc2626;--danger-bg:#fef2f2;
+  --radius:8px;--radius-lg:12px;
+  --header-height:52px;--mobile-nav-height:60px;
+  --page-width:210mm;--page-height:297mm;
+  --cv-font-heading:'Georgia',serif;--cv-font-body:'Georgia',serif;--cv-color:#2563eb;
+  --font-ui:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+}
+html.dark{
+  --bg:#0b0b0d;--surface:#131316;--surface-2:#1c1c20;--surface-3:#17171a;
+  --text:#f4f4f5;--text-secondary:#a1a1aa;--text-tertiary:#71717a;
+  --border:#26262b;--border-strong:#3a3a41;
+  --accent:#f4f4f5;--accent-contrast:#111113;
+  --focus:rgba(244,244,245,0.16);
+  --success-bg:rgba(22,163,74,0.12);--danger-bg:rgba(220,38,38,0.12);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{-webkit-text-size-adjust:100%;}
+body{font-family:var(--font-ui);background:var(--bg);color:var(--text);min-height:100vh;-webkit-tap-highlight-color:transparent;transition:background 0.25s,color 0.25s;overflow-x:hidden;font-size:14px;line-height:1.5;}
+button{font-family:inherit;}
+input,textarea,select{font-family:inherit;}
+::selection{background:rgba(59,110,235,0.18);}
+:focus-visible{outline:2px solid var(--border-strong);outline-offset:2px;border-radius:4px;}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:0.01ms!important;transition-duration:0.01ms!important;}}
+

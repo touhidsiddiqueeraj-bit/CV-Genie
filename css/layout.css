@@ -1,0 +1,23 @@
+/* App shell: header, editor/preview split, panels, mobile navigation, responsive breakpoints. */
+
+/* ── Header ─────────────────────────────────────────────── */
+.app-header{background:var(--surface);border-bottom:1px solid var(--border);height:var(--header-height);padding:0 1rem;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:110;gap:0.5rem;}
+.brand{display:flex;align-items:center;gap:0.5rem;min-width:0;}
+.brand-mark{width:26px;height:26px;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
+.brand-mark svg{width:100%;height:100%;display:block;}
+.brand-name{font-size:15px;font-weight:700;letter-spacing:-0.01em;white-space:nowrap;}
+.brand-tag{font-size:10px;font-weight:600;color:var(--text-secondary);border:1px solid var(--border);border-radius:99px;padding:1px 7px;white-space:nowrap;}
+.header-actions{display:flex;gap:0.25rem;align-items:center;}
+
+
+/* ── Layout ─────────────────────────────────────────────── */
+.main-container{display:flex;height:calc(100vh - var(--header-height));}
+.form-panel{width:380px;min-width:380px;max-width:100vw;background:var(--surface);overflow-y:auto;overflow-x:visible;border-right:1px solid var(--border);}
+@media screen and (min-width:901px){.form-panel{width:440px;min-width:440px;}}
+.preview-panel{flex:1;overflow-y:auto;overflow-x:hidden;padding:1.25rem;display:flex;flex-direction:column;align-items:center;background:var(--bg);}
+.form-panel::-webkit-scrollbar{width:4px;}
+.form-panel::-webkit-scrollbar-track{background:transparent;}
+.form-panel::-webkit-scrollbar-thumb{background:var(--border-strong);border-radius:4px;}
+.preview-panel::-webkit-scrollbar{width:4px;}
+.preview-panel::-webkit-scrollbar-thumb{background:var(--border-strong);border-radius:4px;}
+

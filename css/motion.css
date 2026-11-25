@@ -1,0 +1,31 @@
+/* Motion layer: shared keyframes, entrance choreography, reduced-motion fallbacks. */
+
+/* ── Motion layer (v2.5 final polish) ─────────────────────────
+   All one-shot, transform/opacity only (GPU-friendly). The global
+   prefers-reduced-motion rule above neutralises every one of these. */
+@keyframes modalIn{from{opacity:0;transform:translateY(18px) scale(.965);}to{opacity:1;transform:none;}}
+@keyframes modalOut{from{opacity:1;transform:none;}to{opacity:0;transform:translateY(10px) scale(.98);}}
+@keyframes fadeOut{from{opacity:1;}to{opacity:0;}}
+@keyframes pageIn{from{opacity:0;transform:translateY(8px) scale(.995);}to{opacity:1;transform:none;}}
+@keyframes pop{0%{transform:scale(.85);}60%{transform:scale(1.06);}100%{transform:scale(1);}}
+@keyframes navPop{0%{transform:translateY(3px) scale(.8);}60%{transform:translateY(-2px) scale(1.06);}100%{transform:none;}}
+@keyframes headerIn{from{opacity:0;transform:translateY(-100%);}to{opacity:1;transform:none;}}
+@keyframes riseIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
+.page-anim{animation:pageIn .38s cubic-bezier(.2,.8,.3,1);}
+/* first-load choreography: html.boot is added in markup and removed by JS
+   ~1.4s after load, so these run exactly once and never replay on tab switches */
+html.boot .app-header{animation:headerIn .4s cubic-bezier(.2,.8,.3,1) backwards;}
+html.boot .smart-tabs-wrap{animation:riseIn .45s .06s cubic-bezier(.2,.8,.3,1) backwards;}
+html.boot .tab-content>*{animation:riseIn .42s cubic-bezier(.2,.8,.3,1) backwards;}
+html.boot .tab-content>*:nth-child(2){animation-delay:.05s;}
+html.boot .tab-content>*:nth-child(3){animation-delay:.09s;}
+html.boot .tab-content>*:nth-child(4){animation-delay:.13s;}
+html.boot .tab-content>*:nth-child(5){animation-delay:.17s;}
+html.boot .tab-content>*:nth-child(6){animation-delay:.21s;}
+html.boot .tab-content>*:nth-child(7){animation-delay:.25s;}
+html.boot .tab-content>*:nth-child(8){animation-delay:.29s;}
+html.boot .tab-content>*:nth-child(n+9){animation-delay:.33s;}
+html.boot .preview-toolbar{animation:riseIn .5s .14s cubic-bezier(.2,.8,.3,1) backwards;}
+html.boot .preview-panel-inner{animation:fadeIn .55s .2s ease backwards;}
+html.boot .ats-sidebar{animation:riseIn .5s .26s cubic-bezier(.2,.8,.3,1) backwards;}
+

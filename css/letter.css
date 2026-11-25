@@ -1,0 +1,15 @@
+/* Cover letter envelope preview. */
+
+/* ── Cover letter ── */
+.cl-letter{font-size:10.5pt;line-height:1.62;color:#1f2937;}
+.cl-name{font-family:var(--cv-font-heading);font-size:19pt;font-weight:700;line-height:1.15;margin:0 0 1mm;color:#111827;}
+.cl-title{font-size:10pt;color:var(--cv-color);font-weight:600;margin-bottom:1.6mm;}
+.cl-contact{font-size:8pt;color:#6b7280;display:flex;flex-wrap:wrap;gap:1mm 3mm;padding-bottom:3mm;border-bottom:1.5px solid var(--cv-color);margin-bottom:5mm;}
+.cl-contact a{color:inherit;text-decoration:none;}
+.cl-date{font-size:9pt;color:#6b7280;margin-bottom:4mm;}
+.cl-recipient{font-size:10pt;line-height:1.5;margin-bottom:4.5mm;}
+.cl-subject{font-size:10.5pt;font-weight:700;margin-bottom:4mm;}
+.cl-salutation{margin-bottom:2.5mm;}
+.cl-letter p.cl-p{margin:0 0 2.8mm;text-align:left;}
+.cl-signoff{margin-top:4mm;margin-bottom:1mm;}
+.cl-sig{font-family:var(--cv-font-heading);font-weight:700;font-size:11.5pt;color:var(--cv-color);}

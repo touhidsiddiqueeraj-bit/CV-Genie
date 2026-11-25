@@ -29,8 +29,8 @@ jobs:
       - name: Package app
         run: |
           mkdir -p dist
-          zip -j "dist/cv-genie-${{ github.ref_name }}.zip" index.html
-          sha256sum index.html | tee "dist/cv-genie-${{ github.ref_name }}.sha256"
+          zip -r "dist/cv-genie-${{ github.ref_name }}.zip" index.html css js manifest.webmanifest sw.js icons .nojekyll
+          cat index.html css/*.css js/*.js manifest.webmanifest sw.js | sha256sum | tee "dist/cv-genie-${{ github.ref_name }}.sha256"
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
