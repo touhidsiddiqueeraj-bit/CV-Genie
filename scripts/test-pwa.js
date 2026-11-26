@@ -85,7 +85,7 @@ const ok = (cond, label, extra) => { if (cond) { pass++; console.log('  PASS', l
   const offlineState = await page.evaluate(() => ({
     ready: document.readyState,
     hasApp: !!document.querySelector('.app-header'),
-    hasTemplates: typeof TEMPLATES !== 'undefined' && TEMPLATES.length === 30
+    hasTemplates: typeof TEMPLATES !== 'undefined' && TEMPLATES.length === 31
   })).catch(() => null);
   ok(offlineState && offlineState.hasApp && offlineState.hasTemplates, 'app boots fully offline', JSON.stringify(offlineState));
   await context.setOffline(false);

@@ -94,14 +94,14 @@ const check = (label, ok, extra = '') => {
     count: document.getElementById('tpl3dCount').textContent,
     liveRender: !!document.querySelector('#tpl3dTrack .tpl3d-card.is-center .cv-preview')
   }));
-  check('30 carousel cards', carousel.cards === 30, carousel.cards + ' cards, counter "' + carousel.count + '"');
+  check('31 carousel cards', carousel.cards === 31, carousel.cards + ' cards, counter "' + carousel.count + '"');
   check('center card is a live render (not wireframe)', carousel.liveRender);
 
   console.log('\n[6] service worker precaches the module graph');
   await page.evaluate(() => navigator.serviceWorker.ready);
   await page.waitForTimeout(600);
   const sw = await page.evaluate(async () => {
-    const c = await caches.open('cv-genie-v2.7');
+    const c = await caches.open('cv-genie-v2.8');
     const keys = await c.keys();
     const paths = keys.map(r => new URL(r.url).pathname);
     return {

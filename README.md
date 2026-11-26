@@ -2,7 +2,7 @@
 
 # CV Genie
 
-**A fast, private, offline-capable CV builder — 30 templates including Europass, a matching cover letter builder (deterministic + Gemini AI), a 7-category ATS engine with job-description matching, profile photos, and fully local PDF / DOCX / RTF / Markdown / TXT export. Installable as a PWA and as an Android APK built by CI.**
+**A fast, private, offline-capable CV builder — 31 templates including Europass, a matching cover letter builder (deterministic + Gemini AI), a 7-category ATS engine with job-description matching, profile photos, and fully local PDF / DOCX / RTF / Markdown / TXT export. Installable as a PWA and as an Android APK built by CI.**
 
 [![CI](https://github.com/touhidsiddiqueeraj-bit/CV-Genie/actions/workflows/ci.yml/badge.svg)](https://github.com/touhidsiddiqueeraj-bit/CV-Genie/actions/workflows/ci.yml)
 [![Release](https://github.com/touhidsiddiqueeraj-bit/CV-Genie/actions/workflows/release.yml/badge.svg)](https://github.com/touhidsiddiqueeraj-bit/CV-Genie/actions/workflows/release.yml)
@@ -23,8 +23,17 @@
 - **Zero friction** — no build step, no dependencies to install. One HTML file, open it and go.
 - **Installable & fully offline** — a real PWA: install it from the browser (the download icon in the header), and the service worker warms the app shell, the CDN libraries and the web fonts so CV Genie keeps working with no connection at all.
 - **ATS-aware** — a 7-category engine with ~25 concrete checks (plus job-description matching and an optional Gemini AI coach) scores your CV on every keystroke and shows exactly what to fix.
-- **Serious output** — vector PDF through the print dialog, an editable DOCX generated entirely in-browser, RTF, Markdown, plain text, plus bulk export of all 30 templates in one ZIP.
+- **Serious output** — vector PDF through the print dialog, an editable DOCX generated entirely in-browser, RTF, Markdown, plain text, plus bulk export of all 31 templates in one ZIP.
 - **Works everywhere** — responsive down to phone screens, dark mode, and an installable Android APK built by CI.
+
+## ✦ What's new in v2.8
+
+**The Scholar template — a 31st design modelled on a real researcher's CV.**
+
+| Change | Details |
+|---|---|
+| **Scholar template** | Recreates the modern **Europass-editor look** from a reference CV PDF: a full-bleed navy `#003399` masthead with a *Curriculum Vitae* eyebrow, the name and tagline beside a white-framed portrait (respects the app-wide photo shape and size controls); **IBM Plex Sans** typography, loaded as a web font and cached for offline; letter-spaced small-caps section headers over thin navy rules; a labelled **Personal Information** grid (Address / Telephone / Email / Web); company-first experience and institution-first education entries with right-aligned grey dates; and the signature **6-square proficiency ratings** for skills and languages — square counts are hashed from the skill text (language levels map Native/C2 = 6 squares down to A1 = 1), so every CV renders deterministically. |
+| **Verified** | Template registry, carousel, service-worker precache and the Playwright suites are updated to 31 templates; a gallery screenshot was added; the service-worker cache is bumped to `cv-genie-v2.8`. |
 
 ## ✦ What's new in v2.7
 
@@ -128,7 +137,7 @@ Every keystroke updates the A4 preview (debounced 200 ms). Sections are collapsi
 
 ### Profile photos
 
-Upload a picture, crop and rotate it in-browser (Cropper.js), then choose its **shape** — circle, rounded or square — and its **size** (S / M / L). The photo flows into all 30 templates: an ID-style photo in the label gutter on Europass, a framed circle on Modern, a colour-backed circle on Sidebar Bold. Shape and size controls update every template instantly, and the settings travel with saves, share links and version history.
+Upload a picture, crop and rotate it in-browser (Cropper.js), then choose its **shape** — circle, rounded or square — and its **size** (S / M / L). The photo flows into all 31 templates: an ID-style photo in the label gutter on Europass, a white-framed band photo on Scholar, a framed circle on Modern, a colour-backed circle on Sidebar Bold. Shape and size controls update every template instantly, and the settings travel with saves, share links and version history.
 
 ### ATS analyser
 
@@ -165,7 +174,7 @@ Toggle **CV / Letter** above the preview to switch documents; exports (PDF, RTF,
 
 ### Template carousel — the default CV view
 
-The CV preview **is** a **cover-flow style 3D carousel** — no gallery to open: your selected design sits large at the centre, the neighbouring designs flank it on both sides at an angle, and two more peek from the edges. Every page is a **live render of your own CV** in that design — not a static wireframe — in your current colour and fonts, updating as you edit. Drag or swipe, use the arrow keys, or click a side page to rotate it to the centre — **the design you centre on is applied automatically** (the counter shows where you are, e.g. *3 / 30*, and the ring wraps around, so you can spin through all 30 designs endlessly). Click the centre page or **Full view** (or the first toolbar button) to zoom into the full-page document view and back. For a quick switch, the toolbar dropdown still works. On mobile, the carousel is the viewpoint behind the floating **Preview** button.
+The CV preview **is** a **cover-flow style 3D carousel** — no gallery to open: your selected design sits large at the centre, the neighbouring designs flank it on both sides at an angle, and two more peek from the edges. Every page is a **live render of your own CV** in that design — not a static wireframe — in your current colour and fonts, updating as you edit. Drag or swipe, use the arrow keys, or click a side page to rotate it to the centre — **the design you centre on is applied automatically** (the counter shows where you are, e.g. *3 / 31*, and the ring wraps around, so you can spin through all 31 designs endlessly). Click the centre page or **Full view** (or the first toolbar button) to zoom into the full-page document view and back. For a quick switch, the toolbar dropdown still works. On mobile, the carousel is the viewpoint behind the floating **Preview** button.
 
 ![Template carousel](docs/images/gallery.png)
 
@@ -177,13 +186,13 @@ Six font pairings (now properly loaded as web fonts, so exports match the previe
 
 ### Export — all local, all the time
 
-Pick any combination of **PDF (print dialog)** — the page collapses to just the active document and your browser's *Save as PDF* produces crisp vector text — **PDF (instant)** for one-click raster drafts, **DOCX** generated entirely in-browser, instant **RTF**, **Markdown** and **plain text** — or export **all 30 templates** in one ZIP. The export dialog follows the active document: cover letters export as PDF / DOCX / RTF / Markdown / TXT. No format touches a server; DOCX is a complete OOXML package (Word, LibreOffice and Google Docs all open it) carrying your accent colour and font pairing.
+Pick any combination of **PDF (print dialog)** — the page collapses to just the active document and your browser's *Save as PDF* produces crisp vector text — **PDF (instant)** for one-click raster drafts, **DOCX** generated entirely in-browser, instant **RTF**, **Markdown** and **plain text** — or export **all 31 templates** in one ZIP. The export dialog follows the active document: cover letters export as PDF / DOCX / RTF / Markdown / TXT. No format touches a server; DOCX is a complete OOXML package (Word, LibreOffice and Google Docs all open it) carrying your accent colour and font pairing.
 
 ![Export dialog](docs/images/export.png)
 
 ### Install it — offline forever
 
-CV Genie is a real installable PWA. Click the **install icon** in the header (Chrome/Edge desktop, or *Add to Home Screen* on mobile) and it runs in its own window, launches instantly, and — because the service worker precaches the app shell and warms the CDN libraries and web fonts — **keeps working with no connection at all**: editing, all 30 templates, the ATS engine, deterministic cover letters and every export format. Navigations are network-first, so a deploy lands the next time you're online and refresh. The only thing that needs the network is the optional Gemini AI.
+CV Genie is a real installable PWA. Click the **install icon** in the header (Chrome/Edge desktop, or *Add to Home Screen* on mobile) and it runs in its own window, launches instantly, and — because the service worker precaches the app shell and warms the CDN libraries and web fonts — **keeps working with no connection at all**: editing, all 31 templates, the ATS engine, deterministic cover letters and every export format. Navigations are network-first, so a deploy lands the next time you're online and refresh. The only thing that needs the network is the optional Gemini AI.
 
 ### Android app (TWA APK)
 
@@ -228,7 +237,7 @@ Importing pushes an undo snapshot first (Ctrl+Z restores your previous CV) and a
 
 ## ✦ Templates
 
-All 30 templates rendered with the same sample data:
+All 31 templates rendered with the same sample data:
 
 | | | |
 |:---:|:---:|:---:|
@@ -252,6 +261,8 @@ All 30 templates rendered with the same sample data:
 | **Primo** — iconed sidebar, skill bars | **Diamond** — centred, ◆-framed headings | **Berlin** — ink header band, ultra-clean |
 | [![Monogram](docs/images/templates/monogram.png)](docs/images/templates/monogram.png) | [![Wall Street](docs/images/templates/wallstreet.png)](docs/images/templates/wallstreet.png) | [![Medic](docs/images/templates/medic.png)](docs/images/templates/medic.png) |
 | **Monogram** — initials badge, airy serif | **Wall Street** — finance-grade navy serif | **Medic** — clinical clean, contact grid |
+| [![Scholar](docs/images/templates/scholar.png)](docs/images/templates/scholar.png) | | |
+| **Scholar** — modern Europass look, navy masthead, skill squares | | |
 
 ### About the Europass template
 
@@ -347,7 +358,7 @@ A few conventions that keep the graph debuggable:
 │   ├── layout.css              # app shell, panels, responsive breakpoints
 │   ├── components.css          # buttons, forms, tabs, modals, toasts, …
 │   ├── preview.css             # A4 document surface
-│   ├── templates.css           # the 30 template designs
+│   ├── templates.css           # the 31 template designs
 │   ├── carousel.css            # 3D template ring
 │   ├── letter.css              # cover-letter envelope
 │   ├── ats.css                 # ATS panel, JD matcher, import UI
@@ -360,7 +371,7 @@ A few conventions that keep the graph debuggable:
 ├── .well-known/assetlinks.json# Android TWA site association
 ├── android-signing/            # committed TWA wrapper keystore (+ rotation notes)
 ├── docs/images/                # screenshots used by this README
-│   └── templates/*.png         # all 30 template previews
+│   └── templates/*.png         # all 31 template previews
 ├── scripts/
 │   ├── validate.js             # CI validation (module graph, cycles, bridge, SW shell, registry, PWA assets)
 │   ├── apk-driver.js           # non-interactive Bubblewrap runner for the APK workflow
@@ -394,7 +405,7 @@ The whole CV is serialised by `getState()` into one plain object (template, colo
 
 ### The service worker
 
-`sw.js` precaches the app shell at install (`./`, `index.html`, manifest, icons, **every `js/` module and `css/` stylesheet** — CI fails if a file is missing from the list), warms the exact CDN libraries and web fonts (woff2 URLs parsed out of the Google Fonts CSS) right after activation so the **first** visit already survives going offline, serves assets cache-first, and handles navigations network-first with a cached fallback so deploys land on the next refresh. The Gemini API is deliberately never cached — AI features simply wait for a connection. The cache name is versioned (`cv-genie-v2.7`); bump it when you want every install to refresh its cache. It is the app's **only** registration (from `js/main.js` on secure contexts; CI fails the build if a second service worker — e.g. an inline Blob worker — ever appears), so the caching strategy above is the whole truth.
+`sw.js` precaches the app shell at install (`./`, `index.html`, manifest, icons, **every `js/` module and `css/` stylesheet** — CI fails if a file is missing from the list), warms the exact CDN libraries and web fonts (woff2 URLs parsed out of the Google Fonts CSS) right after activation so the **first** visit already survives going offline, serves assets cache-first, and handles navigations network-first with a cached fallback so deploys land on the next refresh. The Gemini API is deliberately never cached — AI features simply wait for a connection. The cache name is versioned (`cv-genie-v2.8`); bump it when you want every install to refresh its cache. It is the app's **only** registration (from `js/main.js` on secure contexts; CI fails the build if a second service worker — e.g. an inline Blob worker — ever appears), so the caching strategy above is the whole truth.
 
 ### Keyboard shortcuts & accessibility
 
@@ -459,13 +470,13 @@ NODE_PATH="$(npm root -g)" node scripts/test-ats-v2.js
 ### Testing exports, the letter and the PWA
 
 ```bash
-NODE_PATH="$(npm root -g)" node scripts/test-modules.js        # 16 checks — module graph, window bridge, 30 templates, SW precache
+NODE_PATH="$(npm root -g)" node scripts/test-modules.js        # 16 checks — module graph, window bridge, 31 templates, SW precache
 NODE_PATH="$(npm root -g)" node scripts/test-letter-edit.js     # 67 checks — full letter editing, envelope, exports agreement
 NODE_PATH="$(npm root -g)" node scripts/test-export-docx.js   # 16 checks — DOCX packages, letter mode, LibreOffice round-trip
 NODE_PATH="$(npm root -g)" node scripts/test-pwa.js            # 22 checks — manifest, SW lifecycle, offline boot, cache warm
 ```
 
-`test-modules.js` guards the modular architecture itself: the ES-module graph loads with zero console errors and zero failed requests, all ten stylesheets load in cascade order, the window bridge exposes the public API (with live getters for mutable state), every one of the 30 templates renders real content, the carousel shows all designs as live renders, the service worker precaches every module and stylesheet, and the undo/redo providers are wired. `test-letter-edit.js` drives the real Letter tab: default layout and ids, smart fallbacks, every envelope override, add/remove/renumber of paragraphs, the single-paragraph guard, writer replacement, state round-trip and legacy `p1`–`p4` migration, and asserts the Markdown, plain-text, RTF and DOCX builders all carry the same envelope. `test-export-docx.js` drives the real export buttons, saves the downloads, then validates the ZIP/OOXML structure and content with Python's `zipfile` + `minidom` and converts one file with headless LibreOffice to prove it opens. `test-pwa.js` runs the service worker on `127.0.0.1` (a secure context) and asserts the full offline story — including that the Gemini API is never cached.
+`test-modules.js` guards the modular architecture itself: the ES-module graph loads with zero console errors and zero failed requests, all ten stylesheets load in cascade order, the window bridge exposes the public API (with live getters for mutable state), every one of the 31 templates renders real content, the carousel shows all designs as live renders, the service worker precaches every module and stylesheet, and the undo/redo providers are wired. `test-letter-edit.js` drives the real Letter tab: default layout and ids, smart fallbacks, every envelope override, add/remove/renumber of paragraphs, the single-paragraph guard, writer replacement, state round-trip and legacy `p1`–`p4` migration, and asserts the Markdown, plain-text, RTF and DOCX builders all carry the same envelope. `test-export-docx.js` drives the real export buttons, saves the downloads, then validates the ZIP/OOXML structure and content with Python's `zipfile` + `minidom` and converts one file with headless LibreOffice to prove it opens. `test-pwa.js` runs the service worker on `127.0.0.1` (a secure context) and asserts the full offline story — including that the Gemini API is never cached.
 
 ### Regenerating README screenshots
 

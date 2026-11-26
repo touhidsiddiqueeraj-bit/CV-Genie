@@ -28,14 +28,14 @@ const bad = (m) => { fail++; console.log('  FAIL ' + m); };
 
   // 3. template count on live site
   const count = await page.evaluate(() => (window.CVG?.templates || window.TEMPLATES || []).length);
-  count === 30 ? ok('30 templates on live site') : bad(`template count = ${count}`);
+  count === 31 ? ok('31 templates on live site') : bad(`template count = ${count}`);
 
   // 4. carousel cards
   const cards = await page.evaluate(() => document.querySelectorAll('.tpl-card, .carousel-card, [data-tpl]').length);
-  (cards === 30 || cards === 0) ? (cards === 30 ? ok('30 carousel cards rendered') : bad('carousel cards not found')) : bad(`carousel cards = ${cards}`);
+  (cards === 31 || cards === 0) ? (cards === 31 ? ok('31 carousel cards rendered') : bad('carousel cards not found')) : bad(`carousel cards = ${cards}`);
 
   // 5. v2.6 + v2.7 templates render HTML
-  for (const t of ['harvard', 'cascade', 'functional', 'pastel', 'vogue', 'tech', 'primo', 'diamond', 'berlin', 'monogram', 'wallstreet', 'medic']) {
+  for (const t of ['harvard', 'cascade', 'functional', 'pastel', 'vogue', 'tech', 'primo', 'diamond', 'berlin', 'monogram', 'wallstreet', 'medic', 'scholar']) {
     const len = await page.evaluate((id) => {
       const el = document.querySelector(`[data-tpl="${id}"], .tpl-${id}`);
       return el ? el.innerHTML.length : (window.renderTemplate ? String(window.renderTemplate(id, { name: 'Test' }) || '').length : 0);

@@ -5,7 +5,7 @@
    - Navigations are network-first (updates land on refresh) with a cached
      fallback, so edits continue offline and you never get a dinosaur.
    - The Gemini API is deliberately NOT cached — it is never needed offline. */
-const CACHE = 'cv-genie-v2.7';
+const CACHE = 'cv-genie-v2.8';
 const APP_SHELL = [
   './',
   './index.html',
@@ -66,7 +66,7 @@ const CDN_WARM = [
   'https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js',
   'https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css',
   'https://cdnjs.cloudflare.com/ajax/libs/lz-string/1.5.0/lz-string.min.js',
-  'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Lora:ital,wght@0,400;0,600;1,400&family=Roboto:wght@300;400;500;700&family=Montserrat:wght@400;600;700;800&family=Merriweather:wght@300;400;700&family=Playfair+Display:wght@400;600;700&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&family=Poppins:wght@300;400;500;600;700&display=swap'
+  'https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;600;700&family=Inter:wght@300;400;500;600;700;800&family=Lora:ital,wght@0,400;0,600;1,400&family=Roboto:wght@300;400;500;700&family=Montserrat:wght@400;600;700;800&family=Merriweather:wght@300;400;700&family=Playfair+Display:wght@400;600;700&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&family=Poppins:wght@300;400;500;600;700&display=swap'
 ];
 
 async function warmCdnCache() {
