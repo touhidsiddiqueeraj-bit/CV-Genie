@@ -3,7 +3,7 @@
  * (colour, font pairing), the control pickers built by buildAll(), and the
  * Cropper-powered photo editor. */
 
-import { applyPhotoShape, applyPhotoSize, currentColor, currentFontPair, currentTemplate, photoData, photoShape, photoSize, sectionOrder, setCurrentColor, setCurrentFontPair, setPhotoData, setSectionOrder } from './app-state.js';
+import { applyPhotoShape, applyPhotoSize, currentColor, currentFontPair, currentTemplate, photoData, photoShape, photoShapeCustom, photoSize, sectionOrder, setCurrentColor, setCurrentFontPair, setPhotoData, setPhotoShapeCustom, setSkillLevels, skillLevels, setSectionOrder } from './app-state.js';
 import { COLORS, FONT_PAIRS, LANG_LEVELS, SKILL_CATEGORIES, SUMMARY_TEMPLATES, TEMPLATES, TEMPLATE_META } from './config.js';
 import { updatePreview } from './render.js';
 import { sanitizeInput, showToast, uiAnimateClose, updateCharCount } from './ui.js';
@@ -12,6 +12,34 @@ let pendingSummaryIdx=-1;
 let cropperInstance=null;
 const selectedSkills=new Set();
 
+/* ── Skill proficiency sliders (v2.10) ──
+ * One row per comma-separated skill in the Skills textarea: a 1–5 range
+ * slider + live badge. Levels feed the rating designs (Scholar squares,
+ * Primo bars) and persist with the document state. Rebuilding the rows on
+ * textarea edits is fine — slider drags only update the badge in place. */
+export function renderSkillLevels(){
+  const box=document.getElementById('skillLevels');
+  if(!box)return;
+  const skills=(document.getElementById('skills')?.value||'').split(',').map(s=>s.trim()).filter(Boolean);
+  if(!skills.length){box.innerHTML='';box.classList.remove('has-rows');return;}
+  box.classList.add('has-rows');
+  box.innerHTML=skills.map(s=>{
+    const lv=Math.min(5,Math.max(0,parseInt(skillLevels[s],10)||0));
+    return `<div class="skill-level-row" data-skill="${s.replace(/"/g,'&quot;')}"><span class="skill-level-name" title="${s.replace(/"/g,'&quot;')}">${s.replace(/</g,'&lt;')}</span><span class="skill-level-ctl"><input type="range" min="1" max="5" step="1" value="${lv||4}" aria-label="${s.replace(/"/g,'&quot;')} level"><span class="skill-level-badge">${lv||4}/5</span></span></div>`;
+  }).join('');
+  box.querySelectorAll('.skill-level-row input[type=range]').forEach(r=>{
+    r.addEventListener('input',()=>{
+      const row=r.closest('.skill-level-row');
+      const sk=row?.dataset.skill||'';
+      const v=parseInt(r.value,10)||1;
+      row.querySelector('.skill-level-badge').textContent=v+'/5';
+      const next={...skillLevels,[sk]:v};
+      setSkillLevels(next);
+      updatePreview();
+    });
+  });
+}
+export function setSkillLevelInput(){/* slider events are wired directly in renderSkillLevels; kept for API symmetry */}
 export function buildAll(){
     const colorHtml=COLORS.map(c=>`<span class="color-dot${c===currentColor?' active':''}" style="background:${c}" onclick="setColor('${c}',this)" title="${c}"></span>`).join('');
     document.getElementById('colorPresets').innerHTML=colorHtml;
@@ -29,7 +57,7 @@ export function closeConfirmDialog(){uiAnimateClose('confirmDialog');pendingSumm
 document.getElementById('confirmApplyBtn').addEventListener('click',function(){if(pendingSummaryIdx<0)return;document.getElementById('summary').value=SUMMARY_TEMPLATES[pendingSummaryIdx].text;updatePreview();updateCharCount();document.getElementById('confirmDialog').style.display='none';showToast('Summary applied');pendingSummaryIdx=-1;});
 export function renderSkillCloud(){const cat=SKILL_CATEGORIES[document.getElementById('skillCategory').value];document.getElementById('skillCloud').innerHTML=(cat?cat.skills:[]).map(s=>`<span class="skill-chip${selectedSkills.has(s)?' selected':''}" onclick="toggleSkill('${s}',this)">${s}</span>`).join('');}
 export function toggleSkill(s,el){if(selectedSkills.has(s)){selectedSkills.delete(s);el.classList.remove('selected');}else{selectedSkills.add(s);el.classList.add('selected');}}
-export function addSelectedSkills(){if(selectedSkills.size===0)return;const curSkills=document.getElementById('skills').value;const existing=curSkills?curSkills.split(',').map(s=>s.trim()).filter(s=>s.length>0):[];const newSkills=Array.from(selectedSkills).filter(s=>!existing.some(e=>e.toLowerCase()===s.toLowerCase()));if(newSkills.length===0){showToast('Skills already added');selectedSkills.clear();renderSkillCloud();return;}document.getElementById('skills').value=existing.length?existing.join(', ')+', '+newSkills.join(', '):newSkills.join(', ');selectedSkills.clear();renderSkillCloud();updatePreview();showToast(newSkills.length+' skill(s) added');}
+export function addSelectedSkills(){if(selectedSkills.size===0)return;const curSkills=document.getElementById('skills').value;const existing=curSkills?curSkills.split(',').map(s=>s.trim()).filter(s=>s.length>0):[];const newSkills=Array.from(selectedSkills).filter(s=>!existing.some(e=>e.toLowerCase()===s.toLowerCase()));if(newSkills.length===0){showToast('Skills already added');selectedSkills.clear();renderSkillCloud();return;}document.getElementById('skills').value=existing.length?existing.join(', ')+', '+newSkills.join(', '):newSkills.join(', ');selectedSkills.clear();renderSkillCloud();renderSkillLevels();updatePreview();showToast(newSkills.length+' skill(s) added');}
 export function setFontPair(i,btn){setCurrentFontPair(i);document.querySelectorAll('.font-pair-btn').forEach(b=>b.classList.remove('selected'));document.querySelectorAll('.font-pair-selector').forEach(sel=>{const b=sel.querySelector(`.font-pair-btn:nth-child(${i+1})`);if(b)b.classList.add('selected');});const fp=FONT_PAIRS[i];document.documentElement.style.setProperty('--cv-font-heading',fp.heading);document.documentElement.style.setProperty('--cv-font-body',fp.body);}
 export function initSectionSortable(){const c=document.getElementById('formSectionsContainer');if(!c)return;if(c._sortable)c._sortable.destroy();c._sortable=new Sortable(c,{animation:200,handle:'.section-drag-handle',draggable:'.section-draggable',onEnd:function(){setSectionOrder(Array.from(c.querySelectorAll('.section-draggable')).map(el=>el.dataset.section));updatePreview();}});}
 export function toggleSection(h){const c=h.parentElement.querySelector('.section-content');const chev=h.querySelector('.chev');if(!c)return;if(c.classList.contains('collapsed')){c.classList.remove('collapsed');if(chev)chev.classList.add('open');c.style.maxHeight=c.scrollHeight+'px';setTimeout(()=>{if(!c.classList.contains('collapsed'))c.style.maxHeight='none';},350);}else{c.style.maxHeight=c.scrollHeight+'px';requestAnimationFrame(()=>{c.classList.add('collapsed');c.style.maxHeight='0';if(chev)chev.classList.remove('open');});}}
@@ -38,12 +66,24 @@ export function handlePhoto(e){const f=e.target.files[0];if(!f||f.size>5*1024*10
 export function renderPhotoControls(){
   const c=document.getElementById('photoControls');
   if(!c)return;
-  c.classList.toggle('visible',!!photoData);
+  /* v2.10: the shape/size chooser is always visible (users pick how the photo
+   * will be displayed before or after importing); only Remove needs a photo. */
+  c.classList.add('visible');
+  c.classList.toggle('no-photo',!photoData);
   document.querySelectorAll('#photoShapeSeg button').forEach(b=>b.classList.toggle('active',b.dataset.shape===photoShape));
   document.querySelectorAll('#photoSizeSeg button').forEach(b=>b.classList.toggle('active',b.dataset.size===photoSize));
 }
-export function setPhotoShape(s,btn){applyPhotoShape(s);document.querySelectorAll('#photoShapeSeg button').forEach(b=>b.classList.remove('active'));if(btn)btn.classList.add('active');updatePreview();}
+export function setPhotoShape(s,btn){applyPhotoShape(s);setPhotoShapeCustom(true);document.querySelectorAll('#photoShapeSeg button').forEach(b=>b.classList.remove('active'));if(btn)btn.classList.add('active');updatePreview();}
 export function setPhotoSize(s,btn){applyPhotoSize(s);document.querySelectorAll('#photoSizeSeg button').forEach(b=>b.classList.remove('active'));if(btn)btn.classList.add('active');updatePreview();}
+/* Apply a template's natural photo shape while the user hasn't picked one
+ * themselves (Scholar → square; others → circle). Called on every template
+ * switch and after state restore. */
+export function applyTemplatePhotoDefaults(t){
+  if(photoShapeCustom)return;
+  const def=(t&&TEMPLATE_META[t]&&TEMPLATE_META[t].photoShape)||'circle';
+  if(def!==photoShape){applyPhotoShape(def);updatePreview();}
+  document.querySelectorAll('#photoShapeSeg button').forEach(b=>b.classList.toggle('active',b.dataset.shape===photoShape));
+}
 export function removePhoto(){setPhotoData(null);document.getElementById('photoPreview').style.display='none';document.getElementById('photoPreview').src='';document.getElementById('photoPlaceholder').style.display='block';renderPhotoControls();updatePreview();showToast('Photo removed');}
 export function reorderFormSections(){const c=document.getElementById('formSectionsContainer');if(!c)return;const ex={};c.querySelectorAll('.section-draggable').forEach(el=>ex[el.dataset.section]=el);c.innerHTML='';const done=new Set();sectionOrder.forEach(k=>{if(ex[k]&&!done.has(k)){c.appendChild(ex[k]);done.add(k);}});Object.keys(ex).forEach(k=>{if(!done.has(k)){c.appendChild(ex[k]);done.add(k);if(!sectionOrder.includes(k))sectionOrder.push(k);}});}
 

@@ -18,6 +18,12 @@ export let currentFontPair=0;
 export let photoData=null;
 export let photoShape='circle';
 export let photoSize='md';
+/* v2.10: per-skill proficiency levels (1–5), consumed by the rating designs
+ * (Scholar squares, Primo bars). Keys are the exact skill strings. */
+export let skillLevels={};
+/* False until the user explicitly picks a shape — while false, each template
+ * may impose its natural default (Scholar → square, most others → circle). */
+export let photoShapeCustom=false;
 export let activeDoc='cv'; /* 'cv' | 'letter' — which document the preview & exports target */
 export let sectionOrder=['summary','skills','experience','education','publications','projects','volunteering','interests','languages'];
 
@@ -27,6 +33,8 @@ export const setCurrentFontPair=v=>{currentFontPair=v;};
 export const setPhotoData=v=>{photoData=v;};
 export const applyPhotoShape=v=>{photoShape=v;};
 export const applyPhotoSize=v=>{photoSize=v;};
+export const setSkillLevels=v=>{skillLevels=v&&typeof v==='object'?v:{};};
+export const setPhotoShapeCustom=v=>{photoShapeCustom=!!v;};
 export const applyActiveDoc=v=>{activeDoc=v;};
 export const setSectionOrder=v=>{sectionOrder=v;};
 

@@ -310,9 +310,10 @@
 .cv-preview.cv-scholar .cv-sch-name{font-family:inherit;font-size:23pt;font-weight:600;line-height:1.15;margin:0 0 1.2mm;color:#ffffff;}
 .cv-preview.cv-scholar .cv-sch-tag{font-size:9.6pt;font-weight:400;opacity:0.92;line-height:1.4;}
 .cv-preview.cv-scholar .cv-sch-photo{position:absolute;top:5.5mm;right:13mm;}
-.cv-preview.cv-scholar .cv-sch-photo .cv-photo{display:block;width:20mm;height:30mm;border-radius:0;}
-.cv-preview.cv-scholar .cv-sch-photo .ph-circle{border-radius:50%;}
-.cv-preview.cv-scholar .cv-sch-photo .ph-rounded{border-radius:8%;}
+/* v2.10: the photo follows the shape/size chosen in the photo section
+   (Scholar defaults to a clean square with a white keyline) instead of the
+   old fixed 20×30mm portrait box, which turned circles into ellipses. */
+.cv-preview.cv-scholar .cv-sch-photo .cv-photo{display:block;border:1pt solid #ffffff;box-sizing:content-box;max-width:none;}
 .cv-preview.cv-scholar .cv-sch-pi{background:#f0f2f7;padding:4.6mm 13mm 5.2mm;}
 .cv-preview.cv-scholar .cv-sch-pi h2{font-family:inherit;font-size:7.2pt;font-weight:600;letter-spacing:0.32em;text-transform:uppercase;color:#1a3fa0;border-bottom:none;padding-bottom:0;margin:0 0 2.2mm;}
 .cv-preview.cv-scholar .cv-sch-pi-grid{display:grid;grid-template-columns:1fr 1fr;gap:2.3mm 8mm;}

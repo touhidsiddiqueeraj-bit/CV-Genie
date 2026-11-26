@@ -34,7 +34,7 @@ export const TEMPLATE_META={
   monogram:{name:'Monogram',desc:'Initials badge, airy serif'},
   wallstreet:{name:'Wall Street',desc:'Finance-grade navy serif'},
   medic:{name:'Medic',desc:'Clinical clean, labeled contact grid'},
-  scholar:{name:'Scholar',desc:'Modern Europass look: IBM Plex, navy masthead, skill squares'}
+  scholar:{name:'Scholar',desc:'Modern Europass look: IBM Plex, navy masthead, skill squares',photoShape:'square'}
 };
 /* Miniature layout wireframes for the template gallery */
 export const THUMB_WIRES={

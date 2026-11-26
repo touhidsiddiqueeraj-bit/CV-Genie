@@ -4,7 +4,7 @@
 
 import { mobileNav } from './carousel.js';
 import { getEducation, getExperiences } from './cvdata.js';
-import { addEduSilent, addExpSilent, addLangSilent, addProjSilent, addPubSilent, addVolSilent, initDragDrop } from './form.js';
+import { addEduSilent, addExpSilent, addLangSilent, addProjSilent, addPubSilent, addVolSilent, initDragDrop, renderSkillLevels } from './form.js';
 import { CVI_GEMINI_DEFAULT, cviCallGemini, cviGetKey, cviGetModel, cviSetKey, cviSetModel } from './gemini.js';
 import { _updatePreviewNow, updatePreview } from './render.js';
 import { persistState } from './state.js';
@@ -19,7 +19,7 @@ let pendingLinkedInData=null;
    first page on real exports. Rows are joined to real visual lines; the
    parser's clean() strips the "|" column separators it inserts. */
 export async function importLinkedInPDF(e){const f=e.target.files[0];if(!f)return;document.getElementById('linkedInProgress').style.display='block';document.getElementById('linkedInProgressFill').style.width='20%';document.getElementById('linkedInProgressText').textContent='Reading…';try{const b=await f.arrayBuffer();document.getElementById('linkedInProgressFill').style.width='50%';const pdf=await pdfjsLib.getDocument({data:b}).promise;const out=await cviPdfToLines(pdf);document.getElementById('linkedInProgressFill').style.width='80%';pendingLinkedInData=parseLinkedInText(out.text);const pv=[];if(pendingLinkedInData.name)pv.push(['Name',pendingLinkedInData.name]);if(pendingLinkedInData.title)pv.push(['Title',pendingLinkedInData.title]);if(pendingLinkedInData.email)pv.push(['Email',pendingLinkedInData.email]);if(pendingLinkedInData.phone)pv.push(['Phone',pendingLinkedInData.phone]);if(pendingLinkedInData.location)pv.push(['Location',pendingLinkedInData.location]);if(pendingLinkedInData.summary)pv.push(['Summary',pendingLinkedInData.summary.substring(0,80)+'…']);if(pendingLinkedInData.experiences&&pendingLinkedInData.experiences.length)pv.push(['Experience',pendingLinkedInData.experiences.length+' position(s)']);if(pendingLinkedInData.education&&pendingLinkedInData.education.length)pv.push(['Education',pendingLinkedInData.education.length+' degree(s)']);if(pendingLinkedInData.languages&&pendingLinkedInData.languages.length)pv.push(['Languages',pendingLinkedInData.languages.length+' language(s)']);if(pendingLinkedInData.skills)pv.push(['Skills',pendingLinkedInData.skills.substring(0,80)+'…']);document.getElementById('linkedInPreviewTable').innerHTML=pv.map(([l,v])=>`<tr><td>${l}</td><td>${v}</td></tr>`).join('');document.getElementById('linkedInPreview').style.display='block';document.getElementById('linkedInProgressFill').style.width='100%';document.getElementById('linkedInProgressText').textContent='Review below';setTimeout(()=>document.getElementById('linkedInProgress').style.display='none',2000);}catch(err){document.getElementById('linkedInProgressText').textContent='Could not read PDF';setTimeout(()=>document.getElementById('linkedInProgress').style.display='none',3000);}}
-export function applyLinkedInData(){if(!pendingLinkedInData)return;const d=pendingLinkedInData;if(d.name)document.getElementById('fullName').value=d.name;if(d.title)document.getElementById('title').value=d.title;if(d.email)document.getElementById('email').value=d.email;if(d.phone)document.getElementById('phone').value=d.phone;if(d.location)document.getElementById('location').value=d.location;if(d.summary)document.getElementById('summary').value=d.summary.substring(0,300);if(d.skills)document.getElementById('skills').value=d.skills;document.getElementById('experienceList').innerHTML='';(d.experiences||[]).forEach(e=>{addExpSilent();const is=document.querySelectorAll('#experienceList .dynamic-item');const l=is[is.length-1];if(l){l.querySelectorAll('input')[0].value=e.title||'';l.querySelectorAll('input')[1].value=e.company||'';l.querySelectorAll('input')[2].value=e.dates||'';l.querySelector('textarea').value=e.description||'';}});if(!d.experiences||!d.experiences.length)addExpSilent();document.getElementById('volunteeringList').innerHTML='';(d.volunteering||[]).forEach(e=>{addVolSilent();const is=document.querySelectorAll('#volunteeringList .dynamic-item');const l=is[is.length-1];if(l){l.querySelectorAll('input')[0].value=e.organization||'';l.querySelectorAll('input')[1].value=e.role||'';l.querySelector('textarea').value=e.description||'';}});if(d.interests)document.getElementById('interests').value=d.interests;document.getElementById('educationList').innerHTML='';(d.education||[]).forEach(e=>{addEduSilent();const is=document.querySelectorAll('#educationList .dynamic-item');const l=is[is.length-1];if(l){l.querySelectorAll('input')[0].value=e.degree||'';l.querySelectorAll('input')[1].value=e.institution||'';l.querySelectorAll('input')[2].value=e.year||'';}});if(!d.education||!d.education.length)addEduSilent();document.getElementById('languageList').innerHTML='';(d.languages||[]).forEach(e=>{addLangSilent();const is=document.querySelectorAll('#languageList .dynamic-item');const l=is[is.length-1];if(l){l.querySelector('input').value=e.language||'';l.querySelector('select').value=e.level||'';}});if(!d.languages||!d.languages.length)addLangSilent();updatePreview();initDragDrop();document.getElementById('linkedInPreview').style.display='none';pendingLinkedInData=null;showToast('Profile applied');}
+export function applyLinkedInData(){if(!pendingLinkedInData)return;const d=pendingLinkedInData;if(d.name)document.getElementById('fullName').value=d.name;if(d.title)document.getElementById('title').value=d.title;if(d.email)document.getElementById('email').value=d.email;if(d.phone)document.getElementById('phone').value=d.phone;if(d.location)document.getElementById('location').value=d.location;if(d.summary)document.getElementById('summary').value=d.summary.substring(0,300);if(d.skills)document.getElementById('skills').value=d.skills;document.getElementById('experienceList').innerHTML='';(d.experiences||[]).forEach(e=>{addExpSilent();const is=document.querySelectorAll('#experienceList .dynamic-item');const l=is[is.length-1];if(l){l.querySelectorAll('input')[0].value=e.title||'';l.querySelectorAll('input')[1].value=e.company||'';l.querySelectorAll('input')[2].value=e.dates||'';l.querySelector('textarea').value=e.description||'';}});if(!d.experiences||!d.experiences.length)addExpSilent();document.getElementById('volunteeringList').innerHTML='';(d.volunteering||[]).forEach(e=>{addVolSilent();const is=document.querySelectorAll('#volunteeringList .dynamic-item');const l=is[is.length-1];if(l){l.querySelectorAll('input')[0].value=e.organization||'';l.querySelectorAll('input')[1].value=e.role||'';l.querySelector('textarea').value=e.description||'';}});if(d.interests)document.getElementById('interests').value=d.interests;document.getElementById('educationList').innerHTML='';(d.education||[]).forEach(e=>{addEduSilent();const is=document.querySelectorAll('#educationList .dynamic-item');const l=is[is.length-1];if(l){l.querySelectorAll('input')[0].value=e.degree||'';l.querySelectorAll('input')[1].value=e.institution||'';l.querySelectorAll('input')[2].value=e.year||'';}});if(!d.education||!d.education.length)addEduSilent();document.getElementById('languageList').innerHTML='';(d.languages||[]).forEach(e=>{addLangSilent();const is=document.querySelectorAll('#languageList .dynamic-item');const l=is[is.length-1];if(l){l.querySelector('input').value=e.language||'';l.querySelector('select').value=e.level||'';}});if(!d.languages||!d.languages.length)addLangSilent();renderSkillLevels();updatePreview();initDragDrop();document.getElementById('linkedInPreview').style.display='none';pendingLinkedInData=null;showToast('Profile applied');}
 export function discardLinkedInData(){document.getElementById('linkedInPreview').style.display='none';pendingLinkedInData=null;showToast('Discarded');}
 export function parseLinkedInText(t){
   /* v2.7: rebuilt on top of the universal parser. The old positional splitter
@@ -96,8 +96,15 @@ const dz=document.getElementById('linkedInDropZone');if(dz){dz.addEventListener(
 // ============ Universal CV Import (local parser + optional Gemini AI) ============
 export const CVI_LEVELS=['','Native','A1','A2','B1','B2','C1','C2'];
 export const CVI_LANG_NAMES=['English','Spanish','French','German','Italian','Portuguese','Dutch','Swedish','Polish','Arabic','Chinese','Mandarin','Cantonese','Hindi','Bengali','Bangla','Urdu','Russian','Japanese','Korean','Turkish','Danish','Norwegian','Finnish','Greek','Czech','Romanian','Hungarian','Ukrainian','Vietnamese','Thai','Indonesian','Malay','Punjabi','Tamil','Telugu','Marathi','Gujarati','Kannada','Malayalam','Sinhala','Sinhalese','Nepali','Pashto','Persian','Farsi','Hebrew','Swahili','Catalan','Basque','Galician','Welsh','Irish','Bulgarian','Slovak','Croatian','Serbian','Bosnian','Slovenian','Albanian','Macedonian','Lithuanian','Latvian','Estonian','Afrikaans','Tagalog','Amharic','Somali','Kurdish','Azerbaijani','Uzbek','Kazakh','Mongolian','Burmese','Khmer','Lao','Hausa','Yoruba','Igbo','Zulu','Xhosa'];
-export const CVI_ROLE_KW=/(engineer|developer|programmer|manager|consultant|analyst|designer|specialist|architect|scientist|director|coordinator|assistant|officer|accountant|teacher|lecturer|professor|researcher|intern|apprentice|trainee|nurse|doctor|physician|lawyer|attorney|paralegal|technician|administrator|executive|recruiter|advisor|associate|partner|freelance|contractor|scrum\s*master|product\s+owner|chef|bartender|barista|waiter|waitress|server|cashier|sales|marketing|writer|editor|journalist|translator|tutor|volunteer|founder|co-?founder|ceo|cto|cfo|coo|steward|operator|mechanic|electrician|plumber|driver|pilot|head|lead|secretary|president|treasurer|chairman|chairperson|representative|captain|mentor|organizer|member)/i;
-export const CVI_CO_KW=/\b(inc|llc|ltd|limited|gmbh|s\.?a\.?|ag|bv|nv|plc|pty|pvt|corp|corporation|company|group|agency|technologies|technology|labs?|solutions|systems|consulting|partners|associates|studios?|media|software|digital|bank|hospital|clinic|universit|institute|college|school|academy|foundation|ministry|department|bureau|communications|networks?|industries|logistics|pharma|capital|ventures|association|organisation|organization|centre|center|council|airlines|hotel|restaurant|cafe|store|shop|retail|energy|petroleum|telecom|insurance|firm)\b/i;
+/* v2.10: whole-word role matching (plural forms allowed). The old loose
+   alternation matched "lead" inside "Leading University…" (an organization),
+   which inverted volunteering entries, and let words like "Salesforce" or
+   "membership" pose as roles. */
+export const CVI_ROLE_KW=/\b(?:engineer|developer|programmer|manager|consultant|analyst|designer|specialist|architect|scientist|director|coordinator|assistant|officer|accountant|teacher|lecturer|professor|researcher|intern|apprentice|trainee|nurse|doctor|physician|lawyer|attorney|paralegal|technician|administrator|executive|recruiter|advisor|associate|partner|freelance|contractor|scrum\s*master|product\s+owner|chef|bartender|barista|waiter|waitress|server|cashier|sales|marketing|writer|editor|journalist|translator|tutor|volunteer|founder|co-?founder|ceo|cto|cfo|coo|steward|operator|mechanic|electrician|plumber|driver|pilot|head|lead(?:er)?|secretary|president|treasurer|chairman|chairperson|representative|captain|mentor|organizer|member)s?\b/i;
+/* v2.10: `universit`, `pharma` and `telecom` are stems, not whole words —
+   they need \w* so "University"/"Pharmaceuticals"/"Telecommunications"
+   still match under the whole-word \b guards. */
+export const CVI_CO_KW=/\b(?:inc|llc|ltd|limited|gmbh|s\.?a\.?|ag|bv|nv|plc|pty|pvt|corp|corporation|company|group|agency|technologies|technology|labs?|solutions|systems|consulting|partners|associates|studios?|media|software|digital|bank|hospital|clinic|universit\w*|institute|college|school|academy|foundation|ministry|department|bureau|communications|networks?|industries|logistics|pharma\w*|capital|ventures|association|organisation|organization|centre|center|council|airlines|hotel|restaurant|cafe|store|shop|retail|energy|petroleum|telecom\w*|insurance|firm)s?\b/i;
 export const CVI_SEC_DEFS=[
  ['summary',/^(?:(?:personal|professional|career|executive)\s+)?(?:profile|summary|about(?:\s+me)?|objective|personal\s+statement|career\s+overview|career\s+objective|profile\s+summary)\s*$/i],
  ['experience',/^(?:(?:work|professional|employment|career|relevant)\s+)?(?:experience|employment\s+history|work\s+history|professional\s+background|career\s+history|history|employment|professional\s+history|employment\s+record|relevant\s+work\s+experience|research\s+experience)\s*$/i],
@@ -645,9 +652,16 @@ export function cviParseLanguages(lines){
 
 /* ── main entry: parse raw CV text (plus optional structured PDF lines) into the app's data model ── */
 /* Volunteering: structurally simpler than jobs — org / role (+ optional
-   description), sometimes with a date anchor. A dedicated parser keeps the
-   generic experience heuristics out of the way. */
+   description), sometimes with a date anchor. v2.10: organization lines are
+   recognized FIRST (club / society / association / university / company
+   keywords), so orgs whose names contain role-ish words ("Leading
+   University Social Service Club") open a new entry instead of being read
+   as a role; the role line that follows fills the role slot, and a
+   "Role, Organization" line splits into both fields at once. */
 export function cviParseVolunteering(lines){
+  const ORG_STRONG=/\b(club|society|association|committee|council|chapter|foundation|ngo|non-?profit(?:s)?|trust|rotaract|scouts?|guides?|red\s*cross|unicef|habitat(?:\s+for\s+humanity)?|food\s+bank|volunteer\s+(?:fire|rescue)\s+(?:department|brigade))\b/i;
+  const isOrgLine=s=>ORG_STRONG.test(s)||CVI_CO_KW.test(s);
+  const same=(a,b)=>String(a).replace(/\s+/g,' ').trim()===String(b).replace(/\s+/g,' ').trim();
   const out=[];let cur=null;
   const push=()=>{if(cur&&(cur.organization||cur.role))out.push(cur);cur=null;};
   for(const ln of lines){
@@ -657,7 +671,16 @@ export function cviParseVolunteering(lines){
     const a=cviAnchorOf(ln,full);
     if(a){push();cur={organization:a.pre?cviTidyCompany(a.pre):'',role:'',description:[]};continue;}
     const r=cviRoleLine(full);
+    const orgish=isOrgLine(full);
+    if(orgish&&(!r||same(r.title,full))){
+      /* standalone organization line — closes any entry already holding data */
+      if(cur&&(cur.organization||cur.role))push();
+      cur={organization:cviTidyCompany(full),role:'',description:[]};
+      continue;
+    }
     if(r){
+      const restStr=r.rest.join(' ').trim();
+      if(restStr&&isOrgLine(restStr)&&!cviRoleLine(restStr)){push();cur={organization:cviTidyCompany(restStr),role:r.title,description:[]};continue;}
       if(!cur)cur={organization:'',role:r.title,description:[]};
       else if(!cur.role)cur.role=r.title;
       else{push();cur={organization:'',role:r.title,description:[]};}
@@ -670,14 +693,100 @@ export function cviParseVolunteering(lines){
   push();
   return out.map(v=>({organization:(v.organization||'').slice(0,90),role:(v.role||'').slice(0,90),description:(v.description||[]).filter(Boolean).join('\n').slice(0,400)})).filter(v=>v.organization||v.role);
 }
-/* Publications: entries are a title (often wrapped) with a trailing date
-   segment, followed by venue / status / DOI lines. Wrapped titles only join
-   while the head is long and the next line is long, non-link, non-status and
-   doesn't look like a journal/venue name. */
+/* Publications — v2.10 anchor-based record builder. Academic CVs lay entries
+   out in two shapes:
+     (a) "Title … <date>" on one line (the date often a right-aligned column
+         segment), the title wrapping onto following lines, then venue /
+         status / DOI lines;
+     (b) wrapped title lines first, a PURE date line ("October 2026") closing
+         the title, then venue / status / DOI lines — the reference-CV layout
+         the old heuristic misread (short continuations like "converters"
+         became venues, and an "Earlier preprint …: https://…" line spawned a
+         phantom publication).
+   The state machine anchors a record at every date (inline or pure), keeps
+   the title open for continuations until a venue/status/link line arrives,
+   fills each field slot at most once, and lets extra URLs (earlier-preprint
+   DOIs) stay with their record. Sections without any date anchor fall back
+   to the legacy DOI-close segmentation. */
 export function cviParsePublications(lines){
   const DATE_SEG=/^(?:(?:jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\.?\s+)?(?:19|20)\d{2}$/i;
   const LINK_SEG=/^(?:doi:?[\s:]+)?(?:https?:\/\/|www\.)\S+$/i;
-  const STATUS_RE=/\b(accepted|under\s*(?:first|second|1st|2nd|third)?\s*review|revision|submitted|preprint|in\s+press|published|forthcoming)\b/i;
+  const URL_IN=/\b(?:https?:\/\/|www\.)\S+/i;
+  const STATUS_RE=/\b(accepted|under\s+(?:\w+\s+){0,3}?(?:review|revision)s?|revision|submitted|preprint|in\s+press|published|forthcoming)\b/i;
+  const VENUE_RE=/(ieee|acm|elsevier|springer|nature|science|transactions|journal|proceedings|conference|letters|paper\s*id|manuscript\s*id|\bvol\.?\s*\d|university\s+press|arxiv|biorxiv|medrxiv|chemrxiv)/i;
+  const ID_RE=/\b(?:manuscript|paper|article)\s*(?:id|no\.?|number)\b/i;
+  const norm=m=>/^www\./i.test(m)?'https://'+m:m;
+  const splitDate=seg=>{const m=String(seg).match(/^(.{25,}?)\s+((?:(?:jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\.?\s+)?(?:19|20)\d{2})$/i);return m?{t:m[1].trim(),d:m[2].trim()}:null;};
+  /* join wrapped title lines; a line ending in a hyphen is soft-wrap
+     hyphenation and fuses directly ("routine-" + "quality" becomes "routine-quality") */
+  const joinTitle=parts=>parts.reduce((t,p)=>!t?String(p):(/[-\u2010-\u2015]$/.test(t)&&/^[A-Za-z]/.test(p)?t+p:t+' '+p),'').replace(/\s+/g,' ').trim();
+  const classify=(full,seen,hasTitle)=>{
+    if(URL_IN.test(full))return 'link'; /* URLs always belong to the record */
+    if(!hasTitle)return null; /* a record's first content line is its title, never meta */
+    if(ID_RE.test(full))return 'venue';
+    if(STATUS_RE.test(full)&&!seen.status)return 'status';
+    if(VENUE_RE.test(full)&&!seen.venue)return 'venue';
+    return null;
+  };
+  const mark=(rec,k)=>{if(k==='status')rec.seen.status=true;else if(k==='venue')rec.seen.venue=true;};
+  const newRec=()=>({titleParts:[],dates:'',meta:[],seen:{},titleOpen:true});
+  const records=[];let cur=null,anchored=false;
+  const push=()=>{if(cur&&(cur.titleParts.length||cur.dates||cur.meta.length))records.push(cur);cur=null;};
+  for(const ln of lines){
+    const segs=(ln.segs||[]).map(x=>String(x).trim()).filter(Boolean);
+    const full=segs.join(' ');
+    if(!full)continue;
+    /* a segment ending in an inline date splits into title-part + date */
+    let dateSeg='',parts=[];
+    for(const seg of segs){
+      const sp=splitDate(seg);
+      if(sp&&!dateSeg){parts.push(sp.t);dateSeg=sp.d;}
+      else if(DATE_SEG.test(seg)&&!dateSeg)dateSeg=seg;
+      else parts.push(seg);
+    }
+    const head=(parts[0]||'').trim();
+    if(dateSeg&&head&&head.length>=18&&!LINK_SEG.test(head)){ /* inline-date anchor */
+      push();cur={titleParts:[head],dates:dateSeg,meta:[],seen:{},titleOpen:true};anchored=true;continue;
+    }
+    if(DATE_SEG.test(full)){ /* pure date line closes the open title */
+      if(!cur)cur=newRec();
+      if(cur.dates){push();cur=newRec();}
+      cur.dates=full;cur.titleOpen=false;anchored=true;continue;
+    }
+    if(!cur)cur=newRec();
+    if(cur.titleOpen){
+      const k=classify(full,cur.seen,cur.titleParts.length>0);
+      if(k){cur.titleOpen=false;cur.meta.push(full);mark(cur,k);}
+      else cur.titleParts.push(full);
+      continue;
+    }
+    const k=classify(full,cur.seen,cur.meta.length>0||cur.titleParts.length>0);
+    if(k){cur.meta.push(full);mark(cur,k);continue;}
+    /* conservative guards before starting a new record: an exact repeat of a
+       meta line ("Preprint" printed as both venue and status) or a very short
+       line (4 words or fewer) under a record that already has meta is more
+       meta, not a new publication title */
+    if(cur.meta.length&&(cur.meta.some(m=>m===full)||(full.split(/\s+/).length<=4&&full.length<=32))){cur.meta.push(full);continue;}
+    push();cur=newRec();cur.titleParts.push(full); /* the next record's title begins */
+  }
+  push();
+  if(!anchored)return cviParsePublicationsLegacy(lines);
+  return records.map(rec=>{
+    const title=joinTitle(rec.titleParts);
+    const meta=[...rec.meta];
+    const links=meta.filter(m=>URL_IN.test(m)).map(m=>norm((String(m).match(/\b(?:https?:\/\/|www\.)\S+/i)||[''])[0].replace(/[),.;:\u201d]+$/,''))).filter(Boolean);
+    let status=meta.find(m=>STATUS_RE.test(m)&&!URL_IN.test(m))||'';
+    const venue=meta.find(m=>!URL_IN.test(m)&&!STATUS_RE.test(m)&&m!==status)||'';
+    const extras=links.slice(1);
+    if(extras.length)status=(status?status+' \u00b7 ':'')+'earlier version: '+extras.join('; ');
+    return{title:title.slice(0,300),venue:venue.slice(0,120),status:status.slice(0,200),dates:rec.dates||'',link:links[0]||''};
+  }).filter(p=>p.title);
+}
+/* pre-v2.10 behaviour — used when a publications section has no date lines */
+export function cviParsePublicationsLegacy(lines){
+  const DATE_SEG=/^(?:(?:jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\.?\s+)?(?:19|20)\d{2}$/i;
+  const LINK_SEG=/^(?:doi:?[\s:]+)?(?:https?:\/\/|www\.)\S+$/i;
+  const STATUS_RE=/\b(accepted|under\s+(?:\w+\s+){0,3}?(?:review|revision)s?|revision|submitted|preprint|in\s+press|published|forthcoming)\b/i;
   const VENUE_RE=/(ieee|acm|elsevier|springer|nature|science|transactions|journal|proceedings|conference|letters|paper\s*id|manuscript\s*id|\bvol\.?\s*\d|university\s+press)/i;
   const splitDate=seg=>{const m=String(seg).match(/^(.{25,}?)\s+((?:(?:jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\.?\s+)?(?:19|20)\d{2})$/i);return m?{t:m[1].trim(),d:m[2].trim()}:null;};
   const norm=m=>/^www\./i.test(m)?'https://'+m:m;
@@ -687,7 +796,6 @@ export function cviParsePublications(lines){
     const segs=(ln.segs||[]).map(x=>String(x).trim()).filter(Boolean);
     const full=segs.join(' ');
     if(!full)continue;
-    /* a seg that ends in an inline date splits into title-part + date */
     let dateSeg='',parts=[];
     for(const seg of segs){
       const sp=splitDate(seg);
@@ -702,7 +810,7 @@ export function cviParsePublications(lines){
       continue;
     }
     if(DATE_SEG.test(full)&&cur&&!cur.dates){cur.dates=full;continue;}
-    if(cur&&cur.hasLink&&!LINK_SEG.test(full)){push();cur={title:full,dates:'',meta:[]};continue;} /* DOI closes an entry */
+    if(cur&&cur.hasLink&&!LINK_SEG.test(full)){push();cur={title:full,dates:'',meta:[]};continue;}
     if(!cur){cur={title:full,dates:'',meta:[]};continue;}
     if(LINK_SEG.test(full))cur.hasLink=true;
     cur.meta.push(full);
@@ -719,7 +827,7 @@ export function cviParsePublications(lines){
     let status=meta.find(m=>STATUS_RE.test(m)&&!LINK_SEG.test(m))||'';
     const venue=meta.find(m=>!LINK_SEG.test(m)&&!STATUS_RE.test(m)&&m!==status)||'';
     const extras=links.slice(1);
-    if(extras.length)status=(status?status+' · ':'')+'earlier version: '+extras.join('; ');
+    if(extras.length)status=(status?status+' \u00b7 ':'')+'earlier version: '+extras.join('; ');
     return{title:title.slice(0,300),venue:venue.slice(0,120),status:status.slice(0,200),dates:e.dates||'',link};
   }).filter(p=>p.title);
 }
@@ -1045,7 +1153,7 @@ export function applyCvImport(){
       if(d.location)document.getElementById('location').value=d.location;
     }
     if(inc.summary&&d.summary)document.getElementById('summary').value=d.summary;
-    if(inc.skills&&d.skillsArr&&d.skillsArr.length)document.getElementById('skills').value=d.skillsArr.join(', ');
+    if(inc.skills&&d.skillsArr&&d.skillsArr.length){document.getElementById('skills').value=d.skillsArr.join(', ');renderSkillLevels();}
     if(inc.experience&&d.experiences&&d.experiences.length){
       document.getElementById('experienceList').innerHTML='';
       d.experiences.forEach(e=>{addExpSilent();const is=document.querySelectorAll('#experienceList .dynamic-item');const l=is[is.length-1];if(l){l.querySelectorAll('input')[0].value=e.title||'';l.querySelectorAll('input')[1].value=e.company||'';l.querySelectorAll('input')[2].value=e.dates||'';l.querySelector('textarea').value=e.description||'';}});

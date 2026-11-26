@@ -189,3 +189,15 @@
 /* ── Cropper ────────────────────────────────────────────── */
 .cropper-actions{display:flex;gap:0.4rem;margin-top:0.6rem;flex-wrap:wrap;}
 
+
+/* ── v2.10: skill proficiency sliders ── */
+.skill-levels{display:none;}
+.skill-levels.has-rows{display:flex;flex-direction:column;gap:0.3rem;margin-top:0.15rem;}
+.skill-level-row{display:flex;align-items:center;gap:0.55rem;min-width:0;padding:0.1rem 0.2rem;border-radius:6px;}
+.skill-level-row:hover{background:var(--surface-2);}
+.skill-level-name{flex:1;min-width:0;font-size:11.5px;color:var(--text-secondary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.skill-level-ctl{display:inline-flex;align-items:center;gap:0.4rem;flex-shrink:0;}
+.skill-level-ctl input[type=range]{width:104px;height:4px;accent-color:var(--accent);cursor:pointer;}
+.skill-level-badge{font-size:10px;font-weight:700;color:var(--text-tertiary);width:24px;text-align:right;font-variant-numeric:tabular-nums;}
+/* v2.10: shape/size chooser stays visible without a photo; only Remove hides */
+.photo-controls.no-photo .photo-remove{display:none;}

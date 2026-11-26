@@ -353,3 +353,110 @@ rpara("Bengali: Native, English: C2, Hindi: A2")
 rc.showPage()
 rc.save()
 print("fixture5-researcher.pdf written")
+
+# ---------------------------------------------------------------- fixture 6: researcher CV v2 (hard mode)
+# Mirrors the real reference CV's harder publication layout that tripped the
+# v2.9 parser: PURE date lines below wrapped titles (no inline date), short
+# title continuations ("converters"), an "Earlier preprint version …: URL"
+# extra link line, hyphen-wrapped titles ("routine-" / "quality envelope"),
+# and volunteering orgs whose names contain role-ish words ("Leading
+# University … Club"). Synthetic data.
+rc2 = canvas.Canvas(os.path.join(OUT, "fixture6-researcher2.pdf"), pagesize=A4)
+ry = h - 20 * mm
+
+
+def r2para(text, size=9.5, bold=False, gap=4.5):
+    global ry
+    rc2.setFont("SansB" if bold else "Sans", size)
+    rc2.drawString(LEFT, ry, text)
+    ry -= size / 2.8 * mm + gap / 2.8 * mm
+
+
+def r2pub(title_lines, date, *meta):
+    global ry
+    for tl in title_lines:
+        r2para(tl, 10, bold=True, gap=2)
+    r2para(date, 8)
+    for m in meta:
+        r2para(m, 8.8, gap=2)
+    ry -= 2.4 * mm
+
+
+def r2head(text):
+    global ry
+    if ry < 34 * mm:
+        rc2.showPage()
+        ry = h - 20 * mm
+    ry -= 4 * mm
+    rc2.setFont("SansB", 11.5)
+    rc2.drawString(LEFT, ry, text)
+    ry -= 9 * mm
+
+
+r2para("Dr. Nadia Karim", 16, bold=True, gap=6)
+r2para("Embedded Systems Researcher \u2014 Applied ML and Power Electronics", 10, gap=2)
+r2para("nadia.karim@example.edu", 9.5, gap=2)
+r2para("+880 1712 345 678", 9.5, gap=6)
+
+r2head("Publications")
+r2pub(["Helios-C: Design and Simulation-Based Validation of a Dual-Microcontroller",
+       "Predictive Solar MPPT Controller with On-Device LSTM Retraining for Dhaka Monsoon",
+       "SHS Deployment in Bangladesh"],
+      "September 2026",
+      "IJPEDS \u00b7 Paper ID 25195",
+      "Paper is accepted, pending publication.",
+      "DOI: https://doi.org/10.5281/zenodo.11111101")
+r2pub(["Sampling and quantization limits of digitally controlled inverting buck-boost",
+       "converters"],
+      "October 2026",
+      "IJPEDS \u00b7 Paper ID 25525",
+      "Under second round of revisions",
+      "DOI: https://doi.org/10.5281/zenodo.11111102")
+r2pub(["Machine learning in battery management systems: a two-tier scoping review of 199",
+       "eligible records with in-depth classification and validation audit of 103 studies"],
+      "October 2026",
+      "IEEE Transactions on Transportation Electrification",
+      "Under 1st round of reviews",
+      "DOI: https://doi.org/10.5281/zenodo.11111103",
+      "Earlier preprint version (199 eligible studies): https://doi.org/10.5281/zenodo.11111104")
+r2pub(["Is Wireless Security Ready for the AI Era? Evidence from a Curated Corpus of 130",
+       "Studies, 2021\u20132026"],
+      "October 2026",
+      "IET Communications \u00b7 Manuscript ID COM-2026-10-0413",
+      "Under first review",
+      "DOI: https://doi.org/10.5281/zenodo.11111105")
+r2pub(["Modeling electrical losses in CsPbI3 solar cells: stacked idealizations and a routine-",
+       "quality envelope at 17.0%"],
+      "October 2026",
+      "Manuscript ID ADV26-AR-05017",
+      "Submitted",
+      "DOI: https://doi.org/10.5281/zenodo.11111106")
+r2pub(["Oxidation-Budgeted Design of Lead-Free RbGeI3 Solar Cells: Back-Surface-Field Enhancement",
+       "Benchmarked Against CsGeI3"],
+      "October 2026",
+      "Manuscript ID JAP26-AR-04819",
+      "Submitted",
+      "DOI: https://doi.org/10.5281/zenodo.11111107")
+
+r2head("Volunteering")
+r2para("Leading University Social Service Club", 10, bold=True, gap=2)
+r2para("Joint General Secretary", 8.8, gap=6)
+r2para("Leading University Electronics Club", 10, bold=True, gap=2)
+r2para("Publicity Secretary", 8.8, gap=6)
+
+r2head("Skills")
+r2para("Scientific Writing & Research")
+r2para("Embedded Systems & Firmware")
+r2para("Machine Learning & Data Science")
+r2para("Software Development")
+r2para("Simulation & Modeling")
+
+r2head("Interests")
+r2para("Gaming, Travelling, Movies, Music, Strength-Sports")
+
+r2head("Languages")
+r2para("Bengali: Native, English: C2, Hindi: B1, German: A1")
+
+rc2.showPage()
+rc2.save()
+print("fixture6-researcher2.pdf written")

@@ -2,6 +2,7 @@
  * matching, custom keyword chips, plain-text view and the Gemini AI coach. */
 
 import { photoData } from './app-state.js';
+import { renderSkillLevels } from './form.js';
 import { getEducation, getExperiences, getLanguages, getProjects, getPublications, getVolunteering } from './cvdata.js';
 import { cviCallGemini, cviGetKey, cviGetModel, cviSetKey } from './gemini.js';
 import { updatePreview } from './render.js';
@@ -130,6 +131,7 @@ export function addKWFromCloud(kw){
     if(skillsEl){
       const cur=skillsEl.value.trim();
       skillsEl.value=cur?cur+', '+k:k;
+      renderSkillLevels();
       updatePreview();
     }
     runATSAnalysis();
@@ -556,6 +558,7 @@ export function atsApplyKeywords(){
   const cur=el.value.split(',').map(s=>s.trim()).filter(Boolean);
   d.keywordsToAdd.forEach(k=>{k=String(k).trim();if(k&&!cur.some(c=>c.toLowerCase()===k.toLowerCase()))cur.push(k);});
   el.value=cur.join(', ');
+  renderSkillLevels();
   updatePreview();
   showToast('Keywords merged into skills');
 }

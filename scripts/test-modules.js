@@ -101,7 +101,7 @@ const check = (label, ok, extra = '') => {
   await page.evaluate(() => navigator.serviceWorker.ready);
   await page.waitForTimeout(600);
   const sw = await page.evaluate(async () => {
-    const c = await caches.open('cv-genie-v2.9');
+    const c = await caches.open('cv-genie-v2.10');
     const keys = await c.keys();
     const paths = keys.map(r => new URL(r.url).pathname);
     return {
@@ -128,6 +128,54 @@ const check = (label, ok, extra = '') => {
     return document.getElementById('fullName').value;
   });
   check('undo restores the snapshot (bindHistory ran)', undo === 'Before', 'got "' + undo + '"');
+
+  console.log('\n[8] v2.10 skill sliders + photo shapes');
+  const v210 = await page.evaluate(async () => {
+    const out = {};
+    /* skill sliders: one row per skill, default level 4, drag → squares update */
+    document.getElementById('skills').value = 'Alpha, Beta, Gamma';
+    renderSkillLevels();
+    out.rows = document.querySelectorAll('#skillLevels .skill-level-row').length;
+    out.badge = document.querySelector('#skillLevels .skill-level-row .skill-level-badge')?.textContent;
+    const range = document.querySelector('#skillLevels .skill-level-row input[type=range]');
+    range.value = '2';
+    range.dispatchEvent(new Event('input', { bubbles: true }));
+    await new Promise(r => setTimeout(r, 350));
+    out.stateLevel = (window.getState ? getState().skillLevels : null);
+    out.badgeAfter = document.querySelector('#skillLevels .skill-level-row .skill-level-badge')?.textContent;
+    /* Scholar honours the slider: 2/5 squares on for Alpha */
+    changeTemplate('scholar');
+    await new Promise(r => setTimeout(r, 150));
+    const sqs = [...document.querySelectorAll('#cvPreview .cv-sch-grid3 .cv-sch-skill')].find(el => el.textContent.includes('Alpha'));
+    out.alphaOn = sqs ? sqs.querySelectorAll('.cv-sch-sq.on').length : -1;
+    /* Scholar's default photo shape = square (no explicit user choice yet);
+       verified on the live photoShape binding since no photo is uploaded */
+    out.schShape = window.photoShape || photoShape;
+    /* switching back to classic restores circle (no explicit user choice yet) */
+    changeTemplate('classic');
+    out.classicShape = window.photoShape || photoShape;
+    /* explicit choice sticks across templates */
+    setPhotoShape('portrait', document.querySelector('#photoShapeSeg [data-shape=portrait]'));
+    out.portraitActive = document.querySelector('#photoShapeSeg [data-shape=portrait]')?.classList.contains('active');
+    out.customFlag = getState().photoShapeCustom === true;
+    /* shape chooser visible without a photo; Remove hidden */
+    out.controlsVisible = getComputedStyle(document.getElementById('photoControls')).display !== 'none';
+    out.removeHidden = !document.querySelector('#photoControls .photo-remove') || getComputedStyle(document.querySelector('#photoControls .photo-remove')).display === 'none';
+    document.getElementById('skills').value = '';
+    renderSkillLevels();
+    return out;
+  });
+  await page.waitForTimeout(200);
+  check('one slider row per skill (3)', v210.rows === 3, v210.rows + ' rows');
+  check('default slider badge 4/5', v210.badge === '4/5', v210.badge);
+  check('slider drag updates state to level 2', v210.stateLevel && v210.stateLevel.Alpha === 2, JSON.stringify(v210.stateLevel));
+  check('badge live-updates to 2/5', v210.badgeAfter === '2/5', v210.badgeAfter);
+  check('Scholar renders Alpha with 2/5 squares', v210.alphaOn === 2, v210.alphaOn + ' squares on');
+  check('Scholar default photo shape is square', v210.schShape === 'square', v210.schShape);
+  check('classic template restores circle default', v210.classicShape === 'circle', v210.classicShape);
+  check('portrait shape selectable + custom flag set', v210.portraitActive && v210.customFlag);
+  check('photo shape/size chooser visible without a photo', v210.controlsVisible);
+  check('Remove button hidden without a photo', v210.removeHidden);
 
   await browser.close();
   server.kill();

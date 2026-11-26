@@ -5,6 +5,7 @@
 import { activeDoc, currentColor, currentTemplate, setCurrentTemplate } from './app-state.js';
 import { TEMPLATES, TEMPLATE_META, THUMB_WIRES } from './config.js';
 import { collectPreviewData } from './cvdata.js';
+import { applyTemplatePhotoDefaults } from './form.js';
 import { scaleCVToFit, templateHtml } from './preview.js';
 import { _updatePreviewNow } from './render.js';
 import { pageAnim } from './ui.js';
@@ -34,7 +35,7 @@ export function mobileNav(mode){
     document.getElementById('mnav-edit').classList.add('active');
   }
 }
-export function changeTemplate(t){setCurrentTemplate(t);document.getElementById('cvPreview').className='cv-preview cv-'+t;document.getElementById('templateSelect').value=t;_updatePreviewNow();updateTemplateGallerySelection();pageAnim(document.getElementById('cvPreview'));}
+export function changeTemplate(t){setCurrentTemplate(t);applyTemplatePhotoDefaults(t);document.getElementById('cvPreview').className='cv-preview cv-'+t;document.getElementById('templateSelect').value=t;_updatePreviewNow();updateTemplateGallerySelection();pageAnim(document.getElementById('cvPreview'));}
 /* ── Template carousel: 3D live-rendered pages — the default CV view ──
    The active design sits at the centre; neighbours flank it on both sides.
    Cards are real renders of the user's own CV via templateHtml(), so every

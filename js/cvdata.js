@@ -1,7 +1,7 @@
 /* DOM → data collectors. Pure reads of the form; the single source that
  * preview, exports, the ATS engine and the letter writer all consume. */
 
-import { photoData, photoShape, photoSize, sectionOrder } from './app-state.js';
+import { photoData, photoShape, photoSize, sectionOrder, skillLevels } from './app-state.js';
 import { updateCharCount } from './ui.js';
 
 export function getExperiences(){return Array.from(document.querySelectorAll('#experienceList .dynamic-item')).map(i=>({title:i.querySelectorAll('input')[0]?.value||'',company:i.querySelectorAll('input')[1]?.value||'',dates:i.querySelectorAll('input')[2]?.value||'',description:i.querySelector('textarea')?.value||''})).filter(e=>e.title.trim()||e.company.trim());}
@@ -33,6 +33,10 @@ export function collectPreviewData(){
     const volH=vols.map(v=>`<div class="cv-item"><div class="cv-item-header"><span>${esc(v.organization)}</span></div>${v.role?`<div class="cv-item-sub">${esc(v.role)}</div>`:''}${v.description?`<p>${esc(v.description)}</p>`:''}</div>`).join('');
     const lH=langLines?`<div class="cv-section"><h2>Languages</h2>${langLines}</div>`:'';
     const skillList=skills.split(',').map(s=>s.trim()).filter(Boolean);
+    /* v2.10: per-skill levels (1–5) keyed by the exact skill string — rating
+     * designs (Scholar squares, Primo bars) read them; unset = 0 (designs
+     * substitute their own default). */
+    const skillLv=skillList.reduce((m,s)=>{m[s]=Math.min(5,Math.max(0,parseInt(skillLevels[s],10)||0));return m;},{});
     const contactLines=[email,phone,linkedin,location].filter(Boolean).map(c=>`<div>${esc(c)}</div>`).join('');
     const sec={};
     if(summary.trim())sec.summary=`<div class="cv-section"><h2>Professional Summary</h2><p>${esc(summary)}</p></div>`;
@@ -45,5 +49,5 @@ export function collectPreviewData(){
     if(vols.length)sec.volunteering=`<div class="cv-section"><h2>Volunteering</h2>${volH}</div>`;
     if(interests.trim())sec.interests=`<div class="cv-section"><h2>Interests</h2><p>${esc(interests)}</p></div>`;
     const orderedContent=sectionOrder.filter(k=>sec[k]).map(k=>sec[k]).join('');
-    return{name,title,email,phone,linkedin,location,cs,summary,skills,exp,edu,langs,interests,pubs,projs,vols,ph,esc,eH,dH,langLines,lH,pubH,projH,volH,skillList,contactLines,orderedContent};
+    return{name,title,email,phone,linkedin,location,cs,summary,skills,exp,edu,langs,interests,pubs,projs,vols,ph,esc,eH,dH,langLines,lH,pubH,projH,volH,skillList,skillLv,contactLines,orderedContent};
 }

@@ -19,6 +19,11 @@ html.dark .cv-preview{box-shadow:0 1px 3px rgba(0,0,0,0.4),0 8px 32px rgba(0,0,0
 .ph-circle{border-radius:50%;}
 .ph-rounded{border-radius:8%;}
 .ph-square{border-radius:0;}
+/* v2.10: classic CV portrait crop — 3:4, square corners */
+.ph-portrait{border-radius:0;}
+.ph-portrait.ph-sm{height:26.7mm;}
+.ph-portrait.ph-md{height:34.7mm;}
+.ph-portrait.ph-lg{height:42.7mm;}
 .ph-sm{width:20mm;height:20mm;}
 .ph-md{width:26mm;height:26mm;}
 .ph-lg{width:32mm;height:32mm;}

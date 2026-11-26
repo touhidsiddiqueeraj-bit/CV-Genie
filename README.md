@@ -26,6 +26,19 @@
 - **Serious output** — vector PDF through the print dialog, an editable DOCX generated entirely in-browser, RTF, Markdown, plain text, plus bulk export of all 31 templates in one ZIP.
 - **Works everywhere** — responsive down to phone screens, dark mode, and an installable Android APK built by CI.
 
+## ✦ What's new in v2.10
+
+**Adjustable skill levels, a photo-shape chooser, and a much smarter publications/volunteering parser.**
+
+| Change | Details |
+|---|---|
+| **Skill level sliders** | Every skill in the Skills section now has a **1–5 slider** with a live badge. The rating designs read them directly: Scholar's signature 5-square ratings follow the slider (default 4), and Primo's skill bars fill to level × 20%. Levels persist in saves, share links, version history and the ATS keyword flow, and the sliders rebuild automatically after a CV import or skill-chip add. |
+| **Photo display chooser** | The photo section's shape control is now **always visible** (not just after uploading) and gains a fourth option: **circle, rounded, square, or portrait (3:4)**. Each template can also declare its natural shape — Scholar now defaults to a clean **square** photo with a white keyline (the old fixed 20×30 mm portrait box turned circles into ellipses); your explicit choice always wins and sticks across templates. |
+| **Smarter publications parsing** | The import parser was rebuilt around **date anchors**: records start at every inline or standalone date line, wrapped titles join until the first venue/status/DOI line (short continuations like "…buck-boost / converters" and hyphen wraps like "routine- / quality" fuse correctly), each venue/status slot fills once, and extra URLs such as *Earlier preprint version …: https://doi.org/…* stay with their record instead of spawning phantom publications. Statuses like "Under second round of revisions" are now recognised. On the reference CV this means **all 7 publications** import with correct titles, venues, statuses and primary DOIs. |
+| **Smarter volunteering parsing** | Role keywords now match **whole words only** ("lead" no longer matches *Leading University…*), and organization lines (club / society / university / company keywords) are detected first — so "Leading University Social Service Club" + "Joint General Secretary" imports as **one entry with org and role in the right fields** instead of four inverted fragments. A "Role, Organization" line splits into both fields at once. |
+| **Language ratings tweak** | Scholar renders **A1 with 2 of 5 squares**, matching the reference CV (previously 1); the level ladder is now Native/C2 = 5, C1 = 4, B2/B1 = 3, A2/A1 = 2. |
+| **Verified** | New `fixture6-researcher2.pdf` (pure-date publications, hard wraps, preprint links, Leading-University volunteering) drives `test-cv-import.js` to **148 assertions**; `test-modules.js` gains 10 checks for the sliders, shape defaults and chooser visibility. Service-worker cache bumped to `cv-genie-v2.10`. |
+
 ## ✦ What's new in v2.9
 
 **Researcher sections — Publications, Projects, Volunteering and Interests — and the Scholar template rebuilt as an exact recreation of the reference CV.**
@@ -142,13 +155,13 @@ The final polish pass: a cohesive motion layer and small UI cleanups. Every anim
 
 ### Live editor with instant preview
 
-Every keystroke updates the A4 preview (debounced 200 ms). Sections are collapsible and reorderable by drag-and-drop; experience, education, publication, project, volunteering and language entries are drag-reorderable too.
+Every keystroke updates the A4 preview (debounced 200 ms). Sections are collapsible and reorderable by drag-and-drop; experience, education, publication, project, volunteering and language entries are drag-reorderable too. Each skill gets a **1–5 proficiency slider** that drives the rating designs (Scholar's squares, Primo's bars) and travels with your save.
 
 ![Editor](docs/images/editor.png)
 
 ### Profile photos
 
-Upload a picture, crop and rotate it in-browser (Cropper.js), then choose its **shape** — circle, rounded or square — and its **size** (S / M / L). The photo flows into all 31 templates: an ID-style photo in the label gutter on Europass, a white-framed band photo on Scholar, a framed circle on Modern, a colour-backed circle on Sidebar Bold. Shape and size controls update every template instantly, and the settings travel with saves, share links and version history.
+Upload a picture, crop and rotate it in-browser (Cropper.js), then choose how it displays — **shape** (circle, rounded, square or portrait 3:4) and **size** (S / M / L). The chooser is visible before you even add a photo, and each template applies its natural shape until you pick one yourself (Scholar defaults to a clean square). The photo flows into all 31 templates: an ID-style photo in the label gutter on Europass, a white-framed square photo on Scholar, a framed circle on Modern, a colour-backed circle on Sidebar Bold. Shape and size controls update every template instantly, and the settings travel with saves, share links and version history.
 
 ### ATS analyser
 
@@ -416,7 +429,7 @@ The whole CV is serialised by `getState()` into one plain object (template, colo
 
 ### The service worker
 
-`sw.js` precaches the app shell at install (`./`, `index.html`, manifest, icons, **every `js/` module and `css/` stylesheet** — CI fails if a file is missing from the list), warms the exact CDN libraries and web fonts (woff2 URLs parsed out of the Google Fonts CSS) right after activation so the **first** visit already survives going offline, serves assets cache-first, and handles navigations network-first with a cached fallback so deploys land on the next refresh. The Gemini API is deliberately never cached — AI features simply wait for a connection. The cache name is versioned (`cv-genie-v2.9`); bump it when you want every install to refresh its cache. It is the app's **only** registration (from `js/main.js` on secure contexts; CI fails the build if a second service worker — e.g. an inline Blob worker — ever appears), so the caching strategy above is the whole truth.
+`sw.js` precaches the app shell at install (`./`, `index.html`, manifest, icons, **every `js/` module and `css/` stylesheet** — CI fails if a file is missing from the list), warms the exact CDN libraries and web fonts (woff2 URLs parsed out of the Google Fonts CSS) right after activation so the **first** visit already survives going offline, serves assets cache-first, and handles navigations network-first with a cached fallback so deploys land on the next refresh. The Gemini API is deliberately never cached — AI features simply wait for a connection. The cache name is versioned (`cv-genie-v2.10`); bump it when you want every install to refresh its cache. It is the app's **only** registration (from `js/main.js` on secure contexts; CI fails the build if a second service worker — e.g. an inline Blob worker — ever appears), so the caching strategy above is the whole truth.
 
 ### Keyboard shortcuts & accessibility
 

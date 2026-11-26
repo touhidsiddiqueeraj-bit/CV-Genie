@@ -59,7 +59,7 @@ async function applyImport(page) {
 }
 
 (async () => {
-  if (!fs.existsSync(path.join(FIX, 'fixture2.docx')) || !fs.existsSync(path.join(FIX, 'fixture4-linkedin.pdf')) || !fs.existsSync(path.join(FIX, 'fixture5-researcher.pdf'))) {
+  if (!fs.existsSync(path.join(FIX, 'fixture2.docx')) || !fs.existsSync(path.join(FIX, 'fixture4-linkedin.pdf')) || !fs.existsSync(path.join(FIX, 'fixture5-researcher.pdf')) || !fs.existsSync(path.join(FIX, 'fixture6-researcher2.pdf'))) {
     console.error('Fixtures missing — run: python3 scripts/make-cv-fixtures.py');
     process.exit(1);
   }
@@ -394,6 +394,55 @@ Supported the content calendar.`;
     assert(applied.projs.length === 2 && applied.projs[0].name === 'Aurora Editor', `form projects = ${applied.projs.length}`);
     assert(applied.vols.length === 2 && applied.vols[1].role === 'Publicity Secretary', `form volunteering = ${applied.vols.length}`);
     assert(/Chess/.test(applied.interests), `form interests = "${applied.interests}"`);
+    assert(page._errors.length === 0, 'no page errors');
+    await page.close();
+  }
+
+  /* ── Test 10: researcher CV v2 — pure-date publications, hard wraps (fixture6) ── */
+  console.log('\n[10] Researcher CV hard mode (fixture6-researcher2.pdf)');
+  {
+    const page = await freshPage(context);
+    const d = await parseViaUpload(page, path.join(FIX, 'fixture6-researcher2.pdf'));
+    assert(d.source === 'parser', 'parsed by the local parser');
+    /* six publications, none phantom: wrapped titles fully joined, short
+       continuations ("converters", "Studies, 2021–2026") stay in the title,
+       hyphen wraps fuse ("routine-quality"), the extra preprint DOI line stays
+       with its record instead of becoming a 7th publication */
+    assert(d.publications.length === 6, `publications = ${d.publications.length} → ${JSON.stringify(d.publications.map(p => p.title.slice(0, 40)))}`);
+    const p0 = d.publications[0];
+    assert(p0.title.startsWith('Helios-C') && p0.title.endsWith('SHS Deployment in Bangladesh'), `pub[0].title = "${p0.title}"`);
+    assert(p0.dates.includes('September 2026') && /IJPEDS/.test(p0.venue) && /accepted/i.test(p0.status) && p0.link.includes('11111101'), `pub[0] = ${JSON.stringify(p0)}`);
+    const p1 = d.publications[1];
+    assert(p1.title.endsWith('buck-boost converters'), `pub[1].title = "${p1.title}" (short continuation joined, not a venue)`);
+    assert(/IJPEDS/.test(p1.venue) && /revision/i.test(p1.status), `pub[1] venue/status = "${p1.venue}" / "${p1.status}"`);
+    const p2 = d.publications[2];
+    assert(/IEEE Transactions/.test(p2.venue), `pub[2].venue = "${p2.venue}"`);
+    assert(p2.link.includes('11111103'), `pub[2].link = "${p2.link}" (primary DOI first)`);
+    assert(/earlier version.*11111104/i.test(p2.status), `pub[2].status keeps the preprint DOI = "${p2.status}"`);
+    const p3 = d.publications[3];
+    assert(p3.title.endsWith('Studies, 2021\u20132026'), `pub[3].title = "${p3.title}" (date-range continuation joined)`);
+    assert(/IET Communications/.test(p3.venue) && /first review/i.test(p3.status), `pub[3] venue/status = "${p3.venue}" / "${p3.status}"`);
+    const p4 = d.publications[4];
+    assert(p4.title.includes('routine-quality envelope at 17.0%'), `pub[4].title = "${p4.title}" (hyphen wrap fused)`);
+    assert(/ADV26-AR-05017/.test(p4.venue) && /submitted/i.test(p4.status), `pub[4] venue/status = "${p4.venue}" / "${p4.status}"`);
+    const p5 = d.publications[5];
+    assert(p5.title.startsWith('Oxidation-Budgeted') && /JAP26-AR-04819/.test(p5.venue), `pub[5] = ${JSON.stringify({ t: p5.title.slice(0, 40), v: p5.venue })}`);
+    /* volunteering: org-first — "Leading University … Club" is an organization,
+       the role line beneath fills the role (v2.9 read the org as a role) */
+    assert(d.volunteering.length === 2, `volunteering = ${d.volunteering.length} → ${JSON.stringify(d.volunteering)}`);
+    assert(d.volunteering[0].organization === 'Leading University Social Service Club' && d.volunteering[0].role === 'Joint General Secretary', `vol[0] = ${JSON.stringify(d.volunteering[0])}`);
+    assert(d.volunteering[1].organization === 'Leading University Electronics Club' && d.volunteering[1].role === 'Publicity Secretary', `vol[1] = ${JSON.stringify(d.volunteering[1])}`);
+    assert(d.skillsArr.length === 5, `skills = ${d.skillsArr.length}`);
+    /* apply and confirm the editor + skill sliders got the data */
+    await applyImport(page);
+    const applied = await page.evaluate(() => ({
+      pubs: getPublications(),
+      vols: getVolunteering(),
+      sliders: document.querySelectorAll('#skillLevels .skill-level-row').length,
+    }));
+    assert(applied.pubs.length === 6 && applied.pubs[1].title.endsWith('buck-boost converters'), `form publications = ${applied.pubs.length}`);
+    assert(applied.vols.length === 2 && applied.vols[0].organization === 'Leading University Social Service Club', `form volunteering = ${JSON.stringify(applied.vols[0])}`);
+    assert(applied.sliders === 5, `skill sliders rendered = ${applied.sliders}`);
     assert(page._errors.length === 0, 'no page errors');
     await page.close();
   }
