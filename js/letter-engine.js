@@ -222,9 +222,9 @@ export function draftLetter(opts){
     scaleCVToFit();
     if(opts.fallbackMsg){
         if(st){st.textContent=opts.fallbackMsg;st.className='ats-ai-status warn';}
-        showToast('Gemini unavailable — deterministic draft written instead');
+        showToast('Gemini unavailable — instant draft written instead');
     }else{
-        if(st){st.textContent=`Drafted from your CV in ${parts.meta.achievements||0} achievement${parts.meta.achievements===1?'':'s'}${parts.meta.jdUsed?' and matched to the job description':''} — fully offline, no AI. Edit freely or let Gemini rewrite it.`;st.className='ats-ai-status ok';}
+        if(st){st.textContent=`Drafted from your CV — ${parts.meta.achievements||0} achievement${parts.meta.achievements===1?'':'s'}${parts.meta.jdUsed?', matched to the job description':''}, fully offline. Edit freely or let Gemini rewrite it.`;st.className='ats-ai-status ok';}
         showToast('Letter drafted from your CV');
     }
     return parts;
@@ -283,7 +283,7 @@ export async function runLetterAi(){
   if(btn)btn.disabled=true;
   if(st){st.textContent='Asking Gemini\u2026';st.className='ats-ai-status';}
   try{
-    const {data,model}=await cviCallGemini(key,cviGetModel(),letterAiParts(),m=>{if(st)st.textContent=m;},{schema:LETTER_AI_SCHEMA,temperature:0.7,maxOutputTokens:1400});
+    const {data}=await cviCallGemini(key,cviGetModel(),letterAiParts(),m=>{if(st)st.textContent=m;},{schema:LETTER_AI_SCHEMA,temperature:0.7,maxOutputTokens:1400});
     const p1=String(data.p1||'').trim(),p2=String(data.p2||'').trim(),p3=String(data.p3||'').trim(),p4=String(data.p4||'').trim();
     if(!p1&&!p2&&!p3&&!p4)throw new Error('Gemini returned an empty letter \u2014 try again.');
     setLetterParagraphs([p1,p2,p3,p4]);
@@ -291,12 +291,12 @@ export async function runLetterAi(){
     setActiveDoc('letter');
     scaleCVToFit();
     showToast('Cover letter drafted \u2014 tweak any [placeholders]');
-    if(st){st.textContent='Written with '+model+' \u2014 edit freely below, it\u2019s your letter.';st.className='ats-ai-status ok';}
+    if(st){st.textContent='Gemini finished — edit freely below, it\u2019s your letter.';st.className='ats-ai-status ok';}
   }catch(e){
     /* AI is the backup — when Gemini fails (quota, 503, offline, bad key) the
        deterministic engine writes the letter so the user is never left empty-handed */
     const msg=(e&&e.message)||'Gemini request failed';
-    const parts=draftLetter({quiet:true,fallbackMsg:'Gemini couldn\u2019t write it ('+msg+') \u2014 the deterministic engine drafted your letter from your CV instead. Edit it below, or retry Gemini in a minute.'});
+    const parts=draftLetter({quiet:true,fallbackMsg:'Gemini couldn\u2019t write it ('+msg+') \u2014 the instant letter was drafted from your CV instead. Edit it below, or try Gemini again in a minute.'});
     if(!parts&&st){st.textContent=msg+' \u2014 and the CV is too empty to draft from. Add experience, skills or a summary first.';st.className='ats-ai-status err';}
   }finally{
     if(btn)btn.disabled=false;

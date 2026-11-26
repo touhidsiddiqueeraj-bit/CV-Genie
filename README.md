@@ -2,13 +2,13 @@
 
 # CV Genie
 
-**A fast, private, offline-capable CV builder — 31 templates including Europass, a matching cover letter builder (deterministic + Gemini AI), a 7-category ATS engine with job-description matching, profile photos, and fully local PDF / DOCX / RTF / Markdown / TXT export. Installable as a PWA and as an Android APK built by CI.**
+**A fast, private, offline-capable CV builder — 31 templates including Europass, a matching cover letter builder (instant offline drafting + Gemini AI), a 7-category ATS engine with job-description matching, profile photos, and fully local PDF / DOCX / RTF / Markdown / TXT export. Installable as a PWA and as an Android APK built by CI.**
 
 [![CI](https://github.com/touhidsiddiqueeraj-bit/CV-Genie/actions/workflows/ci.yml/badge.svg)](https://github.com/touhidsiddiqueeraj-bit/CV-Genie/actions/workflows/ci.yml)
 [![Release](https://github.com/touhidsiddiqueeraj-bit/CV-Genie/actions/workflows/release.yml/badge.svg)](https://github.com/touhidsiddiqueeraj-bit/CV-Genie/actions/workflows/release.yml)
 [![APK](https://github.com/touhidsiddiqueeraj-bit/CV-Genie/actions/workflows/apk.yml/badge.svg)](https://github.com/touhidsiddiqueeraj-bit/CV-Genie/actions/workflows/apk.yml)
 
-[Live demo](https://touhidsiddiqueeraj-bit.github.io/CV-Genie/) · [Templates](#-templates) · [What's new](#-whats-new-in-v25) · [Documentation](#-documentation)
+[Live demo](https://touhidsiddiqueeraj-bit.github.io/CV-Genie/) · [Templates](#-templates) · [What's new](#-whats-new-in-v211) · [Documentation](#-documentation)
 
 </div>
 
@@ -25,6 +25,18 @@
 - **ATS-aware** — a 7-category engine with ~25 concrete checks (plus job-description matching and an optional Gemini AI coach) scores your CV on every keystroke and shows exactly what to fix.
 - **Serious output** — vector PDF through the print dialog, an editable DOCX generated entirely in-browser, RTF, Markdown, plain text, plus bulk export of all 31 templates in one ZIP.
 - **Works everywhere** — responsive down to phone screens, dark mode, and an installable Android APK built by CI.
+
+## ✦ What's new in v2.11
+
+**Final polish pass: plain-language UI, scrolling editor sections, and no more stale counts.**
+
+| Change | Details |
+|---|---|
+| **Scrolling form sections** | Every editor section (Languages included) now **scrolls inside its panel** once the content outgrows it, with a slim custom scrollbar — previously long lists were silently clipped, or grew the page forever after a collapse/expand. The accordion remembers each section's design height instead of dropping it. |
+| **Plain-language UI** | Technical wording is gone from things users see: “deterministically drafted” → “drafted straight from your CV”, “JSON Backup” → **Backup & Restore** (with *Save backup / Load backup* buttons), “A rule-based parser runs privately…” → “The reading happens privately in your browser”, “High-confidence parse” → “Confident read”, the `Parser` badge → `Auto`, and AI status lines no longer quote model IDs ("Reviewed with gemini-flash-latest" → "Review done"). |
+| **AI model picker tucked away** | The Gemini model field in CV import now hides behind a quiet **“Advanced — choose a specific AI model”** disclosure with a plain hint (“leave empty for the recommended model”), keeping 503/fallback jargon out of the default view. |
+| **Stale counts & title fixed** | The export button said “all 24 templates” for three releases — it now says **31** and is written dynamically from the template registry so it can never drift again. The browser-tab title (stuck at “v2.7”) is now “CV Genie — Free CV & Cover Letter Builder”. |
+| **Verified** | `test-cv-import.js` and `test-letter-deterministic.js` updated for the new button wording (import suite still green at 148 assertions); cache bumped to `cv-genie-v2.11`. |
 
 ## ✦ What's new in v2.10
 

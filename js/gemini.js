@@ -91,13 +91,13 @@ export async function cviCallGemini(key,preferred,parts,onStatus,opts){ /* prefe
   const failures=[];
   const tryModel=async(model,attempts)=>{
     for(let a=0;a<attempts;a++){
-      if(onStatus)onStatus('Asking '+model+(a?' — retry '+(a+1):'')+'…');
+      if(onStatus)onStatus('Asking Gemini'+(a?' — try '+(a+1):'')+'…');
       try{
         return await cviGeminiOnce(key,model,parts,opts);
       }catch(err){
         if(err&&err.fatal==='key')throw new Error('That API key was rejected. Double-check it in Google AI Studio.');
         if(err&&err.fatal==='location')throw new Error('The Gemini API is not available in your region (Google restriction).');
-        if(err&&err.fatal==='access')throw new Error('The key has no access to this model (or the Generative Language API is disabled for it).');
+        if(err&&err.fatal==='access')throw new Error('That key can\u2019t use this AI model — try leaving the model field empty.');
         failures.push(model+' ('+(err&&err.status?err.status:'network')+')');
         if(err&&err.status&&CVI_RETRYABLE.has(err.status)&&a<attempts-1){await cviSleep(cviBackoff(a));continue;}
         break;
@@ -108,9 +108,9 @@ export async function cviCallGemini(key,preferred,parts,onStatus,opts){ /* prefe
   for(const model of models){const r=await tryModel(model,2);if(r)return r;}
   const allBusy=failures.length>0&&failures.every(f=>/\((408|429|500|503|network)\)$/.test(f));
   if(allBusy){ /* 503-everywhere = free-tier congestion; cool down, then try the best models once more */
-    if(onStatus)onStatus('Google\u2019s servers look busy — waiting a few seconds before a final retry…');
+    if(onStatus)onStatus('Google\u2019s servers look busy — trying once more after a short pause…');
     await cviSleep(6000+Math.random()*3000);
     for(const model of models.slice(0,3)){const r=await tryModel(model,1);if(r)return r;}
   }
-  throw new Error('Gemini could not answer right now — tried '+failures.slice(0,4).join(', ')+'. Google\u2019s free tier gets congested at peak times; wait a minute and try again.');
+  throw new Error('Gemini could not answer right now — Google\u2019s free tier gets busy at peak times. Wait a minute and try again.');
 }

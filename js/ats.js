@@ -481,9 +481,9 @@ export async function runAtsAiCoach(){
   if(btn)btn.disabled=true;
   if(st){st.textContent='Asking Gemini\u2026';st.className='ats-ai-status';}
   try{
-    const {data,model}=await cviCallGemini(key,cviGetModel(),atsAiParts(cv,atsLastReport),m=>{if(st)st.textContent=m;},{schema:ATS_AI_SCHEMA});
+    const {data}=await cviCallGemini(key,cviGetModel(),atsAiParts(cv,atsLastReport),m=>{if(st)st.textContent=m;},{schema:ATS_AI_SCHEMA});
     atsRenderAi(data);
-    if(st){st.textContent='Reviewed with '+model+' \u2014 re-run the analysis after applying changes.';st.className='ats-ai-status ok';}
+    if(st){st.textContent='Review done \u2014 re-run the analysis after applying changes.';st.className='ats-ai-status ok';}
   }catch(e){
     if(st){st.textContent=e&&e.message?e.message:'Gemini request failed \u2014 try again in a minute.';st.className='ats-ai-status err';}
   }finally{
@@ -499,8 +499,8 @@ export async function testGeminiKey(){ /* tiny ping through the same fallback en
   cviSetKey(key);
   if(st){st.textContent='Testing connection\u2026';st.className='ats-ai-status';}
   try{
-    const {data,model}=await cviCallGemini(key,cviGetModel(),[{text:'Connection test. Reply with exactly: OK'}],m=>{if(st)st.textContent=m;},{temperature:0,timeout:30000});
-    if(st){st.textContent='Connection OK \u2014 answered via '+model+'. The AI coach and CV import will work.';st.className='ats-ai-status ok';}
+    const {data}=await cviCallGemini(key,cviGetModel(),[{text:'Connection test. Reply with exactly: OK'}],m=>{if(st)st.textContent=m;},{temperature:0,timeout:30000});
+    if(st){st.textContent='Connection OK. The AI coach and CV import will both work.';st.className='ats-ai-status ok';}
   }catch(e){
     if(st){st.textContent=(e&&e.message)||'Connection failed.';st.className='ats-ai-status err';}
   }

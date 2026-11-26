@@ -40,7 +40,7 @@ async function parseViaPaste(page, text) {
   await openImport(page);
   await page.click('text=…or paste CV text');
   await page.fill('#cvImportPaste', text);
-  await page.click('text=Parse pasted text');
+  await page.click('text=Read pasted text');
   await page.waitForSelector('#cvImportStep2', { state: 'visible' });
   return page.evaluate(() => ({ ...cvImportData, _src: { ...cvImportSource } }));
 }
@@ -255,7 +255,7 @@ Supported the content calendar.`;
     await openImport(page);
     await page.click('text=…or paste CV text');
     await page.fill('#cvImportPaste', 'too short');
-    await page.click('text=Parse pasted text');
+    await page.click('text=Read pasted text');
     const err = await page.evaluate(() => document.getElementById('cvImportError').textContent);
     assert(/Paste the full text/.test(err), `short paste rejected: "${err}"`);
     await page.setInputFiles('#cvImportFile', { name: 'old.doc', mimeType: 'application/msword', buffer: Buffer.from('x') });

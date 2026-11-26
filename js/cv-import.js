@@ -1064,7 +1064,7 @@ export async function cvImportRunParser(text,fileName,SL){
 }
 export function cviGroup(key,label,count,inner){
   const d=cvImportData;
-  return '<div class="cvi-group"><label class="cvi-g-head"><input type="checkbox" '+(d.include[key]?'checked':'')+' onchange="cvImportData.include[\''+key+'\']=this.checked"><strong>'+label+'</strong><span class="cvi-count">'+(count?count+(count===1?' item':' items'):'nothing found')+'</span><span class="cvi-badge'+(d.source==='ai'?' ai':'')+'">'+(d.source==='ai'?'Gemini AI':'Parser')+'</span></label><div class="cvi-g-body">'+inner+'</div></div>';
+  return '<div class="cvi-group"><label class="cvi-g-head"><input type="checkbox" '+(d.include[key]?'checked':'')+' onchange="cvImportData.include[\''+key+'\']=this.checked"><strong>'+label+'</strong><span class="cvi-count">'+(count?count+(count===1?' item':' items'):'nothing found')+'</span><span class="cvi-badge'+(d.source==='ai'?' ai':'')+'">'+(d.source==='ai'?'Gemini AI':'Auto')+'</span></label><div class="cvi-g-body">'+inner+'</div></div>';
 }
 export function renderCvImportReview(fileName){
   const d=cvImportData,E=cviEsc;
@@ -1073,7 +1073,7 @@ export function renderCvImportReview(fileName){
   s2.style.display='block';
   const conf=document.getElementById('cvImportConfidence');
   conf.className='cvi-conf '+d.level;
-  let h='<strong>'+(d.level==='high'?'High-confidence parse':'Confidence: '+d.level)+' \u2014 '+d.score+'/100.</strong> '+(d.level==='high'?'Review below, untick anything you don\u2019t want, then import.':'Check the fields below, or let Gemini AI re-extract them.');
+  let h='<strong>'+(d.level==='high'?'Confident read':'Partly read \u2014 check it over')+' \u2014 '+d.score+'/100.</strong> '+(d.level==='high'?'Review below, untick anything you don\u2019t want, then import.':'Check the fields below, or let Gemini AI tidy them up.');
   if(d.notes.length)h+='<div class="cvi-notes">Heads-up: '+E(d.notes.join(' \u00b7 '))+'.</div>';
   conf.innerHTML=h;
   const G=[];
@@ -1124,9 +1124,9 @@ export async function runGeminiExtraction(){
     cvImportData={...p,source:'ai',include:inc};
     renderCvImportReview(cvImportSource?cvImportSource.fileName:'pasted text');
     if(!modelIn||modelIn===CVI_GEMINI_DEFAULT){document.getElementById('cvAiModel').value=model;cviSetModel(model);}
-    cviAiStatus('AI extraction complete via '+model+' ('+p.score+'/100). Review and import below.');
+    cviAiStatus('Gemini read your CV \u2014 '+p.score+'/100. Review and import below.');
   }catch(err){
-    cviAiStatus((err&&err.message)||'AI extraction failed.',true);
+    cviAiStatus((err&&err.message)||'Gemini could not read it \u2014 try again in a minute.',true);
   }finally{
     btn.disabled=false;
   }

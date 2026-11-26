@@ -58,6 +58,13 @@
 .cvi-ai-status.err{color:var(--danger);}
 .cvi-ai-note{font-size:10.5px;color:var(--text-tertiary);line-height:1.5;margin:0.35rem 0 0;}
 .cvi-ai-panel .hint{display:block;font-size:10.5px;color:var(--text-tertiary);line-height:1.4;margin-top:0.25rem;}
+/* v2.11: the AI-model picker is tucked behind a quiet disclosure so the panel
+   stays jargon-free until someone actively wants that control */
+.cvi-advanced{border:1px dashed var(--border);border-radius:var(--radius);padding:0.35rem 0.55rem;}
+.cvi-advanced summary{font-size:11px;color:var(--text-tertiary);cursor:pointer;user-select:none;line-height:1.5;}
+.cvi-advanced summary:hover{color:var(--text-secondary);}
+.cvi-advanced[open] summary{color:var(--text-secondary);margin-bottom:0.35rem;}
+.cvi-advanced .form-group{margin-bottom:0;}
 .cvi-ai-note a{color:var(--text-secondary);}
 .progress-track{height:4px;background:var(--surface-2);border-radius:2px;overflow:hidden;}
 .progress-fill{height:100%;background:var(--text);width:0%;transition:width .3s;}

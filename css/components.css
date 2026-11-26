@@ -45,8 +45,14 @@
 .section-header h3{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-secondary);flex:1;}
 .section-header .chev{width:14px;height:14px;color:var(--text-tertiary);transition:transform .2s;flex-shrink:0;}
 .section-header .chev.open{transform:rotate(180deg);}
-.section-content{overflow:hidden;transition:max-height 0.3s ease,opacity .25s ease,padding .3s ease;padding:0 0.9rem;}
-.section-content.collapsed{max-height:0!important;opacity:0;padding-top:0;padding-bottom:0;}
+/* v2.11: sections scroll (not clip) once content outgrows their max-height —
+   the Languages editor prompted the fix, but every list benefits */
+.section-content{overflow-x:hidden;overflow-y:auto;transition:max-height 0.3s ease,opacity .25s ease,padding .3s ease;padding:0 0.9rem;overscroll-behavior:contain;scrollbar-width:thin;scrollbar-color:var(--text-tertiary) transparent;}
+.section-content::-webkit-scrollbar{width:5px;}
+.section-content::-webkit-scrollbar-track{background:transparent;}
+.section-content::-webkit-scrollbar-thumb{background:var(--text-tertiary);border-radius:2.5px;}
+.section-content::-webkit-scrollbar-thumb:hover{background:var(--text-secondary);}
+.section-content.collapsed{max-height:0!important;opacity:0;padding-top:0;padding-bottom:0;overflow-y:hidden;}
 .section-inner{padding:0.35rem 0 0.85rem;}
 .form-group{margin-bottom:0.55rem;}
 .form-group label{display:block;font-size:12px;font-weight:500;margin-bottom:0.3rem;color:var(--text-secondary);}

@@ -139,7 +139,7 @@ const ok = (cond, label, extra) => { if (cond) { pass++; console.log('  PASS', l
     letterActive: document.getElementById('docToggleLetter').classList.contains('active')
   }));
   ok(fb.cls.includes('warn'), 'AI 503: fallback status is warn', fb.cls);
-  ok(/deterministic engine drafted|couldn/.test(fb.status), 'AI 503: message explains fallback', fb.status.slice(0, 120));
+  ok(/instant letter was drafted|couldn/.test(fb.status), 'AI 503: message explains fallback', fb.status.slice(0, 120));
   ok(/Senior Software Engineer/.test(fb.p1) && /42%|8 engineers/.test(fb.p3), 'AI 503: deterministic letter written');
   ok(fb.letterActive, 'AI 503: preview switched to letter');
 
