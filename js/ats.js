@@ -2,7 +2,7 @@
  * matching, custom keyword chips, plain-text view and the Gemini AI coach. */
 
 import { photoData } from './app-state.js';
-import { getEducation, getExperiences, getLanguages } from './cvdata.js';
+import { getEducation, getExperiences, getLanguages, getProjects, getPublications, getVolunteering } from './cvdata.js';
 import { cviCallGemini, cviGetKey, cviGetModel, cviSetKey } from './gemini.js';
 import { updatePreview } from './render.js';
 import { showToast, uiAnimateClose } from './ui.js';
@@ -62,12 +62,19 @@ export function buildAtsPlainText(){
     const email=document.getElementById('email')?.value||'',phone=document.getElementById('phone')?.value||'',li=document.getElementById('linkedin')?.value||'',loc=document.getElementById('location')?.value||'';
     const summary=document.getElementById('summary')?.value||'',skills=document.getElementById('skills')?.value||'';
     const exp=getExperiences(),edu=getEducation(),langs=getLanguages();
+    const pubs=getPublications(),projs=getProjects(),vols=getVolunteering();
+    const interests=document.getElementById('interests')?.value||'';
     let t=`${name}\n${title}\n${[email,phone,li,loc].filter(Boolean).join('\n')}\n\n`;
     if(summary.trim())t+=`SUMMARY\n${summary.trim()}\n\n`;
     if(skills.trim())t+=`SKILLS\n${skills.split(',').map(s=>s.trim()).filter(Boolean).join(', ')}\n\n`;
     if(exp.length){t+=`EXPERIENCE\n`;exp.forEach(x=>{t+=`${x.title} - ${x.company} - ${x.dates}\n`;if(x.description)t+=x.description.split('\n').filter(Boolean).map(d=>'* '+d.trim()).join('\n')+'\n';t+='\n';});}
     if(edu.length){t+=`EDUCATION\n`;edu.forEach(x=>{t+=`${x.degree} - ${x.institution} - ${x.year}\n`;});t+='\n';}
+    if(pubs.length){t+=`PUBLICATIONS\n`;pubs.forEach(x=>{t+=`${x.title||''}${x.dates?' - '+x.dates:''}\n`;if(x.venue)t+='  '+x.venue+'\n';if(x.status)t+='  '+x.status+'\n';if(x.link)t+='  '+x.link+'\n';t+='\n';});}
+    if(projs.length){t+=`PROJECTS\n`;projs.forEach(x=>{t+=`${x.name||''}${x.description?' - '+x.description:''}\n`;if(x.link)t+='  '+x.link+'\n';});t+='\n';}
+    if(vols.length){t+=`VOLUNTEERING\n`;vols.forEach(x=>{t+=`${x.organization||''}${x.role?' - '+x.role:''}\n`;if(x.description)t+=x.description.split('\n').filter(Boolean).map(d=>'* '+d.trim()).join('\n')+'\n';});t+='\n';}
+    if(edu.length){t+=`EDUCATION\n`;edu.forEach(x=>{t+=`${x.degree} - ${x.institution} - ${x.year}\n`;});t+='\n';}
     if(langs.length){t+=`LANGUAGES\n`;langs.forEach(l=>{t+=`${l.language} - ${l.level||'not specified'}\n`;});}
+    if(interests.trim())t+=`\nINTERESTS\n${interests.trim()}\n`;
     return t;
 }
 export function openAtsTextView(){
@@ -138,7 +145,11 @@ export function getAllText(){
     document.getElementById('skills')?.value||'',
     ...getExperiences().map(e=>[e.title,e.company,e.description].join(' ')),
     ...getEducation().map(e=>[e.degree,e.institution].join(' ')),
-    ...getLanguages().map(l=>l.language+' '+l.level)
+    ...getLanguages().map(l=>l.language+' '+l.level),
+    ...getPublications().map(p=>[p.title,p.venue,p.status].join(' ')),
+    ...getProjects().map(p=>[p.name,p.description].join(' ')),
+    ...getVolunteering().map(v=>[v.organization,v.role,v.description].join(' ')),
+    document.getElementById('interests')?.value||''
   ];
   return parts.join(' ').toLowerCase();
 }

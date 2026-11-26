@@ -26,6 +26,17 @@
 - **Serious output** — vector PDF through the print dialog, an editable DOCX generated entirely in-browser, RTF, Markdown, plain text, plus bulk export of all 31 templates in one ZIP.
 - **Works everywhere** — responsive down to phone screens, dark mode, and an installable Android APK built by CI.
 
+## ✦ What's new in v2.9
+
+**Researcher sections — Publications, Projects, Volunteering and Interests — and the Scholar template rebuilt as an exact recreation of the reference CV.**
+
+| Change | Details |
+|---|---|
+| **Four new form sections** | **Publications** (title, venue, date, status, DOI link), **Projects** (name, description, link), **Volunteering** (organization, role, description) and **Interests** (a simple line) join the editor. They are collapsible, drag-reorderable like every other section, persist in saves / share links / version history, flow into the ATS plain-text view and keyword matching, and export to **DOCX, RTF, Markdown and TXT** (DOI links prefixed and coloured). The deterministic cover letter gained a researcher path: with no quantified work bullets but published papers, p3 grounds itself in your top publication instead of a generic fallback. |
+| **Scholar: exact recreation** | The template was rebuilt against the reference CV's measured geometry: the **official current Europass logo** (extracted from the reference PDF) sits top-left of the navy `#003399` masthead above the *Curriculum Vitae* eyebrow, the 23 pt name and the tagline, with the photo flush right; the grey **Personal Information** block carries underlined values in a 2-column grid; section headers are letter-spaced `#1a3fa0` caps over thin `#003399` rules; publications render as bold wrapped titles with right-aligned grey dates, venue/status lines and blue DOI links; skills sit in a 3-column grid and languages in a 4-column grid, each with the signature **5-square proficiency ratings**. |
+| **Import parses the new sections** | The universal CV parser (and the Gemini extraction schema) now understand **Publications**, **Projects**, **Volunteering** and **Interests** sections: wrapped publication titles are joined, trailing dates pair with entries, venues/statuses/DOIs are separated (a DOI closes an entry), projects close on their URL, and org/role volunteering pairs feed the new list. Imported sections appear as review groups with include checkboxes, exactly like the existing ones. |
+| **Verified** | `test-cv-import.js` grew from 104 to **126 assertions** — a new end-to-end researcher fixture (`fixture5-researcher.pdf`: 3 publications with wrapped titles and DOIs, 2 link-closed projects, 2 volunteering pairs, skills/interests/languages) plus form-apply checks; `test-export-docx.js` now asserts publications, the DOI prefix and interests inside the generated OOXML. Service-worker cache bumped to `cv-genie-v2.9`. |
+
 ## ✦ What's new in v2.8
 
 **The Scholar template — a 31st design modelled on a real researcher's CV.**
@@ -131,7 +142,7 @@ The final polish pass: a cohesive motion layer and small UI cleanups. Every anim
 
 ### Live editor with instant preview
 
-Every keystroke updates the A4 preview (debounced 200 ms). Sections are collapsible and reorderable by drag-and-drop; experience, education and language entries are drag-reorderable too.
+Every keystroke updates the A4 preview (debounced 200 ms). Sections are collapsible and reorderable by drag-and-drop; experience, education, publication, project, volunteering and language entries are drag-reorderable too.
 
 ![Editor](docs/images/editor.png)
 
@@ -213,7 +224,7 @@ A dedicated mobile layout with edit/preview navigation, and a full dark theme (a
 
 ### Import your existing CV
 
-Upload an old CV in **PDF, DOCX or plain text** (or paste its text) and CV Genie fills in the whole form — personal details, summary, work experience, education, skills and languages.
+Upload an old CV in **PDF, DOCX or plain text** (or paste its text) and CV Genie fills in the whole form — personal details, summary, work experience, education, publications, projects, volunteering, interests, skills and languages.
 
 **How it works, in order of preference:**
 
@@ -405,7 +416,7 @@ The whole CV is serialised by `getState()` into one plain object (template, colo
 
 ### The service worker
 
-`sw.js` precaches the app shell at install (`./`, `index.html`, manifest, icons, **every `js/` module and `css/` stylesheet** — CI fails if a file is missing from the list), warms the exact CDN libraries and web fonts (woff2 URLs parsed out of the Google Fonts CSS) right after activation so the **first** visit already survives going offline, serves assets cache-first, and handles navigations network-first with a cached fallback so deploys land on the next refresh. The Gemini API is deliberately never cached — AI features simply wait for a connection. The cache name is versioned (`cv-genie-v2.8`); bump it when you want every install to refresh its cache. It is the app's **only** registration (from `js/main.js` on secure contexts; CI fails the build if a second service worker — e.g. an inline Blob worker — ever appears), so the caching strategy above is the whole truth.
+`sw.js` precaches the app shell at install (`./`, `index.html`, manifest, icons, **every `js/` module and `css/` stylesheet** — CI fails if a file is missing from the list), warms the exact CDN libraries and web fonts (woff2 URLs parsed out of the Google Fonts CSS) right after activation so the **first** visit already survives going offline, serves assets cache-first, and handles navigations network-first with a cached fallback so deploys land on the next refresh. The Gemini API is deliberately never cached — AI features simply wait for a connection. The cache name is versioned (`cv-genie-v2.9`); bump it when you want every install to refresh its cache. It is the app's **only** registration (from `js/main.js` on secure contexts; CI fails the build if a second service worker — e.g. an inline Blob worker — ever appears), so the caching strategy above is the whole truth.
 
 ### Keyboard shortcuts & accessibility
 

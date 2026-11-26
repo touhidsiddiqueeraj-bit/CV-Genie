@@ -101,7 +101,7 @@ const check = (label, ok, extra = '') => {
   await page.evaluate(() => navigator.serviceWorker.ready);
   await page.waitForTimeout(600);
   const sw = await page.evaluate(async () => {
-    const c = await caches.open('cv-genie-v2.8');
+    const c = await caches.open('cv-genie-v2.9');
     const keys = await c.keys();
     const paths = keys.map(r => new URL(r.url).pathname);
     return {

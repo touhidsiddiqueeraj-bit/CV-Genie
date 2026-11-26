@@ -241,3 +241,115 @@ lc.save()
 print("Fixtures written to", OUT)
 for fn in sorted(os.listdir(OUT)):
     print(" -", fn, os.path.getsize(os.path.join(OUT, fn)), "bytes")
+
+# ---------------------------------------------------------------- fixture 5: researcher CV
+# Mirrors the structure of the reference CV that inspired the Scholar
+# template: publications with wrapped titles + right-aligned dates + venue /
+# status / DOI lines, projects closed by URLs, volunteering org+role pairs,
+# skills categories and an interests line. Synthetic personal data.
+rc = canvas.Canvas(os.path.join(OUT, "fixture5-researcher.pdf"), pagesize=A4)
+ry = h - 20 * mm
+
+
+def rpara(text, size=9.5, bold=False, gap=4.5, indent=0, right=False):
+    global ry
+    rc.setFont("SansB" if bold else "Sans", size)
+    if right:
+        rc.drawRightString(w - 20 * mm, ry, text)
+    else:
+        rc.drawString(LEFT + indent, ry, text)
+    ry -= size / 2.8 * mm + gap / 2.8 * mm
+
+
+def rpub(title_lines, date, venue, status, doi):
+    global ry
+    # title line 1 and the date share a baseline (as in the reference CV)
+    rc.setFont("SansB", 10)
+    rc.drawString(LEFT, ry, title_lines[0])
+    rc.setFont("Sans", 8)
+    rc.drawRightString(w - 20 * mm, ry, date)
+    ry -= 10 / 2.8 * mm + 2 / 2.8 * mm
+    for extra in title_lines[1:]:
+        rpara(extra, 10, bold=True, gap=2)
+    rpara(venue, 8.8, gap=2)
+    rpara(status, 8.8, gap=2)
+    rpara("DOI: " + doi, 7.6, gap=7)
+
+
+def rhead(text):
+    global ry
+    if ry < 34 * mm:  # keep each section block on one page
+        rc.showPage()
+        ry = h - 20 * mm
+    ry -= 4 * mm
+    rc.setFont("SansB", 11.5)
+    rc.drawString(LEFT, ry, text)
+    ry -= 9 * mm
+
+
+rpara("Dr. Amira Rahman", 16, bold=True, gap=6)
+rpara("Embedded Systems Researcher \u2014 Applied ML and Power Electronics", 10, gap=2)
+rpara("amira.rahman@example.edu", 9.5, gap=2)
+rpara("+880 1712 345 678", 9.5, gap=6)
+
+rhead("Summary")
+rpara("Embedded systems researcher with hands-on experience spanning firmware, applied")
+rpara("machine learning, and simulation. Leading author on three journal papers with two")
+rpara("accepted at international venues. Active open-source maintainer.")
+
+rhead("Experience")
+rpara("Research Assistant", 10, bold=True, gap=2)
+rpara("Green Energy Lab \u00b7 Dhaka", 9.5, gap=2)
+rpara("January 2024 - Present", 9.5, gap=2)
+rpara("Built data-acquisition firmware for solar MPPT test benches.")
+rpara("Lab Instructor", 10, bold=True, gap=2)
+rpara("City Institute of Technology", 9.5, gap=2)
+rpara("March 2022 - December 2023", 9.5, gap=2)
+rpara("Ran embedded-systems labs for undergraduate cohorts of 60 students.")
+
+rhead("Education")
+rpara("M.Sc. in Electrical Engineering", 10, bold=True, gap=2)
+rpara("University of Engineering and Technology", 9.5, gap=2)
+rpara("2024", 9.5, gap=6)
+rpara("B.Sc. in EEE", 10, bold=True, gap=2)
+rpara("City University", 9.5, gap=2)
+rpara("2022", 9.5, gap=6)
+
+rhead("Publications")
+rpub(["Helios-B: Simulation-Based Validation of a Dual-Microcontroller Predictive",
+      "MPPT Controller with On-Device Retraining for Tropical Deployment"],
+     "September 2026", "IJPEDS \u00b7 Paper ID 90011", "Accepted, pending publication",
+     "https://doi.org/10.5281/zenodo.99990001")
+rpub(["Sampling limits of digitally controlled buck converters under monsoon humidity"],
+     "October 2026", "IEEE Transactions on Power Electronics \u00b7 Manuscript ID TPE-26-001",
+     "Under first review", "https://doi.org/10.5281/zenodo.99990002")
+rpub(["A survey of machine learning in battery management across 400 studies"],
+     "October 2026", "Preprint", "Preprint", "https://doi.org/10.5281/zenodo.99990003")
+
+rhead("Projects")
+rpara("Aurora Editor", 10, bold=True, gap=2)
+rpara("An open source schematic editor", 8.8, gap=2)
+rpara("https://github.com/example/aurora", 7.6, gap=6)
+rpara("Nimbus Dashboard", 10, bold=True, gap=2)
+rpara("Weather station telemetry viewer", 8.8, gap=2)
+rpara("https://github.com/example/nimbus", 7.6, gap=6)
+
+rhead("Volunteering")
+rpara("Robotics Club", 10, bold=True, gap=2)
+rpara("Joint General Secretary", 8.8, gap=6)
+rpara("Science Olympiad Committee", 10, bold=True, gap=2)
+rpara("Publicity Secretary", 8.8, gap=6)
+
+rhead("Skills")
+rpara("Scientific Writing & Research, Embedded Systems & Firmware, Machine Learning,")
+rpara("Simulation & Modeling")
+
+rhead("Interests")
+rpara("Chess, Astronomy, Cycling, Documentary Films")
+
+rhead("Languages")
+rpara("Bengali: Native, English: C2, Hindi: A2")
+
+rc.showPage()
+rc.save()
+print("fixture5-researcher.pdf written")

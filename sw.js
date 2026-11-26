@@ -5,7 +5,7 @@
    - Navigations are network-first (updates land on refresh) with a cached
      fallback, so edits continue offline and you never get a dinosaur.
    - The Gemini API is deliberately NOT cached — it is never needed offline. */
-const CACHE = 'cv-genie-v2.8';
+const CACHE = 'cv-genie-v2.9';
 const APP_SHELL = [
   './',
   './index.html',

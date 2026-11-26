@@ -19,7 +19,7 @@ export let photoData=null;
 export let photoShape='circle';
 export let photoSize='md';
 export let activeDoc='cv'; /* 'cv' | 'letter' — which document the preview & exports target */
-export let sectionOrder=['summary','skills','experience','education','languages'];
+export let sectionOrder=['summary','skills','experience','education','publications','projects','volunteering','interests','languages'];
 
 export const setCurrentTemplate=v=>{currentTemplate=v;};
 export const setCurrentColor=v=>{currentColor=v;};

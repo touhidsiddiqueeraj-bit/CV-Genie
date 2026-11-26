@@ -4,7 +4,7 @@
 
 import { mobileNav } from './carousel.js';
 import { getEducation, getExperiences } from './cvdata.js';
-import { addEduSilent, addExpSilent, addLangSilent, initDragDrop } from './form.js';
+import { addEduSilent, addExpSilent, addLangSilent, addProjSilent, addPubSilent, addVolSilent, initDragDrop } from './form.js';
 import { CVI_GEMINI_DEFAULT, cviCallGemini, cviGetKey, cviGetModel, cviSetKey, cviSetModel } from './gemini.js';
 import { _updatePreviewNow, updatePreview } from './render.js';
 import { persistState } from './state.js';
@@ -19,7 +19,7 @@ let pendingLinkedInData=null;
    first page on real exports. Rows are joined to real visual lines; the
    parser's clean() strips the "|" column separators it inserts. */
 export async function importLinkedInPDF(e){const f=e.target.files[0];if(!f)return;document.getElementById('linkedInProgress').style.display='block';document.getElementById('linkedInProgressFill').style.width='20%';document.getElementById('linkedInProgressText').textContent='Reading…';try{const b=await f.arrayBuffer();document.getElementById('linkedInProgressFill').style.width='50%';const pdf=await pdfjsLib.getDocument({data:b}).promise;const out=await cviPdfToLines(pdf);document.getElementById('linkedInProgressFill').style.width='80%';pendingLinkedInData=parseLinkedInText(out.text);const pv=[];if(pendingLinkedInData.name)pv.push(['Name',pendingLinkedInData.name]);if(pendingLinkedInData.title)pv.push(['Title',pendingLinkedInData.title]);if(pendingLinkedInData.email)pv.push(['Email',pendingLinkedInData.email]);if(pendingLinkedInData.phone)pv.push(['Phone',pendingLinkedInData.phone]);if(pendingLinkedInData.location)pv.push(['Location',pendingLinkedInData.location]);if(pendingLinkedInData.summary)pv.push(['Summary',pendingLinkedInData.summary.substring(0,80)+'…']);if(pendingLinkedInData.experiences&&pendingLinkedInData.experiences.length)pv.push(['Experience',pendingLinkedInData.experiences.length+' position(s)']);if(pendingLinkedInData.education&&pendingLinkedInData.education.length)pv.push(['Education',pendingLinkedInData.education.length+' degree(s)']);if(pendingLinkedInData.languages&&pendingLinkedInData.languages.length)pv.push(['Languages',pendingLinkedInData.languages.length+' language(s)']);if(pendingLinkedInData.skills)pv.push(['Skills',pendingLinkedInData.skills.substring(0,80)+'…']);document.getElementById('linkedInPreviewTable').innerHTML=pv.map(([l,v])=>`<tr><td>${l}</td><td>${v}</td></tr>`).join('');document.getElementById('linkedInPreview').style.display='block';document.getElementById('linkedInProgressFill').style.width='100%';document.getElementById('linkedInProgressText').textContent='Review below';setTimeout(()=>document.getElementById('linkedInProgress').style.display='none',2000);}catch(err){document.getElementById('linkedInProgressText').textContent='Could not read PDF';setTimeout(()=>document.getElementById('linkedInProgress').style.display='none',3000);}}
-export function applyLinkedInData(){if(!pendingLinkedInData)return;const d=pendingLinkedInData;if(d.name)document.getElementById('fullName').value=d.name;if(d.title)document.getElementById('title').value=d.title;if(d.email)document.getElementById('email').value=d.email;if(d.phone)document.getElementById('phone').value=d.phone;if(d.location)document.getElementById('location').value=d.location;if(d.summary)document.getElementById('summary').value=d.summary.substring(0,300);if(d.skills)document.getElementById('skills').value=d.skills;document.getElementById('experienceList').innerHTML='';(d.experiences||[]).forEach(e=>{addExpSilent();const is=document.querySelectorAll('#experienceList .dynamic-item');const l=is[is.length-1];if(l){l.querySelectorAll('input')[0].value=e.title||'';l.querySelectorAll('input')[1].value=e.company||'';l.querySelectorAll('input')[2].value=e.dates||'';l.querySelector('textarea').value=e.description||'';}});if(!d.experiences||!d.experiences.length)addExpSilent();document.getElementById('educationList').innerHTML='';(d.education||[]).forEach(e=>{addEduSilent();const is=document.querySelectorAll('#educationList .dynamic-item');const l=is[is.length-1];if(l){l.querySelectorAll('input')[0].value=e.degree||'';l.querySelectorAll('input')[1].value=e.institution||'';l.querySelectorAll('input')[2].value=e.year||'';}});if(!d.education||!d.education.length)addEduSilent();document.getElementById('languageList').innerHTML='';(d.languages||[]).forEach(e=>{addLangSilent();const is=document.querySelectorAll('#languageList .dynamic-item');const l=is[is.length-1];if(l){l.querySelector('input').value=e.language||'';l.querySelector('select').value=e.level||'';}});if(!d.languages||!d.languages.length)addLangSilent();updatePreview();initDragDrop();document.getElementById('linkedInPreview').style.display='none';pendingLinkedInData=null;showToast('Profile applied');}
+export function applyLinkedInData(){if(!pendingLinkedInData)return;const d=pendingLinkedInData;if(d.name)document.getElementById('fullName').value=d.name;if(d.title)document.getElementById('title').value=d.title;if(d.email)document.getElementById('email').value=d.email;if(d.phone)document.getElementById('phone').value=d.phone;if(d.location)document.getElementById('location').value=d.location;if(d.summary)document.getElementById('summary').value=d.summary.substring(0,300);if(d.skills)document.getElementById('skills').value=d.skills;document.getElementById('experienceList').innerHTML='';(d.experiences||[]).forEach(e=>{addExpSilent();const is=document.querySelectorAll('#experienceList .dynamic-item');const l=is[is.length-1];if(l){l.querySelectorAll('input')[0].value=e.title||'';l.querySelectorAll('input')[1].value=e.company||'';l.querySelectorAll('input')[2].value=e.dates||'';l.querySelector('textarea').value=e.description||'';}});if(!d.experiences||!d.experiences.length)addExpSilent();document.getElementById('volunteeringList').innerHTML='';(d.volunteering||[]).forEach(e=>{addVolSilent();const is=document.querySelectorAll('#volunteeringList .dynamic-item');const l=is[is.length-1];if(l){l.querySelectorAll('input')[0].value=e.organization||'';l.querySelectorAll('input')[1].value=e.role||'';l.querySelector('textarea').value=e.description||'';}});if(d.interests)document.getElementById('interests').value=d.interests;document.getElementById('educationList').innerHTML='';(d.education||[]).forEach(e=>{addEduSilent();const is=document.querySelectorAll('#educationList .dynamic-item');const l=is[is.length-1];if(l){l.querySelectorAll('input')[0].value=e.degree||'';l.querySelectorAll('input')[1].value=e.institution||'';l.querySelectorAll('input')[2].value=e.year||'';}});if(!d.education||!d.education.length)addEduSilent();document.getElementById('languageList').innerHTML='';(d.languages||[]).forEach(e=>{addLangSilent();const is=document.querySelectorAll('#languageList .dynamic-item');const l=is[is.length-1];if(l){l.querySelector('input').value=e.language||'';l.querySelector('select').value=e.level||'';}});if(!d.languages||!d.languages.length)addLangSilent();updatePreview();initDragDrop();document.getElementById('linkedInPreview').style.display='none';pendingLinkedInData=null;showToast('Profile applied');}
 export function discardLinkedInData(){document.getElementById('linkedInPreview').style.display='none';pendingLinkedInData=null;showToast('Discarded');}
 export function parseLinkedInText(t){
   /* v2.7: rebuilt on top of the universal parser. The old positional splitter
@@ -76,7 +76,8 @@ export function parseLinkedInText(t){
   const notPlace=arr=>arr.filter(ln=>{const s=ln.segs.join(' ');return !liPlace.test(s)||/\d/.test(s)||CVI_CO_KW.test(s)||CVI_INST_KW.test(s);});
   const found=Object.keys(secs).some(k=>k!=='pre'&&k!=='personal'&&k!=='ignore'&&secs[k].length);
   if(found){
-    r.experiences=cviParseExperience(notPlace(sl('experience'))).concat(cviParseExperience(notPlace(sl('volunteering')))).slice(0,12);
+    r.experiences=cviParseExperience(notPlace(sl('experience'))).slice(0,12);
+    r.volunteering=cviParseVolunteering(notPlace(sl('volunteering')));
     r.education=cviParseEducation(sl('education'));
     const sk=cviParseSkills(sl('skills'));r.skills=sk.join(', ');
     r.languages=cviParseLanguages(sl('languages'));
@@ -104,11 +105,14 @@ export const CVI_SEC_DEFS=[
  ['skills',/^(?:(?:technical|core|key|professional|personal|it|digital|computer|special|top)\s+)?(?:skills|competencies|expertise|technologies|tech\s*stack|strengths|tools|summary\s+of\s+qualifications|core\s+competencies|technical\s+profile|key\s+strengths)\s*(?:\s*[&+]\s*(?:abilities|tools|interests|endorsements|technologies))?\s*$/i],
  ['languages',/^(?:languages?|linguistic\s+skills?|language\s+skills?)\s*$/i],
  ['volunteering',/^(?:volunteer(?:ing)?(?:\s+(?:experience|work|service))?|community\s+service|extracurricular(?:\s+activities)?|activities)\s*$/i],
+ ['publications',/^(?:publications?|papers|research\s+publications|selected\s+publications|peer[- ]reviewed\s+publications|articles?|research\s+outputs?)\s*$/i],
+ ['projects',/^(?:projects?|key\s+projects|selected\s+projects|personal\s+projects|side\s+projects|portfolio|open[- ]source\s+(?:projects|contributions))\s*$/i],
+ ['interests',/^(?:interests?|hobbies(?:\s*(?:&|and)\s*interests)?|personal\s+interests|areas\s+of\s+interest)\s*$/i],
  ['personal',/^(?:personal\s+(?:information|details|data)|contact(?:\s+(?:information|details|info))?|additional\s+contact)\s*$/i],
- ['ignore',/^(?:references|interests|hobbies(?:\s*(?:&|and)\s*interests)?|personal\s+interests|awards?|honou?rs?(?:\s*(?:&|and)\s*awards?)?|publications?|papers|certificates?|certifications?|licen[cs]es?(?:\s*(?:&|and)?\s*certifications?)?|projects?|achievements|courses|additional\s+information|objective\s+statement|declaration|annex(?:es)?|photographs?|patents|memberships|professional\s+affiliations|conferences|talks)\s*$/i]
+ ['ignore',/^(?:references|awards?|honou?rs?(?:\s*(?:&|and)\s*awards?)?|certificates?|certifications?|licen[cs]es?(?:\s*(?:&|and)?\s*certifications?)?|achievements|courses|additional\s+information|objective\s+statement|declaration|annex(?:es)?|photographs?|patents|memberships|professional\s+affiliations|conferences|talks)\s*$/i]
 ];
 /* compressed (space-stripped) header names — handles letter-spaced headers like "E D U C AT I O N" */
-export const CVI_SEC_COMPRESSED={summary:['SUMMARY','PROFILE','ABOUTME','ABOUT','OBJECTIVE','PERSONALSTATEMENT','CAREEROVERVIEW','PROFESSIONALPROFILE','CAREERPROFILE','PERSONALPROFILE','EXECUTIVESUMMARY','CAREEROBJECTIVE','PROFILESUMMARY'],experience:['EXPERIENCE','WORKEXPERIENCE','EMPLOYMENTHISTORY','EMPLOYMENT','WORKHISTORY','CAREERHISTORY','PROFESSIONALEXPERIENCE','PROFESSIONALBACKGROUND','RELEVANTEXPERIENCE','PROFESSIONALHISTORY','EMPLOYMENTRECORD','RELEVANTWORKEXPERIENCE','RESEARCHEXPERIENCE'],education:['EDUCATION','ACADEMICS','EDUCATIONALBACKGROUND','ACADEMICBACKGROUND','ACADEMICHISTORY','ACADEMICQUALIFICATIONS','QUALIFICATIONS','EDUCATIONTRAINING','EDUCATIONANDTRAINING','TRAINING','PROFESSIONALDEVELOPMENT','CONTINUINGEDUCATION','ACADEMICRECORD'],skills:['SKILLS','TECHNICALSKILLS','CORESKILLS','KEYSKILLS','PROFESSIONALSKILLS','PERSONALSKILLS','ITSKILLS','DIGITALSKILLS','SPECIALSKILLS','COMPETENCIES','EXPERTISE','TECHNOLOGIES','TECHSTACK','STRENGTHS','TOOLS','SKILLSABILITIES','SKILLSANDABILITIES','SKILLSINTERESTS','SKILLSENDORSEMENTS','SKILLSANDENDORSEMENTS','TOPSKILLS','SUMMARYOFQUALIFICATIONS','CORECOMPETENCIES','TECHNICALPROFILE','TOOLSANDTECHNOLOGIES','KEYSTRENGTHS'],languages:['LANGUAGES','LANGUAGE','LANGUAGESKILLS','LINGUISTICSKILLS'],volunteering:['VOLUNTEERING','VOLUNTEEREXPERIENCE','VOLUNTEERWORK','VOLUNTEER','COMMUNITYSERVICE','EXTRACURRICULAR','EXTRACURRICULARACTIVITIES','ACTIVITIES'],personal:['PERSONALINFORMATION','PERSONALDETAILS','PERSONALDATA','CONTACT','CONTACTINFORMATION','CONTACTDETAILS','ADDITIONALCONTACT'],ignore:['REFERENCES','INTERESTS','HOBBIES','HOBBIESANDINTERESTS','PERSONALINTERESTS','AWARDS','HONOURS','HONORS','HONORSANDAWARDS','HONOURSANDAWARDS','PUBLICATIONS','PAPERS','CERTIFICATES','CERTIFICATIONS','LICENSES','LICENSESCERTIFICATIONS','PROJECTS','ACHIEVEMENTS','COURSES','ADDITIONALINFORMATION','OBJECTIVESTATEMENT','DECLARATION','ANNEXES','PHOTOGRAPHS','PHOTO','PATENTS','MEMBERSHIPS','PROFESSIONALAFFILIATIONS','CONFERENCES','TALKS']};
+export const CVI_SEC_COMPRESSED={summary:['SUMMARY','PROFILE','ABOUTME','ABOUT','OBJECTIVE','PERSONALSTATEMENT','CAREEROVERVIEW','PROFESSIONALPROFILE','CAREERPROFILE','PERSONALPROFILE','EXECUTIVESUMMARY','CAREEROBJECTIVE','PROFILESUMMARY'],experience:['EXPERIENCE','WORKEXPERIENCE','EMPLOYMENTHISTORY','EMPLOYMENT','WORKHISTORY','CAREERHISTORY','PROFESSIONALEXPERIENCE','PROFESSIONALBACKGROUND','RELEVANTEXPERIENCE','PROFESSIONALHISTORY','EMPLOYMENTRECORD','RELEVANTWORKEXPERIENCE','RESEARCHEXPERIENCE'],education:['EDUCATION','ACADEMICS','EDUCATIONALBACKGROUND','ACADEMICBACKGROUND','ACADEMICHISTORY','ACADEMICQUALIFICATIONS','QUALIFICATIONS','EDUCATIONTRAINING','EDUCATIONANDTRAINING','TRAINING','PROFESSIONALDEVELOPMENT','CONTINUINGEDUCATION','ACADEMICRECORD'],skills:['SKILLS','TECHNICALSKILLS','CORESKILLS','KEYSKILLS','PROFESSIONALSKILLS','PERSONALSKILLS','ITSKILLS','DIGITALSKILLS','SPECIALSKILLS','COMPETENCIES','EXPERTISE','TECHNOLOGIES','TECHSTACK','STRENGTHS','TOOLS','SKILLSABILITIES','SKILLSANDABILITIES','SKILLSINTERESTS','SKILLSENDORSEMENTS','SKILLSANDENDORSEMENTS','TOPSKILLS','SUMMARYOFQUALIFICATIONS','CORECOMPETENCIES','TECHNICALPROFILE','TOOLSANDTECHNOLOGIES','KEYSTRENGTHS'],languages:['LANGUAGES','LANGUAGE','LANGUAGESKILLS','LINGUISTICSKILLS'],volunteering:['VOLUNTEERING','VOLUNTEEREXPERIENCE','VOLUNTEERWORK','VOLUNTEER','COMMUNITYSERVICE','EXTRACURRICULAR','EXTRACURRICULARACTIVITIES','ACTIVITIES'],publications:['PUBLICATIONS','PUBLICATION','PAPERS','PAPER','RESEARCHPUBLICATIONS','SELECTEDPUBLICATIONS','PEERREVIEWEDPUBLICATIONS','ARTICLES','ARTICLE','RESEARCHOUTPUTS'],projects:['PROJECTS','PROJECT','KEYPROJECTS','SELECTEDPROJECTS','PERSONALPROJECTS','SIDEPROJECTS','PORTFOLIO','OPENSOURCEPROJECTS','OPENSOURCECONTRIBUTIONS'],interests:['INTERESTS','INTEREST','HOBBIES','HOBBIESANDINTERESTS','PERSONALINTERESTS','AREASOFINTEREST'],personal:['PERSONALINFORMATION','PERSONALDETAILS','PERSONALDATA','CONTACT','CONTACTINFORMATION','CONTACTDETAILS','ADDITIONALCONTACT'],ignore:['REFERENCES','INTERESTS','HOBBIES','HOBBIESANDINTERESTS','PERSONALINTERESTS','AWARDS','HONOURS','HONORS','HONORSANDAWARDS','HONOURSANDAWARDS','PUBLICATIONS','PAPERS','CERTIFICATES','CERTIFICATIONS','LICENSES','LICENSESCERTIFICATIONS','PROJECTS','ACHIEVEMENTS','COURSES','ADDITIONALINFORMATION','OBJECTIVESTATEMENT','DECLARATION','ANNEXES','PHOTOGRAPHS','PHOTO','PATENTS','MEMBERSHIPS','PROFESSIONALAFFILIATIONS','CONFERENCES','TALKS']};
 export const CVI_SEC_MAP={};
 Object.keys(CVI_SEC_COMPRESSED).forEach(k=>CVI_SEC_COMPRESSED[k].forEach(w=>{if(!CVI_SEC_MAP[w])CVI_SEC_MAP[w]=k;}));
 export const CVI_LABEL_ALIAS={address:'location',location:'location',city:'location',basedin:'location',residence:'location',telephone:'phone',tel:'phone',phone:'phone',mobile:'phone',mob:'phone',cell:'phone',email:'email',mail:'email',linkedin:'linkedin',web:'web',website:'web',url:'web',site:'web',portfolio:'web',github:'web',gitlab:'web',behance:'web',dribbble:'web',homepage:'web'};
@@ -640,6 +644,104 @@ export function cviParseLanguages(lines){
 }
 
 /* ── main entry: parse raw CV text (plus optional structured PDF lines) into the app's data model ── */
+/* Volunteering: structurally simpler than jobs — org / role (+ optional
+   description), sometimes with a date anchor. A dedicated parser keeps the
+   generic experience heuristics out of the way. */
+export function cviParseVolunteering(lines){
+  const out=[];let cur=null;
+  const push=()=>{if(cur&&(cur.organization||cur.role))out.push(cur);cur=null;};
+  for(const ln of lines){
+    const segs=(ln.segs||[]).map(x=>String(x).trim()).filter(Boolean);
+    const full=segs.join(' ');
+    if(!full)continue;
+    const a=cviAnchorOf(ln,full);
+    if(a){push();cur={organization:a.pre?cviTidyCompany(a.pre):'',role:'',description:[]};continue;}
+    const r=cviRoleLine(full);
+    if(r){
+      if(!cur)cur={organization:'',role:r.title,description:[]};
+      else if(!cur.role)cur.role=r.title;
+      else{push();cur={organization:'',role:r.title,description:[]};}
+      continue;
+    }
+    if(!cur||cur.role){push();cur={organization:cviTidyCompany(full),role:'',description:[]};continue;} /* next org line */
+    if(full.length>60){cur.description.push(full);continue;} /* long line under an org-only entry = description */
+    push();cur={organization:cviTidyCompany(full),role:'',description:[]};
+  }
+  push();
+  return out.map(v=>({organization:(v.organization||'').slice(0,90),role:(v.role||'').slice(0,90),description:(v.description||[]).filter(Boolean).join('\n').slice(0,400)})).filter(v=>v.organization||v.role);
+}
+/* Publications: entries are a title (often wrapped) with a trailing date
+   segment, followed by venue / status / DOI lines. Wrapped titles only join
+   while the head is long and the next line is long, non-link, non-status and
+   doesn't look like a journal/venue name. */
+export function cviParsePublications(lines){
+  const DATE_SEG=/^(?:(?:jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\.?\s+)?(?:19|20)\d{2}$/i;
+  const LINK_SEG=/^(?:doi:?[\s:]+)?(?:https?:\/\/|www\.)\S+$/i;
+  const STATUS_RE=/\b(accepted|under\s*(?:first|second|1st|2nd|third)?\s*review|revision|submitted|preprint|in\s+press|published|forthcoming)\b/i;
+  const VENUE_RE=/(ieee|acm|elsevier|springer|nature|science|transactions|journal|proceedings|conference|letters|paper\s*id|manuscript\s*id|\bvol\.?\s*\d|university\s+press)/i;
+  const splitDate=seg=>{const m=String(seg).match(/^(.{25,}?)\s+((?:(?:jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\.?\s+)?(?:19|20)\d{2})$/i);return m?{t:m[1].trim(),d:m[2].trim()}:null;};
+  const norm=m=>/^www\./i.test(m)?'https://'+m:m;
+  const entries=[];let cur=null;
+  const push=()=>{if(cur&&(cur.title||cur.meta.length))entries.push(cur);cur=null;};
+  for(const ln of lines){
+    const segs=(ln.segs||[]).map(x=>String(x).trim()).filter(Boolean);
+    const full=segs.join(' ');
+    if(!full)continue;
+    /* a seg that ends in an inline date splits into title-part + date */
+    let dateSeg='',parts=[];
+    for(const seg of segs){
+      const sp=splitDate(seg);
+      if(sp&&!dateSeg){parts.push(sp.t);dateSeg=sp.d;}
+      else if(DATE_SEG.test(seg)&&!dateSeg)dateSeg=seg;
+      else parts.push(seg);
+    }
+    const head=(parts[0]||'').trim();
+    if(dateSeg&&head&&head.length>=18&&!LINK_SEG.test(head)){
+      push();
+      cur={title:head,dates:dateSeg,meta:parts.slice(1)};
+      continue;
+    }
+    if(DATE_SEG.test(full)&&cur&&!cur.dates){cur.dates=full;continue;}
+    if(cur&&cur.hasLink&&!LINK_SEG.test(full)){push();cur={title:full,dates:'',meta:[]};continue;} /* DOI closes an entry */
+    if(!cur){cur={title:full,dates:'',meta:[]};continue;}
+    if(LINK_SEG.test(full))cur.hasLink=true;
+    cur.meta.push(full);
+  }
+  push();
+  return entries.map(e=>{
+    let title=e.title;const meta=[...e.meta];
+    let joins=0;
+    while(meta.length&&joins<2&&title.length>=60&&meta[0].length>=45&&!LINK_SEG.test(meta[0])&&!STATUS_RE.test(meta[0])&&!VENUE_RE.test(meta[0])&&!DATE_SEG.test(meta[0])){
+      title+=' '+meta.shift();joins++;
+    }
+    const links=meta.filter(m=>LINK_SEG.test(m)).map(m=>norm(m.replace(/^doi:?[\s:]+/i,'')));
+    const link=links[0]||'';
+    let status=meta.find(m=>STATUS_RE.test(m)&&!LINK_SEG.test(m))||'';
+    const venue=meta.find(m=>!LINK_SEG.test(m)&&!STATUS_RE.test(m)&&m!==status)||'';
+    const extras=links.slice(1);
+    if(extras.length)status=(status?status+' · ':'')+'earlier version: '+extras.join('; ');
+    return{title:title.slice(0,300),venue:venue.slice(0,120),status:status.slice(0,200),dates:e.dates||'',link};
+  }).filter(p=>p.title);
+}
+/* Projects: name, optional description lines, closed by a URL line. */
+export function cviParseProjects(lines){
+  const LINK=/^(?:https?:\/\/|www\.)/i;
+  const out=[];let cur=null;
+  const push=()=>{if(cur&&cur.name)out.push(cur);cur=null;};
+  for(const ln of lines){
+    const full=(ln.segs||[]).join(' ').trim();
+    if(!full)continue;
+    if(LINK.test(full)){
+      if(!cur)cur={name:'',meta:[]};
+      cur.link=/^https?:\/\//i.test(full)?full:'https://'+full;
+      push();continue;
+    }
+    if(!cur){cur={name:full,meta:[]};continue;}
+    cur.meta.push(full);
+  }
+  push();
+  return out.map(x=>({name:x.name.slice(0,90),description:x.meta.join(' ').slice(0,240),link:x.link||''})).filter(x=>x.name);
+}
 export function parseCVText(rawText,SL){
   const text=cviNormalize(rawText||'');
   let L;
@@ -670,7 +772,10 @@ export function parseCVText(rawText,SL){
   const {name,idx:nameIdx}=cviFindName(L);
   const secLines=k=>secs[k]||[];
   let experiences=cviParseExperience(secLines('experience'));
-  if(secLines('volunteering').length)experiences=experiences.concat(cviParseExperience(secLines('volunteering')));
+  const volunteering=cviParseVolunteering(secLines('volunteering'));
+  const publications=cviParsePublications(secLines('publications'));
+  const projects=cviParseProjects(secLines('projects'));
+  const interests=secLines('interests').map(l=>l.segs.join(' ')).join(', ').replace(/\s*,\s*/g,', ').replace(/,\s*$/,'').slice(0,300);
   let education=cviParseEducation(secLines('education'));
   let languages=cviParseLanguages(secLines('languages'));
   if(!languages.length){const lm=text.match(/languages?\s*[:\u2013\u2014]\s*([^\n]+)/i);if(lm)languages=cviParseLanguages([{segs:[lm[1]],size:0}]);}
@@ -687,7 +792,7 @@ export function parseCVText(rawText,SL){
     location:labels.location||cviFindLocation(L.map(l=>l.segs.join(' ')),nameIdx),
     summary:cviParseSummary(secLines('summary')),
     skillsArr:cviParseSkills(secLines('skills')),
-    experiences:experiences.slice(0,12),education,languages
+    experiences:experiences.slice(0,12),education,languages,publications,projects,volunteering,interests
   };
   /* v2.7: heading-less CVs often open with an unlabelled pitch paragraph —
      take the preamble prose that sits BEFORE the first date anchor as summary */
@@ -716,6 +821,8 @@ export function cviScore(p){
   if(p.experiences.length&&p.experiences.every(e=>e.dates))s+=5;
   if(p.education.length>=1)s+=8;
   if(p.languages.length>=1)s+=2;
+  if((p.publications||[]).length>=1)s+=3;
+  if((p.projects||[]).length>=1)s+=2;
   if(!p.experiences.length)notes.push('no work experience detected');
   if(!p.education.length)notes.push('no education detected');
   if(!p.skillsArr.length)notes.push('no skills detected');
@@ -736,7 +843,11 @@ export const CVI_SCHEMA={
     skills:{type:'ARRAY',items:{type:'STRING'},description:'Flat list of individual skills and tools'},
     experiences:{type:'ARRAY',items:{type:'OBJECT',properties:{title:{type:'STRING'},company:{type:'STRING'},dates:{type:'STRING'},description:{type:'STRING',description:'Achievements, bullet lines joined with \\n'}},required:['title','company','dates','description']}},
     education:{type:'ARRAY',items:{type:'OBJECT',properties:{degree:{type:'STRING'},institution:{type:'STRING'},year:{type:'STRING'}},required:['degree','institution','year']}},
-    languages:{type:'ARRAY',items:{type:'OBJECT',properties:{language:{type:'STRING'},level:{type:'STRING',description:'One of: Native, A1, A2, B1, B2, C1, C2 — empty string if not stated'}},required:['language','level']}}
+    languages:{type:'ARRAY',items:{type:'OBJECT',properties:{language:{type:'STRING'},level:{type:'STRING',description:'One of: Native, A1, A2, B1, B2, C1, C2 — empty string if not stated'}},required:['language','level']}},
+    publications:{type:'ARRAY',description:'Published papers, articles, preprints — empty array if none',items:{type:'OBJECT',properties:{title:{type:'STRING'},venue:{type:'STRING',description:'Journal / conference, incl. paper or manuscript ID'},status:{type:'STRING',description:'e.g. Accepted, Under review, Submitted, Preprint'},dates:{type:'STRING'},link:{type:'STRING',description:'DOI or URL, empty string if none'}},required:['title','venue','status','dates','link']}},
+    projects:{type:'ARRAY',description:'Personal / open-source projects — empty array if none',items:{type:'OBJECT',properties:{name:{type:'STRING'},description:{type:'STRING'},link:{type:'STRING'}},required:['name','description','link']}},
+    volunteering:{type:'ARRAY',description:'Volunteer roles — empty array if none',items:{type:'OBJECT',properties:{organization:{type:'STRING'},role:{type:'STRING'},description:{type:'STRING'}},required:['organization','role','description']}},
+    interests:{type:'STRING',description:'Comma-separated personal interests/hobbies, empty string if none'}
   },
   required:['name','title','email','phone','linkedin','location','summary','skills','experiences','education','languages']
 };
@@ -751,6 +862,10 @@ export function cviAiPrompt(){
   '- "level": map language proficiency to "", "Native", "A1", "A2", "B1", "B2", "C1", "C2" (fluent/bilingual=C2, advanced/professional=C1, upper-intermediate=B2, intermediate/conversational=B1, basic/elementary=A2, beginner=A1).',
   '- "title": the current or most recent professional role.',
   '- The CV may arrive twice: as the original PDF and as pre-extracted text where "|" separates side-by-side columns of the layout — reconcile them and prefer the richer reading.',
+  '- "publications": papers with their venue (incl. paper ID), status and DOI link; empty array if the CV has none.',
+  '- "projects": named projects with a one-line description and link; empty array if none.',
+  '- "volunteering": organization + role (+ what it involved); empty array if none.',
+  '- "interests": the interests/hobbies line as a comma-separated string; empty string if none.',
   '- Output valid JSON matching the schema exactly.'].join('\n');
 }
 export function cviMapAi(d){
@@ -762,7 +877,11 @@ export function cviMapAi(d){
     skillsArr:(Array.isArray(d.skills)?d.skills:[]).map(s=>cl(s,45)).filter(Boolean).slice(0,40),
     experiences:(Array.isArray(d.experiences)?d.experiences:[]).map(e=>({title:cl(e.title,80),company:cl(e.company,80),dates:cl(e.dates,40),description:String(e.description==null?'':e.description).split('\n').map(x=>x.replace(/^[\s\u2022\u25aa\u25cf\u25e6\u00b7*\u2023\u2043-]+/,'').trim()).filter(Boolean).join('\n').slice(0,900)})).filter(e=>e.title||e.company).slice(0,12),
     education:(Array.isArray(d.education)?d.education:[]).map(e=>({degree:cl(e.degree,90),institution:cl(e.institution,90),year:cl(e.year,20)})).filter(e=>e.degree||e.institution).slice(0,8),
-    languages:(Array.isArray(d.languages)?d.languages:[]).map(e=>({language:cl(e.language,40),level:cviLevelFromText(e.level)})).filter(e=>e.language).slice(0,8)
+    languages:(Array.isArray(d.languages)?d.languages:[]).map(e=>({language:cl(e.language,40),level:cviLevelFromText(e.level)})).filter(e=>e.language).slice(0,8),
+    publications:(Array.isArray(d.publications)?d.publications:[]).map(e=>({title:cl(e.title,300),venue:cl(e.venue,120),status:cl(e.status,200),dates:cl(e.dates,40),link:cl(e.link,200)})).filter(e=>e.title).slice(0,12),
+    projects:(Array.isArray(d.projects)?d.projects:[]).map(e=>({name:cl(e.name,90),description:cl(e.description,240),link:cl(e.link,200)})).filter(e=>e.name).slice(0,10),
+    volunteering:(Array.isArray(d.volunteering)?d.volunteering:[]).map(e=>({organization:cl(e.organization,90),role:cl(e.role,90),description:cl(e.description,400)})).filter(e=>e.organization||e.role).slice(0,8),
+    interests:cl(d.interests,300)
   };
   p.skills=p.skillsArr.join(', ');
   return {...p,...cviScore(p)};
@@ -771,7 +890,8 @@ export function cviMergeResults(base,ai){
   const m={...ai};
   ['name','title','email','phone','linkedin','location','summary'].forEach(k=>{if(!m[k]&&base[k])m[k]=base[k];});
   if(!m.skillsArr.length&&base.skillsArr)m.skillsArr=base.skillsArr;
-  ['experiences','education','languages'].forEach(k=>{if(!(m[k]||[]).length&&base[k]&&base[k].length)m[k]=base[k];});
+  ['experiences','education','languages','publications','projects','volunteering'].forEach(k=>{if(!(m[k]||[]).length&&base[k]&&base[k].length)m[k]=base[k];});
+  if(!m.interests&&base.interests)m.interests=base.interests;
   m.skills=m.skillsArr.join(', ');
   return {...m,...cviScore(m)};
 }
@@ -825,7 +945,11 @@ export async function cvImportRunParser(text,fileName,SL){
     skills:p.skillsArr.length>0,
     experience:p.experiences.length>0,
     education:p.education.length>0,
-    languages:p.languages.length>0
+    languages:p.languages.length>0,
+    publications:(p.publications||[]).length>0,
+    projects:(p.projects||[]).length>0,
+    volunteering:(p.volunteering||[]).length>0,
+    interests:!!(p.interests||'').trim()
   }};
   cviHide('cvImportStatus');
   renderCvImportReview(fileName);
@@ -852,6 +976,14 @@ export function renderCvImportReview(fileName){
   G.push(cviGroup('experience','Work experience',d.experiences.length,d.experiences.length?d.experiences.map(e=>'<div class="cvi-item"><div><strong>'+E(e.title||'\u2014')+'</strong>'+(e.company?' \u2014 '+E(e.company):'')+' <span class="cvi-dates">'+E(e.dates)+'</span></div>'+(e.description?'<p>'+E(e.description.split('\n')[0].slice(0,120))+'</p>':'')+'</div>').join(''):'<p>Nothing detected</p>'));
   G.push(cviGroup('education','Education',d.education.length,d.education.length?d.education.map(e=>'<div class="cvi-item"><div><strong>'+E(e.degree||'\u2014')+'</strong>'+(e.institution?' \u2014 '+E(e.institution):'')+' <span class="cvi-dates">'+E(e.year)+'</span></div></div>').join(''):'<p>Nothing detected</p>'));
   G.push(cviGroup('languages','Languages',d.languages.length,d.languages.length?'<div class="cvi-chips">'+d.languages.map(l=>'<span class="cvi-chip">'+E(l.language)+(l.level?' ('+E(l.level)+')':'')+'</span>').join('')+'</div>':'<p>Nothing detected</p>'));
+  const pubs=d.publications||[];
+  G.push(cviGroup('publications','Publications',pubs.length,pubs.length?pubs.slice(0,6).map(p=>'<div class="cvi-item"><div><strong>'+E(p.title.slice(0,90))+(p.title.length>90?'…':'')+'</strong> <span class="cvi-dates">'+E(p.dates)+'</span></div>'+(p.venue||p.status?'<p>'+E([p.venue,p.status].filter(Boolean).join(' · ').slice(0,110))+'</p>':'')+'</div>').join('')+(pubs.length>6?'<p>+'+(pubs.length-6)+' more</p>':''):'<p>Nothing detected</p>'));
+  const prjs=d.projects||[];
+  G.push(cviGroup('projects','Projects',prjs.length,prjs.length?prjs.slice(0,6).map(p=>'<div class="cvi-item"><div><strong>'+E(p.name)+'</strong></div>'+(p.description?'<p>'+E(p.description.slice(0,110))+'</p>':'')+'</div>').join(''):'<p>Nothing detected</p>'));
+  const vols=d.volunteering||[];
+  G.push(cviGroup('volunteering','Volunteering',vols.length,vols.length?vols.slice(0,6).map(v=>'<div class="cvi-item"><div><strong>'+E(v.organization||v.role)+'</strong>'+(v.organization&&v.role?' — '+E(v.role):'')+'</div></div>').join(''):'<p>Nothing detected</p>'));
+  const ints=d.interests||'';
+  G.push(cviGroup('interests','Interests',ints.trim()?1:0,ints.trim()?'<p>'+E(ints.slice(0,220))+'</p>':'<p>Nothing detected</p>'));
   document.getElementById('cvImportReview').innerHTML=G.join('');
   document.getElementById('cvAiKey').value=cviGetKey();
   document.getElementById('cvAiModel').value=cviGetModel();
@@ -878,7 +1010,7 @@ export async function runGeminiExtraction(){
     let p=cviMapAi(data);
     if(cvImportData)p=cviMergeResults(cvImportData,p);
     const prevInc=cvImportData?cvImportData.include:null;
-    const has={basics:!!(p.name||p.title||p.email||p.phone||p.linkedin||p.location),summary:!!p.summary,skills:p.skillsArr.length>0,experience:p.experiences.length>0,education:p.education.length>0,languages:p.languages.length>0};
+    const has={basics:!!(p.name||p.title||p.email||p.phone||p.linkedin||p.location),summary:!!p.summary,skills:p.skillsArr.length>0,experience:p.experiences.length>0,education:p.education.length>0,languages:p.languages.length>0,publications:(p.publications||[]).length>0,projects:(p.projects||[]).length>0,volunteering:(p.volunteering||[]).length>0,interests:!!(p.interests||'').trim()};
     const inc={};
     Object.keys(has).forEach(k=>{inc[k]=prevInc?(prevInc[k]||has[k]):has[k];});
     cvImportData={...p,source:'ai',include:inc};
@@ -926,6 +1058,19 @@ export function applyCvImport(){
       document.getElementById('languageList').innerHTML='';
       d.languages.forEach(e=>{addLangSilent();const is=document.querySelectorAll('#languageList .dynamic-item');const l=is[is.length-1];if(l){l.querySelector('input').value=e.language||'';l.querySelector('select').value=e.level||'';}});
     }
+    if(inc.publications&&d.publications&&d.publications.length){
+      document.getElementById('publicationList').innerHTML='';
+      d.publications.forEach(e=>{addPubSilent();const is=document.querySelectorAll('#publicationList .dynamic-item');const l=is[is.length-1];if(l){l.querySelectorAll('input')[0].value=e.title||'';l.querySelectorAll('input')[1].value=e.venue||'';l.querySelectorAll('input')[2].value=e.dates||'';l.querySelectorAll('input')[3].value=e.status||'';l.querySelectorAll('input')[4].value=e.link||'';}});
+    }
+    if(inc.projects&&d.projects&&d.projects.length){
+      document.getElementById('projectList').innerHTML='';
+      d.projects.forEach(e=>{addProjSilent();const is=document.querySelectorAll('#projectList .dynamic-item');const l=is[is.length-1];if(l){l.querySelectorAll('input')[0].value=e.name||'';l.querySelectorAll('input')[1].value=e.description||'';l.querySelectorAll('input')[2].value=e.link||'';}});
+    }
+    if(inc.volunteering&&d.volunteering&&d.volunteering.length){
+      document.getElementById('volunteeringList').innerHTML='';
+      d.volunteering.forEach(e=>{addVolSilent();const is=document.querySelectorAll('#volunteeringList .dynamic-item');const l=is[is.length-1];if(l){l.querySelectorAll('input')[0].value=e.organization||'';l.querySelectorAll('input')[1].value=e.role||'';l.querySelector('textarea').value=e.description||'';}});
+    }
+    if(inc.interests&&d.interests)document.getElementById('interests').value=d.interests;
     if(document.getElementById('experienceList')&&!document.querySelector('#experienceList .dynamic-item'))addExpSilent();
     if(document.getElementById('educationList')&&!document.querySelector('#educationList .dynamic-item'))addEduSilent();
     if(document.getElementById('languageList')&&!document.querySelector('#languageList .dynamic-item'))addLangSilent();

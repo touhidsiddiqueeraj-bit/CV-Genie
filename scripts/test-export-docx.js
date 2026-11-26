@@ -22,6 +22,8 @@ const CV = {
   email: 'touhid@example.com', phone: '+880 171 000 0000',
   location: 'Dhaka, Bangladesh', linkedin: 'linkedin.com/in/touhid',
   summary: 'Results-driven engineer with 8 years of experience.\nSecond summary line with & ampersand and <angle> brackets.',
+  publications: [{ title: 'Helios: Validation of a predictive MPPT controller for tropical deployment', venue: 'IJPEDS \u00b7 Paper ID 90011', status: 'Accepted, pending publication', dates: 'September 2026', link: 'https://doi.org/10.5281/zenodo.99990001' }],
+  interests: 'Chess, Astronomy',
   skills: 'JavaScript, React, Node.js, AWS, Docker',
   experiences: [
     { title: 'Senior Software Engineer', company: 'Tech Corp', dates: 'Mar 2021 – Present', description: 'Led a team of 8 engineers.\nReduced API latency by 42%.' },
@@ -95,6 +97,15 @@ print(json.dumps(checks))
       const is = document.querySelectorAll('#languageList .dynamic-item'); const l = is[is.length - 1];
       l.querySelector('input').value = l0.language; l.querySelector('select').value = l0.level;
     });
+    document.getElementById('publicationList').innerHTML = '';
+    (cv.publications || []).forEach(p => {
+      addPubSilent();
+      const is = document.querySelectorAll('#publicationList .dynamic-item'); const l = is[is.length - 1];
+      l.querySelectorAll('input')[0].value = p.title; l.querySelectorAll('input')[1].value = p.venue;
+      l.querySelectorAll('input')[2].value = p.dates; l.querySelectorAll('input')[3].value = p.status;
+      l.querySelectorAll('input')[4].value = p.link;
+    });
+    set('interests', cv.interests || '');
     updatePreview();
   }, CV);
 
@@ -113,7 +124,10 @@ print(json.dumps(checks))
       section_exp: 'EXPERIENCE', section_edu: 'EDUCATION', section_lang: 'LANGUAGES', section_skills: 'SKILLS',
       exp1: 'Senior Software Engineer', exp1meta: 'Tech Corp — Mar 2021 – Present',
       bullet1: '•  Led a team of 8 engineers.', escaped_amp: '&amp;', escaped_lt: '&lt;',
-      edu: 'BSc Computer Science', lang: 'English — C1', skills: 'JavaScript, React'
+      edu: 'BSc Computer Science', lang: 'English — C1', skills: 'JavaScript, React',
+      section_pubs: 'PUBLICATIONS', pub1: 'Helios: Validation of a predictive MPPT controller for tropical deployment',
+      pub1meta: 'IJPEDS · Paper ID 90011 — September 2026', pub1status: 'Accepted, pending publication',
+      pub1doi: 'DOI: https://doi.org/10.5281/zenodo.99990001', section_int: 'INTERESTS', interests: 'Chess, Astronomy'
     },
     absent: { server_artifact: 'onrender' },
     accent: '2563EB'

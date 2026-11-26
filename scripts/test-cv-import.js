@@ -59,7 +59,7 @@ async function applyImport(page) {
 }
 
 (async () => {
-  if (!fs.existsSync(path.join(FIX, 'fixture2.docx')) || !fs.existsSync(path.join(FIX, 'fixture4-linkedin.pdf'))) {
+  if (!fs.existsSync(path.join(FIX, 'fixture2.docx')) || !fs.existsSync(path.join(FIX, 'fixture4-linkedin.pdf')) || !fs.existsSync(path.join(FIX, 'fixture5-researcher.pdf'))) {
     console.error('Fixtures missing — run: python3 scripts/make-cv-fixtures.py');
     process.exit(1);
   }
@@ -348,6 +348,52 @@ Supported the content calendar.`;
     assert(JSON.stringify(u.ilr) === JSON.stringify(['C2', 'C1', 'B1', 'Native']), `ILR→CEFR = ${JSON.stringify(u.ilr)}`);
     assert(u.pitch, 'heading-less pitch paragraph becomes the summary');
     assert(u.phone.replace(/\s+/g, '') === '(+880)1712345678'.replace(/\s+/g, ''), `parenthesised phone = "${u.phone}"`);
+    assert(page._errors.length === 0, 'no page errors');
+    await page.close();
+  }
+
+  /* ── Test 9: researcher CV — publications / projects / volunteering / interests (fixture5) ── */
+  console.log('\n[9] Researcher CV sections (fixture5-researcher.pdf)');
+  {
+    const page = await freshPage(context);
+    const d = await parseViaUpload(page, path.join(FIX, 'fixture5-researcher.pdf'));
+    assert(d.source === 'parser', 'parsed by the local parser');
+    assert(d.name === 'Dr. Amira Rahman', `name = "${d.name}"`);
+    assert(d.experiences.length === 2, `experiences = ${d.experiences.length}`);
+    /* publications: title (wrapped lines joined), dates, venue, status, DOI */
+    assert(d.publications.length === 3, `publications = ${d.publications.length}`);
+    const p0 = d.publications[0];
+    assert(p0.title.startsWith('Helios-B') && p0.title.includes('MPPT Controller'), `pub[0].title = "${p0.title.slice(0, 60)}…" (wrapped title joined)`);
+    assert(/September 2026/.test(p0.dates), `pub[0].dates = "${p0.dates}"`);
+    assert(/IJPEDS/.test(p0.venue) && /90011/.test(p0.venue), `pub[0].venue = "${p0.venue}"`);
+    assert(/Accepted/i.test(p0.status), `pub[0].status = "${p0.status}"`);
+    assert(p0.link.includes('99990001'), `pub[0].link = "${p0.link}"`);
+    const p1 = d.publications[1];
+    assert(/IEEE Transactions/.test(p1.venue) && /first review/i.test(p1.status), `pub[1] venue/status = "${p1.venue}" / "${p1.status}"`);
+    /* projects: name, description, link */
+    assert(d.projects.length === 2, `projects = ${d.projects.length}`);
+    assert(d.projects[0].name === 'Aurora Editor' && d.projects[0].link.includes('github.com/example/aurora'), `proj[0] = ${JSON.stringify(d.projects[0])}`);
+    assert(d.projects[1].name === 'Nimbus Dashboard' && /telemetry/.test(d.projects[1].description), `proj[1] = ${JSON.stringify(d.projects[1])}`);
+    /* volunteering: organization + role */
+    assert(d.volunteering.length === 2, `volunteering = ${d.volunteering.length}`);
+    assert(d.volunteering[0].organization === 'Robotics Club' && d.volunteering[0].role === 'Joint General Secretary', `vol[0] = ${JSON.stringify(d.volunteering[0])}`);
+    /* interests line */
+    assert(/Chess/.test(d.interests) && /Astronomy/.test(d.interests), `interests = "${d.interests}"`);
+    /* include flags */
+    const inc = d.include;
+    assert(inc.publications && inc.projects && inc.volunteering && inc.interests, `include flags = ${JSON.stringify(inc)}`);
+    /* apply to the form and check the new lists */
+    await applyImport(page);
+    const applied = await page.evaluate(() => ({
+      pubs: getPublications(),
+      projs: getProjects(),
+      vols: getVolunteering(),
+      interests: document.getElementById('interests').value,
+    }));
+    assert(applied.pubs.length === 3 && applied.pubs[0].venue.includes('IJPEDS'), `form publications = ${applied.pubs.length}, pub[0].venue = "${applied.pubs[0].venue}"`);
+    assert(applied.projs.length === 2 && applied.projs[0].name === 'Aurora Editor', `form projects = ${applied.projs.length}`);
+    assert(applied.vols.length === 2 && applied.vols[1].role === 'Publicity Secretary', `form volunteering = ${applied.vols.length}`);
+    assert(/Chess/.test(applied.interests), `form interests = "${applied.interests}"`);
     assert(page._errors.length === 0, 'no page errors');
     await page.close();
   }

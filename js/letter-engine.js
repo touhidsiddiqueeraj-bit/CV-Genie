@@ -171,6 +171,14 @@ export function letterDeterministicParts(){
         P.p3=tone==='formal'
             ?`In my present role${cur.title?' as '+cur.title:''}${cur.company?' at '+cur.company:''}${desc?', my responsibilities centre on '+desc.charAt(0).toLowerCase()+desc.slice(1):''}. My strongest assets for this position are ${skillPhrase}.`
             :`Right now${cur.title?' I work as '+cur.title:''}${cur.company?' at '+cur.company:''}${desc?': '+desc.charAt(0).toLowerCase()+desc.slice(1):''}. ${letterCap(skillPhrase)} are what I bring to this role.`;
+    }else if(D.pubs&&D.pubs.length){
+        /* researcher path — no quantified work bullets, but published papers */
+        const pb=D.pubs[0];
+        const pbRef=pb.venue?` in ${pb.venue}`:'';
+        const pbMore=D.pubs.length>1?` Alongside it, I have ${D.pubs.length-1} further ${D.pubs.length-1===1?'publication':'publications'}${D.pubs.length>2?' across applied research topics':''}.`:'';
+        P.p3=tone==='formal'
+            ?`My work is published: my ${/accepted|published/i.test(pb.status||'')?'paper':'most recent paper'}, “${(pb.title||'').replace(/\.$/,'')}”${pbRef}${pb.status?', '+pb.status.charAt(0).toLowerCase()+pb.status.slice(1):''}.${pbMore}${top3.length?` ${letterCap(skillPhrase)} are the skills behind it.`:''}`
+            :`I publish my work — most recently “${(pb.title||'').replace(/\.$/,'')}”${pbRef}${pb.status?' ('+pb.status.charAt(0).toLowerCase()+pb.status.slice(1)+')':''}.${pbMore}`;
     }else{
         const edu=D.edu[0],langs=D.langs.map(l=>l.language).filter(Boolean);
         let p3=top3.length?`My strongest assets for this role are ${letterAnd(top3)}.`:'';
